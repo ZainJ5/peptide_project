@@ -3,15 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  Alert,
-  Box,
-  Button,
-  Chip,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import SupportAgentRoundedIcon from "@mui/icons-material/SupportAgentRounded";
