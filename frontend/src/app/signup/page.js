@@ -21,8 +21,8 @@ export default function SignupPage() {
   const onSubmit = async (values) => {
     try {
       await registerAuth.mutateAsync(values);
-      showToast("Account created successfully.", "success");
-      router.push("/");
+      showToast("Verification code sent to your email.", "success");
+      router.push(`/verify-email?email=${encodeURIComponent(values.email)}`);
     } catch (error) {
       showToast(error?.message || "Signup failed.", "error");
     }

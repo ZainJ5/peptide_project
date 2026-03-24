@@ -35,6 +35,11 @@ h6 {
   backdrop-filter: blur(12px);
 }
 
+/* Hide scrollbar for horizontal scroll sections */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Global cursor-pointer for all interactive elements */
 button,
 [role="button"],
