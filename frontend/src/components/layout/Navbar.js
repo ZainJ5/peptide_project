@@ -356,7 +356,7 @@ export default function Navbar() {
               <span className={`shrink-0 transition-colors ${pathname === "/" ? "text-(--color-primary)" : "text-slate-400"}`}>
                 <svg className="h-[20px] w-[20px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1v-5m10-10l2 2m-2-2v10a1 1 0 01-1 1v-5m-6 0a1 1 0 001-1v5" /></svg>
               </span>
-              <span className="flex-1 text-[16px] font-bold leading-none">Home Platform</span>
+              <span className="flex-1 text-[16px] font-bold leading-none">Home</span>
             </Link>
 
             {links.map(({ href, label, icon }) => {
