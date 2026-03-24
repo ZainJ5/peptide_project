@@ -1,11 +1,11 @@
 import Link from "next/link";
+import Image from "next/image";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { toDisplayImageUrl } from "@/lib/imageUrl";
 
 export default function PeptideCard({ peptide, view = "grid" }) {
   const isList = view === "list";
-  const imageSrc = toDisplayImageUrl(peptide.imageUrl) || "/fallback-peptide.png";
+  const imageSrc = peptide.imageUrl || "/fallback-peptide.png";
   const primaryCategory = peptide.healthCategories?.[0] || "General";
   const isGeneralCategory = String(primaryCategory).toLowerCase() === "general";
 

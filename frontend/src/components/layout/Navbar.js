@@ -8,7 +8,6 @@ import { useAuthStore } from "@/lib/auth-store";
 import { apiRequest } from "@/lib/api";
 import Button from "@/components/ui/Button";
 import { ArrowForward } from "@mui/icons-material";
-import { toDisplayImageUrl } from "@/lib/imageUrl";
 
 const links = [
   {
@@ -162,7 +161,7 @@ export default function Navbar() {
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 border border-slate-200/50">
                 {p.imageUrl
-                  ? <img src={toDisplayImageUrl(p.imageUrl)} alt="" className="h-full w-full object-cover" />
+                  ? <img src={p.imageUrl} alt="" className="h-full w-full object-cover" />
                   : <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                 }
               </div>
