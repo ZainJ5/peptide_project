@@ -12,6 +12,7 @@ import DataTable from "@/components/ui/DataTable";
 import Skeleton from "@/components/ui/Skeleton";
 import StickyNav from "@/components/library/StickyNav";
 import { usePeptideDetail } from "@/lib/hooks";
+import { toDisplayImageUrl } from "@/lib/imageUrl";
 
 const RECONSTITUTION_REFERENCE_IMAGE = "/OXYTOCIN 5MG RECONSTITUTION IMAGE.png";
 
@@ -128,7 +129,7 @@ export default function PeptideDetailPage() {
     { id: "reconstitution", label: "Reconstitution & Prep" },
   ];
 
-  const imageSrc = peptide.imageUrl || "/fallback-peptide.png";
+  const imageSrc = toDisplayImageUrl(peptide.imageUrl) || "/fallback-peptide.png";
 
   return (
     <PageTransition>
