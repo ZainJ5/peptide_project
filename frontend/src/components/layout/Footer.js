@@ -74,7 +74,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-      <footer className="relative mt-16 w-full overflow-hidden bg-slate-900 text-slate-300">
+      <footer className="relative md:mt-16 mt-2 w-full overflow-hidden bg-slate-900 text-slate-300">
         {/* Subtle top accent line */}
         <div className="h-[2px] w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500" />
 

@@ -60,46 +60,60 @@ function isGreen(index) {
 
 export default function ServiceCategories() {
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
-      <div className="mb-10">
+    <section className="mx-auto max-w-7xl px-0 sm:px-6 w-full">
+      <div className="mb-10 px-4 sm:px-0">
         <h2 className="text-sm font-bold tracking-widest uppercase text-emerald-600">Explore Categories</h2>
         <h3 className="mt-2 text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">Find Your Protocol</h3>
         <p className="mt-3 text-base text-slate-500 max-w-lg">Browse peptide protocols organized by health objective. Each category contains research-backed dosing schedules.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      {/* ↓ Only change: grid-cols-2 (was grid-cols-1) for the base/mobile breakpoint */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         {categories.map((cat, index) => {
           const green = isGreen(index);
+          const twoColRow = Math.floor(index / 2);
+          const twoColCol = index % 2;
+          const twoColGreen = (twoColRow + twoColCol) % 2 === 0;
           return (
             <Link
               key={cat.title}
               href={cat.href}
-              className={`group relative rounded-2xl p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl border ${
+              // ↓ p-4 on mobile, p-7 on sm+ — keeps content from overflowing in narrow 2-col cells
+              className={`group relative rounded-2xl p-4 sm:p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl border border-transparent ${
+                twoColGreen
+                  ? "bg-emerald-50/50 hover:border-emerald-300 hover:shadow-emerald-100/70"
+                  : "bg-white hover:border-slate-300 hover:shadow-slate-200/70"
+              } ${
                 green
-                  ? "bg-emerald-50/50 border-transparent hover:border-emerald-200 hover:shadow-emerald-100/60"
-                  : "bg-white border-transparent hover:border-slate-200 hover:shadow-slate-200/60"
+                  ? "lg:bg-emerald-50/50 lg:hover:border-emerald-300 lg:hover:shadow-emerald-100/70"
+                  : "lg:bg-white lg:hover:border-slate-300 lg:hover:shadow-slate-200/70"
               }`}
               style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
             >
-              {/* Icon */}
-              <div className={`flex h-12 w-12 items-center justify-center rounded-xl mb-5 transition-all duration-300 group-hover:scale-105 group-hover:rotate-3 ${
-                green
+              {/* Icon — slightly smaller on mobile */}
+              <div className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl mb-4 sm:mb-5 transition-all duration-300 group-hover:scale-105 group-hover:rotate-3 ${
+                twoColGreen
                   ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/25"
                   : "bg-slate-800 text-white shadow-md shadow-slate-800/25"
+              } ${
+                green
+                  ? "lg:bg-emerald-500 lg:shadow-emerald-500/25"
+                  : "lg:bg-slate-800 lg:shadow-slate-800/25"
               }`}>
-                <svg className="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
                   <path strokeLinecap="round" strokeLinejoin="round" d={cat.icon} />
                 </svg>
               </div>
 
               {/* Content */}
-              <h3 className="text-[15px] font-bold text-slate-900 mb-1.5">{cat.title}</h3>
-              <p className="text-[13px] text-slate-500 leading-relaxed mb-5">{cat.desc}</p>
+              <h3 className="text-[13px] sm:text-[15px] font-bold text-slate-900 mb-1.5 leading-snug">{cat.title}</h3>
+              {/* Hide description on mobile to keep cards compact; show from sm up */}
+              <p className="hidden sm:block text-[13px] text-slate-500 leading-relaxed mb-5">{cat.desc}</p>
 
               {/* Arrow */}
-              <div className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-400 transition-all duration-300 group-hover:text-emerald-600 group-hover:gap-2.5">
+              <div className="inline-flex items-center gap-1 sm:gap-1.5 text-[12px] sm:text-[13px] font-semibold text-slate-400 transition-all duration-300 group-hover:text-emerald-600 group-hover:gap-2.5 mt-1 sm:mt-0">
                 View protocols
-                <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <svg className="h-3 w-3 sm:h-3.5 sm:w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </div>

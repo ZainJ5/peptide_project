@@ -77,14 +77,14 @@ export default function CommunityPage() {
         </div>
 
         {/* Action Bar (Tabs & Filters) */}
-        <div className="sticky top-[64px] z-30 mb-8 flex flex-col gap-4 bg-slate-50/95 py-3 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/80">
+        <div className="sticky top-16 z-30 mb-8 flex flex-col gap-4 bg-slate-50/95 py-3 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/80">
           
           {/* Navigation Tabs */}
-          <nav className="flex space-x-1 rounded-xl bg-slate-200/50 p-1 shrink-0">
+          <nav className="mx-auto flex w-fit items-center justify-center space-x-1 rounded-xl border border-slate-200 bg-white/80 p-1 shadow-sm sm:mx-0 sm:border-0 sm:bg-slate-200/50 sm:shadow-none shrink-0">
             <button
               onClick={() => setActiveTab("all")}
-              className={`rounded-lg px-4 py-1.5 text-sm font-bold transition-all ${
-                activeTab === "all" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+              className={`rounded-lg px-3.5 sm:px-4 py-1.5 text-sm font-bold transition-all text-center ${
+                activeTab === "all" ? "bg-slate-900 text-white shadow-sm sm:bg-white sm:text-slate-900" : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
               }`}
             >
               All Discussions
@@ -92,8 +92,8 @@ export default function CommunityPage() {
             {authUser && (
               <button
                 onClick={() => setActiveTab("mine")}
-                className={`rounded-lg px-4 py-1.5 text-sm font-bold transition-all ${
-                  activeTab === "mine" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                className={`rounded-lg px-3.5 sm:px-4 py-1.5 text-sm font-bold transition-all text-center ${
+                  activeTab === "mine" ? "bg-slate-900 text-white shadow-sm sm:bg-white sm:text-slate-900" : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
                 }`}
               >
                 My Posts

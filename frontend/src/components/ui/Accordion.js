@@ -18,7 +18,7 @@ export default function Accordion({ items }) {
               className="flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-slate-50/50"
             >
               <div className="flex items-center gap-3.5">
-                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold transition-colors ${open ? "bg-(--color-primary) text-white" : "bg-slate-100 text-slate-500"}`}>
+                <span className={`hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold transition-colors sm:flex ${open ? "bg-(--color-primary) text-white" : "bg-slate-100 text-slate-500"}`}>
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <span className={`text-[15px] font-semibold transition-colors ${open ? "text-slate-900" : "text-slate-700"}`}>
@@ -44,7 +44,7 @@ export default function Accordion({ items }) {
                   transition={{ duration: 0.25, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="px-6 pb-6 pl-[4.25rem] text-[15px] leading-relaxed text-slate-600">
+                  <div className="px-6 pb-6 pl-6 sm:pl-17 text-[15px] leading-relaxed text-slate-600">
                     {item.content}
                   </div>
                 </motion.div>

@@ -38,11 +38,11 @@ export default function HeroCarousel() {
 
   return (
     <section
-      className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-slate-100"
+      className="relative -mx-2 w-[calc(100%+1rem)] overflow-hidden rounded-none bg-slate-100 sm:mx-0 sm:w-full sm:rounded-3xl"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="relative aspect-[16/7] sm:aspect-[16/6] w-full">
+      <div className="relative aspect-16/7 sm:aspect-16/6 w-full">
         {slides.map((slide, index) => (
           <div
             key={index}
@@ -54,7 +54,7 @@ export default function HeroCarousel() {
 
         <button
           onClick={() => { pauseAutoPlay(); prevSlide(); }}
-          className="absolute left-3 sm:left-5 top-1/2 z-20 -translate-y-1/2 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg backdrop-blur-sm transition-all hover:bg-white hover:scale-110 active:scale-95"
+          className="absolute left-3 sm:left-5 top-1/2 z-20 -translate-y-1/2 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/30 text-slate-700/70 shadow-lg backdrop-blur-sm transition-all hover:bg-white/50 hover:scale-110 active:scale-95 sm:bg-white/80 sm:text-slate-700 sm:hover:bg-white"
           aria-label="Previous slide"
         >
           <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -64,7 +64,7 @@ export default function HeroCarousel() {
 
         <button
           onClick={() => { pauseAutoPlay(); nextSlide(); }}
-          className="absolute right-3 sm:right-5 top-1/2 z-20 -translate-y-1/2 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg backdrop-blur-sm transition-all hover:bg-white hover:scale-110 active:scale-95"
+          className="absolute right-3 sm:right-5 top-1/2 z-20 -translate-y-1/2 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/30 text-slate-700/70 shadow-lg backdrop-blur-sm transition-all hover:bg-white/50 hover:scale-110 active:scale-95 sm:bg-white/80 sm:text-slate-700 sm:hover:bg-white"
           aria-label="Next slide"
         >
           <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">

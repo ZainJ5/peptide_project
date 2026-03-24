@@ -2,14 +2,14 @@ import Link from "next/link";
 
 export default function AboutSection() {
   return (
-    <section id="about" className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
-      <div className="mb-5">
-        <h2 className="text-sm font-bold tracking-widest uppercase text-emerald-600">About Us</h2>
+    <section id="about" className="mx-auto max-w-7xl px-0 sm:px-6 w-full">
+      <div className="mb-5 px-4 sm:px-0">
+        <h2 className="text-xs font-bold tracking-widest uppercase text-emerald-600 sm:text-sm">About Us</h2>
       </div>
 
       <div className="grid lg:grid-cols-5 gap-10 lg:gap-16 items-start">
         {/* Left — Heading */}
-        <div className="lg:col-span-2">
+        <div className="px-4 sm:px-0 lg:col-span-2">
           <h3 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl leading-[1.15]">
             Your Research-Grade{" "}
             <span className="text-emerald-600">Peptide Protocol</span>{" "}
@@ -18,7 +18,7 @@ export default function AboutSection() {
         </div>
 
         {/* Right — Description */}
-        <div className="lg:col-span-3">
+        <div className="px-4 sm:px-0 lg:col-span-3">
           <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
             MyPeptideDosage is a data-driven peptide education and schedule planning ecosystem. We organize intricate protocol tables, escalation logic, and calendar outputs into a clinical-grade mathematical workflow that is fully transparent and research-backed.
           </p>
