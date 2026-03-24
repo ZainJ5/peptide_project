@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
-import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import Footer from "@/components/layout/Footer";
 
 export default function AppShell({ children }) {
@@ -18,7 +17,6 @@ export default function AppShell({ children }) {
       <Navbar />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 pb-8 pt-6 md:px-6 md:pb-2">{children}</main>
       <Footer />
-      <MobileBottomNav />
     </div>
   );
 }

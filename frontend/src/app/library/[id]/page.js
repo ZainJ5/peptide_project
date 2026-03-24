@@ -13,6 +13,57 @@ import Skeleton from "@/components/ui/Skeleton";
 import StickyNav from "@/components/library/StickyNav";
 import { usePeptideDetail } from "@/lib/hooks";
 
+const RECONSTITUTION_REFERENCE_IMAGE = "/OXYTOCIN 5MG RECONSTITUTION IMAGE.png";
+
+function asCleanText(value) {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "string") return value.trim();
+  return String(value).trim();
+}
+
+function toBulletList(value) {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => asCleanText(item))
+      .filter(Boolean)
+      .flatMap((item) => toBulletList(item));
+  }
+
+  const text = asCleanText(value)
+    .replace(/\\n/g, "\n")
+    .replace(/\r/g, "")
+    .replace(/•/g, "\n• ")
+    .replace(/\n\s*[-*·]\s*/g, "\n");
+
+  const lines = text
+    .split("\n")
+    .map((line) => line.replace(/^\s*[-*•·]+\s*/, "").trim())
+    .filter(Boolean);
+
+  if (lines.length > 1) return lines;
+  if (lines.length === 0) return [];
+
+  const maybeSingleLine = lines[0];
+  if (maybeSingleLine.includes(";")) {
+    return maybeSingleLine
+      .split(";")
+      .map((part) => part.trim())
+      .filter(Boolean);
+  }
+
+  return [maybeSingleLine];
+}
+
+function formatCategoryLabel(value) {
+  return asCleanText(value)
+    .split(/[\s_-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 export default function PeptideDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -27,6 +78,16 @@ export default function PeptideDetailPage() {
     units: step.unitsPerInjection || 0,
   }));
 
+  const benefits = useMemo(() => toBulletList(peptide?.benefits), [peptide?.benefits]);
+  const sideEffects = useMemo(() => toBulletList(peptide?.sideEffects), [peptide?.sideEffects]);
+  const preparationNotes = useMemo(() => toBulletList(peptide?.preparationNotes), [peptide?.preparationNotes]);
+  const reconstitutionRequirements = useMemo(
+    () => toBulletList(peptide?.reconstitutionRaw || peptide?.reconstitutionMl),
+    [peptide?.reconstitutionRaw, peptide?.reconstitutionMl]
+  );
+
+  const hasReconstitutionImage = Boolean(peptide?.reconstitutionRaw || peptide?.preparationNotes);
+
   const columns = useMemo(
     () => [
       { header: "Step", accessorKey: "stepOrder" },
@@ -40,7 +101,7 @@ export default function PeptideDetailPage() {
   if (peptideQuery.isLoading) {
     return (
       <div className="grid lg:grid-cols-[240px_minmax(0,1fr)] gap-8 animate-pulse">
-        <Skeleton className="h-[300px] hidden lg:block rounded-2xl" />
+        <Skeleton className="h-75 hidden lg:block rounded-2xl" />
         <div className="space-y-6">
           <Skeleton className="h-48 rounded-2xl" />
           <Skeleton className="h-64 rounded-2xl" />
@@ -61,6 +122,7 @@ export default function PeptideDetailPage() {
 
   const sections = [
     { id: "overview", label: "Overview & Mechanism" },
+    { id: "guidance", label: "Protocol Guidance" },
     { id: "benefits", label: "Benefits & Side Effects" },
     { id: "dosage", label: "Dosage & Escalation" },
     { id: "reconstitution", label: "Reconstitution & Prep" },
@@ -70,8 +132,9 @@ export default function PeptideDetailPage() {
 
   return (
     <PageTransition>
+      <div className="pt-18 sm:pt-20 lg:pt-8">
       {/* Sticky Floating Back Button (Mobile & Tablet only) */}
-      <div className="sticky top-20 z-40 mb-6 flex justify-start sm:top-24 lg:hidden">
+      <div className="mb-6 flex justify-start lg:hidden">
         <Link href="/library" className="inline-flex items-center rounded-full bg-white/90 px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-300 drop-shadow-sm backdrop-blur-md transition-all hover:bg-slate-50 hover:text-(--color-primary) active:scale-95 cursor-pointer">
           <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           Back to Peptide Library
@@ -79,12 +142,12 @@ export default function PeptideDetailPage() {
       </div>
 
       {/* Hero Section */}
-      <Card className="mb-8 overflow-hidden rounded-[24px] border border-slate-200/60 p-0 shadow-sm">
+      <Card className="mb-8 overflow-hidden rounded-3xl border border-slate-200/70 bg-linear-to-br from-white to-slate-50/40 p-0 shadow-[0_16px_34px_-20px_rgba(15,23,42,0.35)]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_400px]">
           <div className="order-2 md:order-1 flex flex-col justify-center p-6 sm:p-8 md:p-12">
             <div className="mb-6 flex flex-wrap gap-2">
               <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-                {peptide.healthCategories?.[0] || "General"}
+                {formatCategoryLabel(peptide.healthCategories?.[0] || "General")}
               </span>
               <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-slate-700">
                 {peptide.type}
@@ -106,7 +169,7 @@ export default function PeptideDetailPage() {
             </div>
           </div>
           
-          <div className="order-1 md:order-2 relative h-64 w-full bg-slate-100 sm:h-80 md:h-full md:min-h-[400px]">
+          <div className="order-1 md:order-2 relative h-64 w-full bg-slate-100 sm:h-80 md:h-full md:min-h-100">
             {peptide.imageUrl ? (
               <img src={imageSrc} alt={peptide.name} className="absolute inset-0 h-full w-full object-cover" />
             ) : (
@@ -114,16 +177,37 @@ export default function PeptideDetailPage() {
                 <span className="text-slate-400">Image unavilable</span>
               </div>
             )}
-            <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent w-24"></div>
-            <div className="block md:hidden absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent h-24 mt-auto"></div>
+            <div className="hidden md:block absolute inset-0 bg-linear-to-r from-white via-white/80 to-transparent w-24"></div>
+            <div className="block md:hidden absolute inset-0 bg-linear-to-t from-white via-transparent to-transparent h-24 mt-auto"></div>
           </div>
         </div>
       </Card>
 
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <Card className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Injection Frequency</p>
+          <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900">
+            {asCleanText(peptide.injectionFrequencyRaw) || "Not specified in source protocol"}
+          </p>
+        </Card>
+        <Card className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Cycle Schedule</p>
+          <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900">
+            {asCleanText(peptide.cycleDurationRaw) || "Not specified in source protocol"}
+          </p>
+        </Card>
+        <Card className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Reconstitution</p>
+          <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900">
+            {asCleanText(peptide.reconstitutionRaw) || "Use standard protocol guidance"}
+          </p>
+        </Card>
+      </div>
+
       <div className="flex flex-col lg:flex-row">
         {/* Left Sticky Navigation (Flush full height) */}
-        <aside className="hidden lg:block w-[240px] shrink-0 lg:border-r lg:border-slate-200 lg:pr-8 lg:mr-8 mb-8 lg:mb-0">
-          <div className="sticky top-28 space-y-10">
+        <aside className="hidden lg:block w-60 shrink-0 lg:border-r lg:border-slate-200 lg:pr-8 lg:mr-8 mb-8 lg:mb-0">
+          <div className="sticky top-36 space-y-10">
             <div>
               <Link href="/library" className="group inline-flex items-center text-sm font-semibold text-slate-500 hover:text-(--color-primary) transition-all">
                 <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 group-hover:bg-(--color-primary)/10 group-hover:text-(--color-primary) transition-colors shadow-sm ring-1 ring-slate-200/60">
@@ -152,6 +236,26 @@ export default function PeptideDetailPage() {
             </Card>
           </div>
 
+          <div id="guidance" className="scroll-mt-6">
+            <Card className="rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+              <h2 className="mb-6 text-2xl font-bold text-slate-900">Protocol Guidance</h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-5">
+                  <h3 className="text-base font-semibold text-slate-900">Injection Frequency</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    {asCleanText(peptide.injectionFrequencyRaw) || "No injection frequency is listed in the current source."}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-5">
+                  <h3 className="text-base font-semibold text-slate-900">Cycle Duration</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    {asCleanText(peptide.cycleDurationRaw) || "No cycle duration is listed in the current source."}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </div>
+
           {/* Benefits & Side Effects */}
           <div id="benefits" className="scroll-mt-6 space-y-6">
             <Card className="p-6 sm:p-8 shadow-sm rounded-xl">
@@ -162,13 +266,13 @@ export default function PeptideDetailPage() {
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Clinical Benefits</h2>
               </div>
               <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
-                {(peptide.benefits || []).map((item, idx) => (
+                {benefits.map((item, idx) => (
                   <li key={idx} className="flex items-start text-slate-600">
                     <span className="mr-3 mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
                     <span className="leading-relaxed text-sm sm:text-base">{item}</span>
                   </li>
                 ))}
-                {(!peptide.benefits || peptide.benefits.length === 0) && (
+                {benefits.length === 0 && (
                   <p className="text-sm text-slate-400 italic">No specific benefits listed.</p>
                 )}
               </ul>
@@ -182,13 +286,13 @@ export default function PeptideDetailPage() {
                 <h2 className="text-xl font-bold text-red-900">Potential Side Effects & Risks</h2>
               </div>
               <ul className="space-y-3">
-                {(peptide.sideEffects || []).map((item, idx) => (
+                {sideEffects.map((item, idx) => (
                   <li key={idx} className="flex items-start text-red-800 font-medium">
                     <span className="mr-3 mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-red-500" />
                     <span className="leading-relaxed text-sm sm:text-base">{item}</span>
                   </li>
                 ))}
-                {(!peptide.sideEffects || peptide.sideEffects.length === 0) && (
+                {sideEffects.length === 0 && (
                   <p className="text-sm text-red-600/80 italic">No specific side effects listed.</p>
                 )}
               </ul>
@@ -199,6 +303,27 @@ export default function PeptideDetailPage() {
           <div id="dosage" className="scroll-mt-6">
             <Card className="p-8 shadow-sm rounded-2xl">
               <h2 className="text-2xl font-bold text-slate-900 mb-6">Dosage & Escalation</h2>
+              {peptide.scheduleVariants?.length > 1 && (
+                <div className="mb-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                  <Accordion
+                    items={peptide.scheduleVariants.map((variant) => ({
+                      title: variant.name,
+                      content: (
+                        <div className="space-y-3 pr-4">
+                          <p className="text-sm text-slate-600">
+                            Escalation steps: {variant.steps?.length || 0}
+                          </p>
+                          {variant.summary?.maxDefinedWeek ? (
+                            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                              Defined through week {variant.summary.maxDefinedWeek}
+                            </p>
+                          ) : null}
+                        </div>
+                      ),
+                    }))}
+                  />
+                </div>
+              )}
               {tableData.length > 0 ? (
                 <div className="space-y-8">
                   <div className="overflow-hidden rounded-xl border border-slate-200">
@@ -218,35 +343,76 @@ export default function PeptideDetailPage() {
                   </div>
                 </div>
               ) : (
-                <p className="text-slate-500 italic">No structured dosing tables available for this protocol.</p>
+                <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/70 p-5">
+                  <p className="text-sm font-semibold text-slate-700">No structured dosing table is currently available for this protocol.</p>
+                  <p className="text-sm text-slate-600">
+                    Review injection frequency and cycle schedule in the guidance section above for the available protocol details.
+                  </p>
+                </div>
               )}
             </Card>
           </div>
 
           {/* Reconstitution & Prep Notes */}
           <div id="reconstitution" className="scroll-mt-6">
-            <Card className="p-6 sm:p-8 shadow-sm rounded-2xl bg-white border border-slate-200">
+            <Card className="p-6 sm:p-8 shadow-sm rounded-2xl bg-white border border-slate-200/80">
               <h2 className="text-2xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Reconstitution & Preparation</h2>
-              
-              <div className="space-y-8">
-                <div>
+
+              <div className="grid items-start gap-6 xl:grid-cols-[1.25fr_0.75fr]">
+                <div className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">Protocol Step 1</p>
                   <h3 className="text-lg font-semibold text-slate-900 mb-3">Reconstitution Requirements</h3>
-                  <div className="prose prose-sm sm:prose-base prose-slate max-w-none text-slate-600">
-                    <p>{peptide.reconstitutionRaw || "No specific reconstitution instructions provided."}</p>
-                  </div>
+                  {reconstitutionRequirements.length > 0 ? (
+                    <ul className="space-y-2.5">
+                      {reconstitutionRequirements.map((item, idx) => (
+                        <li key={idx} className="flex items-start text-slate-700">
+                          <span className="mr-3 mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500" />
+                          <span className="text-sm sm:text-base leading-relaxed">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm sm:text-base text-slate-600">No specific reconstitution instructions provided.</p>
+                  )}
                 </div>
 
-                <div className="pt-6 border-t border-slate-100">
-                  <h3 className="text-lg font-semibold text-slate-900 mb-3">Clinical Preparation Notes</h3>
-                  <div className="prose prose-sm sm:prose-base prose-slate max-w-none text-slate-600">
-                    <p>{peptide.preparationNotes || "Standard clinical preparation protocols apply."}</p>
+                {hasReconstitutionImage ? (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5 shadow-sm">
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">Reconstitution Method</p>
+                    <img
+                      src={RECONSTITUTION_REFERENCE_IMAGE}
+                      alt="Reconstitution method reference"
+                      className="mx-auto max-h-44 sm:max-h-48 w-auto max-w-full rounded-lg object-contain"
+                    />
                   </div>
+                ) : (
+                  <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50/70 p-5">
+                    <p className="text-sm text-slate-500">No reconstitution reference image available for this protocol.</p>
+                  </div>
+                )}
+
+                <div className="xl:col-span-2 rounded-xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">Protocol Step 2</p>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-3">Final Prep Notes</h3>
+                  {preparationNotes.length > 0 ? (
+                    <ul className="space-y-3">
+                      {preparationNotes.map((item, idx) => (
+                        <li key={idx} className="flex items-start text-slate-700">
+                          <span className="mr-3 mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-(--color-primary)" />
+                          <span className="text-sm sm:text-base leading-relaxed">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm sm:text-base text-slate-600">Standard clinical preparation protocols apply.</p>
+                  )}
                 </div>
               </div>
             </Card>
           </div>
 
         </section>
+      </div>
       </div>
     </PageTransition>
   );

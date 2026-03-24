@@ -9,7 +9,7 @@ import FaqSection from "@/components/home/FaqSection";
 export default function HomePage() {
   return (
     <PageTransition>
-      <div className="flex flex-col gap-20 sm:gap-28">
+      <div className="flex flex-col gap-10 sm:gap-28">
         <HeroCarousel />
         <AboutSection />
         <ScheduleBanner />

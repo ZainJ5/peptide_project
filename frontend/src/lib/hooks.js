@@ -99,17 +99,12 @@ export function useAuthMutations() {
 
   const register = useMutation({
     mutationFn: (payload) => apiRequest("/auth/register", { method: "POST", body: payload }),
-  });
-
-  const verifyEmail = useMutation({
-    mutationFn: (payload) => apiRequest("/auth/verify-email", { method: "POST", body: payload }),
     onSuccess: (response) => setAuth({ token: response.token, refreshToken: response.refreshToken, user: response.user }),
   });
 
   return {
     login,
     register,
-    verifyEmail,
     logout: clearAuth,
   };
 }
