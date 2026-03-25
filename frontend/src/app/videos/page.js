@@ -40,7 +40,7 @@ export default function VideosPage() {
       <div className="space-y-6">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Video Library</h1>
+            <h1 className="text-3xl pt-4 font-bold">Video Library</h1>
             <p className="text-sm text-slate-600">Learn reconstitution, injection techniques, and peptide-specific workflows.</p>
           </div>
           <Select value={category} onChange={(event) => setCategory(event.target.value)} className="max-w-xs">

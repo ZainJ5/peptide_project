@@ -55,7 +55,7 @@ export default function CommunityPage() {
         {/* Header Section */}
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">
+            <h1 className="text-2xl pt-4 md:text-3xl font-bold text-slate-900">
               Community Protocol Hub
             </h1>
             <p className="mt-1 text-sm text-slate-600 max-w-2xl">

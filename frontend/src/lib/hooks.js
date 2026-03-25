@@ -164,5 +164,13 @@ export function useScheduleBuilderMutations() {
     mutationFn: (scheduleId) => request(`/schedules/${scheduleId}/calendar`),
   });
 
-  return { createSchedule, addItem, preview, generate, calendar };
+  const completeEvent = useMutation({
+    mutationFn: ({ scheduleId, eventId, completed }) =>
+      request(`/schedules/${scheduleId}/calendar/${eventId}/complete`, {
+        method: "PATCH",
+        body: { completed },
+      }),
+  });
+
+  return { createSchedule, addItem, preview, generate, calendar, completeEvent };
 }

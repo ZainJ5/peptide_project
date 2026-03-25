@@ -1,0 +1,30 @@
+# Environment — NEVER commit real credentials
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Logs — keep the directory but not the log files
+logs/*.log
+logs/pm2-*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Build / dist
+dist/
+build/
+
+# Seed source files (contain local paths)
+*.xlsx
+.npm-cache
+.env.example
+data/
