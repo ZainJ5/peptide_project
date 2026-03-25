@@ -8,6 +8,10 @@ const rawBackend =
 const backendOrigin = rawBackend.replace(/\/$/, "").replace(/\/api$/, "");
 
 const nextConfig = {
+	images: {
+		qualities: [60, 75],
+	},
+
 	async rewrites() {
 		return [
 			{

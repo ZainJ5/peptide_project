@@ -6,21 +6,27 @@ import { useForm } from "react-hook-form";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Select from "@/components/ui/Select";
-import DataTable from "@/components/ui/DataTable";
 import Toggle from "@/components/ui/Toggle";
 import { useToast } from "@/components/ui/ToastProvider";
 import { DAY_OPTIONS } from "@/lib/config";
 import { apiRequest, downloadSchedulePdf } from "@/lib/api";
-import { usePeptides, useScheduleBuilderMutations } from "@/lib/hooks";
+import { usePeptides, useScheduleBuilderMutations, useSchedules } from "@/lib/hooks";
 import { useAuthStore } from "@/lib/auth-store";
 
 const steps = [
-  "Select peptides",
-  "Frequency",
-  "Overrides",
-  "Escalation",
-  "Rest periods",
-  "Output",
+  "Peptide Selection",
+  "Frequency Strategy",
+  "Clinical Overrides",
+  "Escalation Variant",
+  "Cycle & Rest",
+  "Generate & Export",
+];
+
+const FREQUENCY_OPTIONS = [
+  { value: "DAILY", label: "Daily" },
+  { value: "WEEKLY", label: "Weekly (Once per week)" },
+  { value: "TWICE_WEEKLY", label: "Twice weekly" },
+  { value: "THREE_TIMES_WEEKLY", label: "Three times weekly" },
 ];
 
 function emptySelection(peptide) {
@@ -38,24 +44,21 @@ function emptySelection(peptide) {
   };
 }
 
-function flattenCalendar(calendarData) {
-  if (!calendarData) return [];
-  const rows = [];
-  Object.entries(calendarData).forEach(([month, dates]) => {
-    Object.entries(dates).forEach(([date, events]) => {
-      events.forEach((event) => {
-        rows.push({
-          month,
-          date,
-          peptideName: event.peptideName,
-          timeOfDay: event.timeOfDay,
-          dose: event.doseLabel || `${event.doseUnits} units`,
-          restDay: event.isRestDay ? "Yes" : "No",
-        });
-      });
-    });
+function formatMonthLabel(monthKey) {
+  const [year, month] = monthKey.split("-").map(Number);
+  const date = new Date(year, (month || 1) - 1, 1);
+  return date.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+}
+
+function formatDateLabel(dateKey) {
+  const date = new Date(dateKey);
+  if (Number.isNaN(date.getTime())) return dateKey;
+  return date.toLocaleDateString(undefined, {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
   });
-  return rows;
 }
 
 export default function ScheduleWizard() {
@@ -71,6 +74,7 @@ export default function ScheduleWizard() {
   const authState = useAuthStore();
   const { showToast } = useToast();
   const peptidesQuery = usePeptides({ limit: 100, offset: 0 });
+  const schedulesQuery = useSchedules();
   const mutations = useScheduleBuilderMutations();
 
   const [step, setStep] = useState(0);
@@ -80,6 +84,7 @@ export default function ScheduleWizard() {
   const [overrideWarningIndex, setOverrideWarningIndex] = useState(-1);
   const [variantMap, setVariantMap] = useState({});
   const [result, setResult] = useState({ scheduleId: "", calendar: null, preview: null, message: "" });
+  const isLoggedIn = Boolean(authState.token);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -123,18 +128,17 @@ export default function ScheduleWizard() {
   }, [step, selectedPeptides, authState]);
 
   const peptideOptions = peptidesQuery.data?.data || [];
+  const existingSchedules = schedulesQuery.data?.data || [];
 
-  const outputRows = useMemo(() => flattenCalendar(result.calendar), [result.calendar]);
-
-  const outputColumns = useMemo(
-    () => [
-      { header: "Date", accessorKey: "date" },
-      { header: "Peptide", accessorKey: "peptideName" },
-      { header: "Time", accessorKey: "timeOfDay" },
-      { header: "Dose", accessorKey: "dose" },
-      { header: "Rest Day", accessorKey: "restDay" },
-    ],
-    []
+  const calendarMonths = useMemo(
+    () =>
+      Object.entries(result.calendar || {})
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([month, dates]) => [
+          month,
+          Object.entries(dates || {}).sort(([a], [b]) => a.localeCompare(b)),
+        ]),
+    [result.calendar]
   );
 
   const canProceed = () => {
@@ -233,6 +237,9 @@ export default function ScheduleWizard() {
       showToast("Add at least one peptide to continue.", "error");
       return;
     }
+    if (step === 4 && !isLoggedIn) {
+      showToast("Sign in required to generate and save schedules.", "info");
+    }
     setStep((current) => Math.min(current + 1, steps.length - 1));
   };
 
@@ -252,6 +259,54 @@ export default function ScheduleWizard() {
         </div>
       </Card>
 
+      {isLoggedIn && (
+        <Card className="p-5">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700">Saved Schedules</h3>
+            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+              {existingSchedules.length} Total
+            </span>
+          </div>
+          {schedulesQuery.isLoading ? (
+            <p className="text-sm text-slate-500">Loading schedules...</p>
+          ) : existingSchedules.length === 0 ? (
+            <p className="text-sm text-slate-500">No schedules created yet. Generate your first schedule below.</p>
+          ) : (
+            <div className="space-y-2">
+              {existingSchedules.slice(0, 5).map((schedule) => (
+                <div key={schedule.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">{schedule.name}</p>
+                    <p className="text-xs text-slate-500">Start {schedule.startDate} • {schedule.durationWeeks} weeks</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${schedule.isGenerated ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>
+                      {schedule.isGenerated ? "Generated" : "Draft"}
+                    </span>
+                    {schedule.isGenerated && (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        className="px-3 py-1.5 text-xs"
+                        onClick={() =>
+                          downloadSchedulePdf(schedule.id, {
+                            token: authState.token,
+                            refreshToken: authState.refreshToken,
+                            onRefresh: authState.setAuth,
+                          })
+                        }
+                      >
+                        PDF
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
+
       <Card className="p-6">
         <AnimatePresence mode="wait">
           <motion.div key={step} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }} transition={{ duration: 0.2 }}>
@@ -260,12 +315,12 @@ export default function ScheduleWizard() {
                 <h2 className="text-xl font-bold">Step 1: Select Peptides (up to 10)</h2>
                 <div className="grid gap-3 md:grid-cols-[1fr_auto]">
                   <Select value={selectedId} onChange={(event) => setSelectedId(event.target.value)}>
-                    <option value="">Choose peptide</option>
+                    <option value="">Choose peptide protocol</option>
                     {peptideOptions.map((item) => (
                       <option key={item.id} value={item.id}>{item.name} ({item.mgAmount || "N/A"})</option>
                     ))}
                   </Select>
-                  <Button type="button" onClick={addPeptide}>Add</Button>
+                  <Button type="button" onClick={addPeptide}>Add Peptide</Button>
                 </div>
 
                 <div className="space-y-2">
@@ -281,11 +336,12 @@ export default function ScheduleWizard() {
 
             {step === 1 && (
               <div className="space-y-4">
-                <h2 className="text-xl font-bold">Step 2: Frequency Selection</h2>
+                <h2 className="text-xl font-bold">Step 2: Frequency Strategy</h2>
+                <p className="text-sm text-slate-600">This default frequency is applied when an item override is enabled and no custom frequency is entered.</p>
                 <Select value={frequency} onChange={(event) => setFrequency(event.target.value)}>
-                  <option value="DAILY">Daily</option>
-                  <option value="WEEKLY">Weekly</option>
-                  <option value="CUSTOM">Custom</option>
+                  {FREQUENCY_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
                 </Select>
               </div>
             )}
@@ -327,18 +383,22 @@ export default function ScheduleWizard() {
                           <input
                             value={item.overrideDoseUnits}
                             onChange={(event) => updateSelection(index, { overrideDoseUnits: event.target.value })}
+                            placeholder="e.g. 12"
                             className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
                           />
                         </div>
 
                         <div>
                           <label className="mb-1 block text-xs font-semibold">Frequency</label>
-                          <input
+                          <Select
                             value={item.overrideFrequency}
                             onChange={(event) => updateSelection(index, { overrideFrequency: event.target.value })}
-                            placeholder="DAILY, TWICE_WEEKLY"
-                            className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                          />
+                          >
+                            <option value="">Use default strategy</option>
+                            {FREQUENCY_OPTIONS.map((option) => (
+                              <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                          </Select>
                         </div>
 
                         <div>
@@ -373,7 +433,7 @@ export default function ScheduleWizard() {
 
             {step === 3 && (
               <div className="space-y-4">
-                <h2 className="text-xl font-bold">Step 4: Escalation Logic</h2>
+                <h2 className="text-xl font-bold">Step 4: Escalation</h2>
                 {selectedPeptides.map((item, index) => (
                   <div key={item.peptideId} className="rounded-xl border border-slate-200 p-4">
                     <p className="text-sm font-semibold">{item.peptideName}</p>
@@ -416,7 +476,7 @@ export default function ScheduleWizard() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
                     <label className="mb-1 block text-sm font-medium">Schedule Name</label>
-                    <input {...register("name", { required: true })} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                    <input {...register("name", { required: true })} placeholder="e.g. Recovery Phase Q2" className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                   </div>
                   <div>
                     <label className="mb-1 block text-sm font-medium">Start Date</label>
@@ -428,33 +488,81 @@ export default function ScheduleWizard() {
                   </div>
                   <div>
                     <label className="mb-1 block text-sm font-medium">Notes</label>
-                    <input {...register("notes")} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                    <input {...register("notes")} placeholder="Optional clinical notes for this schedule" className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                   </div>
                 </div>
 
-                <Button type="submit" disabled={mutations.createSchedule.isPending || mutations.generate.isPending}>
+                <Button
+                  type="submit"
+                  disabled={mutations.createSchedule.isPending || mutations.generate.isPending}
+                  className={!isLoggedIn ? "cursor-not-allowed opacity-60" : ""}
+                  onClick={() => {
+                    if (!isLoggedIn) {
+                      showToast("Sign in required to create and store schedules.", "info");
+                    }
+                  }}
+                >
                   {mutations.generate.isPending ? "Generating..." : "Generate Calendar & Table"}
                 </Button>
+
+                {!isLoggedIn && <p className="text-xs text-slate-500">Sign in to enable generation and secure storage.</p>}
 
                 {result.message && <p className="text-sm text-emerald-700">{result.message}</p>}
 
                 {result.scheduleId && (
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-2">
-                      <Button type="button" variant="secondary" onClick={() => downloadSchedulePdf(result.scheduleId, authState.token)}>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() =>
+                          downloadSchedulePdf(result.scheduleId, {
+                            token: authState.token,
+                            refreshToken: authState.refreshToken,
+                            onRefresh: authState.setAuth,
+                          })
+                        }
+                      >
                         Export PDF
                       </Button>
                     </div>
 
-                    <DataTable data={outputRows} columns={outputColumns} />
-
-                    <div>
-                      <p className="mb-2 text-sm font-semibold">Email-ready format</p>
-                      <textarea
-                        readOnly
-                        value={outputRows.map((row) => `${row.date} • ${row.peptideName} • ${row.timeOfDay} • ${row.dose} • Rest:${row.restDay}`).join("\n")}
-                        className="h-40 w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs"
-                      />
+                    <div className="space-y-3">
+                      <p className="text-sm font-semibold text-slate-700">Injection Calendar</p>
+                      {calendarMonths.length === 0 ? (
+                        <p className="text-sm text-slate-500">No calendar entries found.</p>
+                      ) : (
+                        calendarMonths.map(([month, dateEntries]) => (
+                          <Card key={month} className="rounded-xl border border-slate-200 p-4 shadow-none">
+                            <p className="mb-4 text-base font-bold text-slate-900">{formatMonthLabel(month)}</p>
+                            <div className="space-y-3">
+                              {dateEntries.map(([date, events]) => (
+                                <div key={date} className="rounded-xl border border-slate-200/70 bg-slate-50/60 p-3">
+                                  <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-600">{formatDateLabel(date)}</p>
+                                  <div className="grid grid-cols-[90px_1fr_1fr_90px] gap-2 border-b border-slate-200 pb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                                    <span>Time</span>
+                                    <span>Peptide</span>
+                                    <span>Dose</span>
+                                    <span>Rest Day</span>
+                                  </div>
+                                  <div className="space-y-1.5 pt-2">
+                                    {events.map((event) => (
+                                      <div key={event.id || `${date}-${event.peptideId}-${event.timeOfDay}`} className="grid grid-cols-[90px_1fr_1fr_90px] gap-2 text-xs text-slate-700">
+                                        <span className="font-semibold text-slate-800">{event.timeOfDay || "AM"}</span>
+                                        <span>{event.peptideName || "Peptide"}</span>
+                                        <span>{event.doseLabel || `${event.doseUnits} units`}</span>
+                                        <span className={event.isRestDay ? "font-semibold text-amber-700" : "text-slate-600"}>
+                                          {event.isRestDay ? "Yes" : "No"}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </Card>
+                        ))
+                      )}
                     </div>
                   </div>
                 )}
@@ -495,7 +603,15 @@ export default function ScheduleWizard() {
           Previous
         </Button>
         {step < steps.length - 1 ? (
-          <Button type="button" onClick={nextStep}>
+          <Button
+            type="button"
+            onClick={() => {
+              if (step === steps.length - 2 && !isLoggedIn) {
+                showToast("Sign in required to create and store schedules.", "info");
+              }
+              nextStep();
+            }}
+          >
             Next
           </Button>
         ) : null}

@@ -71,9 +71,11 @@ export function useCommunityPosts(filters) {
 
 export function useSchedules() {
   const request = useAuthedRequest();
+  const token = useAuthStore((s) => s.token);
   return useQuery({
     queryKey: ["schedules"],
     queryFn: () => request("/schedules"),
+    enabled: Boolean(token),
   });
 }
 

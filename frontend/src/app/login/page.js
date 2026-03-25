@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -129,12 +128,6 @@ export default function LoginPage() {
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="w-full max-w-[440px] rounded-2xl border border-slate-200/80 bg-white p-8 sm:p-10 shadow-[0_8px_40px_rgba(0,0,0,0.06)]"
         >
-          {/* Logo */}
-          <div className="flex items-center justify-center gap-2.5 mb-8">
-            <Image src="/logo.png" alt="PeptideDosage" width={36} height={36} className="rounded-lg" />
-            <span className="text-lg font-bold tracking-tight text-slate-900">PeptideDosage</span>
-          </div>
-
           <AnimatePresence mode="wait">
             {/* ── STEP: LOGIN ── */}
             {step === STEPS.LOGIN && (

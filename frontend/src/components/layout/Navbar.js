@@ -285,19 +285,32 @@ export default function Navbar() {
           </nav>
 
           {/* ══════════ MOBILE HEADER ══════════ */}
-          <div className="flex md:hidden items-center justify-between py-2.5">
-            <Link href="/" className="flex shrink-0 items-center gap-2.5 transition-opacity hover:opacity-80">
-              <Image src="/logo.png" alt="MyPeptideDosage" width={38} height={38}
-                className="h-[38px] w-[38px] rounded-xl border border-slate-200 bg-white object-contain p-1 shadow-sm" priority />
-              <span className="text-[17px] font-extrabold tracking-tight text-slate-900">MyPeptideDosage</span>
+          <div className="flex md:hidden items-center gap-3 py-2.5">
+            {/* Left — Hamburger */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Open navigation"
+              className="flex h-9 w-9 shrink-0 flex-col items-center justify-center gap-[5px] rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-200 active:scale-95 active:bg-slate-50"
+            >
+              <span className="block h-[1.75px] w-[14px] rounded-full bg-slate-700" />
+              <span className="block h-[1.75px] w-[10px] self-start ml-[9px] rounded-full bg-slate-400" />
+              <span className="block h-[1.75px] w-[14px] rounded-full bg-slate-700" />
+            </button>
+
+            {/* Center — Logo (flex-1, centered) */}
+            <Link href="/" className="flex flex-1 items-center justify-center gap-2 transition-opacity hover:opacity-80">
+              <Image src="/logo.png" alt="MyPeptideDosage" width={32} height={32}
+                className="h-8 w-8 shrink-0 rounded-xl border border-slate-200 bg-white object-contain p-[3px] shadow-sm" priority />
+              <span className="text-[15px] font-extrabold tracking-tight text-slate-900 whitespace-nowrap">MyPeptideDosage</span>
             </Link>
 
-            <div className="flex items-center gap-3">
-              {/* Mobile User Avatar Dropdown */}
-              {user && (
+            {/* Right — avatar or sign-in, fixed width to balance layout */}
+            <div className="shrink-0 w-9 flex justify-end">
+              {user ? (
                 <div className="relative" ref={mobileDropdownRef}>
-                  <button onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
-                    className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-gradient-to-br from-slate-800 to-slate-950 text-[11px] font-bold text-white ring-2 ring-transparent transition-all active:scale-95 hover:ring-slate-200"
+                  <button
+                    onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-950 text-[11px] font-bold text-white ring-2 ring-transparent transition-all active:scale-95 hover:ring-slate-200 shadow-sm"
                   >
                     {initials}
                   </button>
@@ -307,106 +320,223 @@ export default function Navbar() {
                     </div>
                   )}
                 </div>
+              ) : (
+                <Link href="/login"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--color-accent) text-white shadow-md shadow-(--color-accent)/25 transition-all active:scale-95"
+                  aria-label="Sign In"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
+                </Link>
               )}
-
-              {/* Hamburger */}
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu"
-                className={`relative flex h-[34px] w-[34px] flex-col items-center justify-center gap-[5px] rounded-xl border transition-all duration-200 ${
-                  mobileMenuOpen ? "border-slate-300 bg-slate-100" : "border-slate-200 bg-white active:bg-slate-50"
-                }`}
-              >
-                <span className={`block h-[1.75px] w-[16px] rounded-full bg-slate-800 transition-all duration-200 origin-center ${mobileMenuOpen ? "translate-y-[6.75px] rotate-45" : ""}`} />
-                <span className={`block h-[1.75px] w-[12px] rounded-full bg-slate-800 transition-all duration-200 ${mobileMenuOpen ? "opacity-0 scale-x-0" : ""}`} />
-                <span className={`block h-[1.75px] w-[16px] rounded-full bg-slate-800 transition-all duration-200 origin-center ${mobileMenuOpen ? "-translate-y-[6.75px] -rotate-45" : ""}`} />
-              </button>
             </div>
           </div>
 
         </div>
       </header>
 
-      {/* ══════════ MOBILE MENU BACKDROP & PANEL ══════════ */}
-      <div onClick={() => setMobileMenuOpen(false)} aria-hidden
-        className={`fixed inset-0 z-40 md:hidden bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300 ${
-          mobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      {/* ══════════ MOBILE LEFT DRAWER — BACKDROP ══════════ */}
+      <div
+        onClick={() => setMobileMenuOpen(false)}
+        aria-hidden
+        className={`fixed inset-0 z-40 md:hidden transition-all duration-300 ${
+          mobileMenuOpen
+            ? "bg-slate-900/50 backdrop-blur-[2px] pointer-events-auto"
+            : "bg-transparent backdrop-blur-none pointer-events-none"
         }`}
       />
 
-      <div className={`fixed inset-x-0 top-0 z-40 md:hidden flex flex-col bg-white shadow-2xl shadow-slate-900/20 transition-transform duration-[320ms] ease-[cubic-bezier(.32,.72,0,1)] rounded-b-3xl ${
-          mobileMenuOpen ? "translate-y-0" : "-translate-y-full"
+      {/* ══════════ MOBILE LEFT DRAWER — PANEL ══════════ */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 md:hidden flex flex-col bg-white transition-transform duration-[350ms] ease-[cubic-bezier(.32,.72,0,1)] ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
-        style={{ maxHeight: "90dvh" }}
+        style={{ width: "min(82vw, 320px)" }}
       >
-        <div className="flex shrink-0 items-center justify-between border-b border-slate-100/80 px-5 py-4">
-          <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Navigation Menu</span>
-          <button onClick={() => setMobileMenuOpen(false)}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-slate-500 transition-colors hover:bg-slate-100 active:scale-95"
-          >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-6">
-          <div className="flex flex-col gap-1.5">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)}
-              className={`group flex items-center gap-3.5 rounded-2xl px-4 py-4 transition-all duration-200 ${
-                pathname === "/" ? "bg-(--color-primary)/10 text-(--color-primary) shadow-sm" : "text-slate-700 hover:bg-slate-50"
-              }`}
+        {/* ── Drawer Header ── */}
+        <div className="relative shrink-0 border-b border-slate-100 bg-white px-4 pb-4 pt-5">
+          {/* Brand row */}
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Image src="/logo.png" alt="MyPeptideDosage" width={28} height={28}
+                className="h-7 w-7 rounded-lg border border-slate-200 bg-white object-contain p-[2px] shadow-sm" />
+              <div className="leading-none">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Research Portal</p>
+                <p className="text-[13px] font-extrabold tracking-tight text-slate-900">MyPeptideDosage</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 active:scale-95"
             >
-              <span className={`shrink-0 transition-colors ${pathname === "/" ? "text-(--color-primary)" : "text-slate-400"}`}>
-                <svg className="h-[20px] w-[20px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1v-5m10-10l2 2m-2-2v10a1 1 0 01-1 1v-5m-6 0a1 1 0 001-1v5" /></svg>
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+
+          {user ? (
+            /* ── Authenticated: compact profile card ── */
+            <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-3 py-3">
+              <div className="relative shrink-0">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-[13px] font-extrabold text-white shadow-sm">
+                  {initials}
+                </div>
+                {/* Green online dot */}
+                <span className="absolute -bottom-px -right-px h-3 w-3 rounded-full bg-emerald-400 ring-[2px] ring-slate-50" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-bold text-slate-900 leading-tight">{displayName}</p>
+                <p className="truncate text-[11px] text-slate-500 mt-0.5 leading-tight">{user.email}</p>
+              </div>
+              {/* Active badge */}
+              <span className="shrink-0 flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-600">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Active
               </span>
-              <span className="flex-1 text-[16px] font-bold leading-none">Home</span>
-            </Link>
-
-            {links.map(({ href, label, icon }) => {
-              const active = pathname === href || pathname.startsWith(`${href}/`);
-              return (
-                <Link key={href} href={href} onClick={() => setMobileMenuOpen(false)}
-                  className={`group flex items-center gap-3.5 rounded-2xl px-4 py-4 transition-all duration-200 ${
-                    active ? "bg-(--color-primary)/10 text-(--color-primary) shadow-sm" : "text-slate-700 hover:bg-slate-50"
-                  }`}
-                >
-                  <span className={`shrink-0 transition-colors ${active ? "text-(--color-primary)" : "text-slate-400"}`}>{icon}</span>
-                  <span className="flex-1 text-[16px] font-bold leading-none">{label}</span>
-                </Link>
-              );
-            })}
-          </div>
-
-          <div className="border-t border-slate-100" />
-
-          <div className="flex flex-col gap-3 pb-6">
-            {user ? (
-              <button type="button" onClick={() => { setRequestError(""); setRequestSuccess(""); setRequestOpen(true); setMobileMenuOpen(false); }}
-                className="flex items-center justify-center gap-2.5 rounded-2xl bg-(--color-accent) px-5 py-4 text-[16px] font-bold text-white shadow-lg shadow-(--color-accent)/25 transition-all active:scale-[.98]"
+            </div>
+          ) : (
+            /* ── Guest: minimal prompt ── */
+            <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-3 py-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-500">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-bold text-slate-800 leading-tight">Guest User</p>
+                <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">Sign in to unlock all features</p>
+              </div>
+              <Link href="/login" onClick={() => setMobileMenuOpen(false)}
+                className="shrink-0 rounded-xl bg-(--color-accent) px-3 py-1.5 text-[11px] font-bold text-white shadow-sm shadow-(--color-accent)/20 transition-all active:scale-95"
               >
-                <svg className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" /></svg>
-                Request Custom Protocol
-              </button>
-            ) : (
-              <>
-                <Link href="/signup" onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-5 py-4 text-[16px] font-bold text-white shadow-lg shadow-slate-900/20 transition-all active:scale-[.98]"
-                >
-                  Create Free Account
-                </Link>
-                <Link href="/login" onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-4 text-[16px] font-bold text-slate-700 transition-all hover:bg-slate-50 active:scale-[.98]"
-                >
-                  Sign In
-                </Link>
-              </>
-            )}
-            <a href="https://example.com/download-app" target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2.5 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-[16px] font-bold text-slate-600 transition-all active:scale-[.98]"
-            >
-              <svg className="h-[18px] w-[18px] text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-              Download Mobile App
-            </a>
-          </div>
+                Sign In
+              </Link>
+            </div>
+          )}
         </div>
-      </div>
+
+        {/* ── Navigation Section ── */}
+        <div className="flex-1 overflow-y-auto overscroll-contain px-3 py-4">
+
+          {/* Section label */}
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Navigation</p>
+
+          {/* Home */}
+          <Link
+            href="/"
+            onClick={() => setMobileMenuOpen(false)}
+            className={`group mb-0.5 flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-150 ${
+              pathname === "/"
+                ? "bg-(--color-primary)/10 text-(--color-primary)"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+            }`}
+          >
+            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
+              pathname === "/" ? "bg-(--color-primary)/15 text-(--color-primary)" : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
+            }`}>
+              <svg className="h-[17px] w-[17px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            </span>
+            <span className="flex-1 text-[14px] font-semibold leading-none">Home</span>
+            {pathname === "/" && (
+              <span className="h-1.5 w-1.5 rounded-full bg-(--color-primary)" />
+            )}
+          </Link>
+
+          {links.map(({ href, label, icon }) => {
+            const active = pathname === href || pathname.startsWith(`${href}/`);
+            return (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`group mb-0.5 flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-150 ${
+                  active
+                    ? "bg-(--color-primary)/10 text-(--color-primary)"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+                }`}
+              >
+                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                  active ? "bg-(--color-primary)/15 text-(--color-primary)" : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
+                }`}>
+                  {icon}
+                </span>
+                <span className="flex-1 text-[14px] font-semibold leading-none">{label}</span>
+                {active && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-(--color-primary)" />
+                )}
+              </Link>
+            );
+          })}
+
+          {/* Divider */}
+          <div className="my-4 border-t border-slate-100" />
+
+          {/* Actions section */}
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Actions</p>
+
+          {user ? (
+            <button
+              type="button"
+              onClick={() => {
+                setRequestError("");
+                setRequestSuccess("");
+                setRequestOpen(true);
+                setMobileMenuOpen(false);
+              }}
+              className="group mb-0.5 flex w-full items-center gap-3 rounded-xl px-3 py-3 text-slate-600 transition-all duration-150 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors group-hover:bg-(--color-accent)/10 group-hover:text-(--color-accent)">
+                <svg className="h-[17px] w-[17px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" /></svg>
+              </span>
+              <span className=" text-[14px] font-semibold leading-none">Request Protocol</span>
+              <svg className="h-3.5 w-3.5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
+            </button>
+          ) : (
+            <>
+              <Link href="/signup" onClick={() => setMobileMenuOpen(false)}
+                className="group mb-0.5 flex items-center gap-3 rounded-xl px-3 py-3 text-slate-600 transition-all duration-150 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors">
+                  <svg className="h-[17px] w-[17px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                </span>
+                <span className="flex-1 text-[14px] font-semibold leading-none">Create Free Account</span>
+                <svg className="h-3.5 w-3.5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
+              </Link>
+              <Link href="/login" onClick={() => setMobileMenuOpen(false)}
+                className="group mb-0.5 flex items-center gap-3 rounded-xl px-3 py-3 text-slate-600 transition-all duration-150 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                  <svg className="h-[17px] w-[17px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
+                </span>
+                <span className="flex-1 text-[14px] font-semibold leading-none">Sign In</span>
+                <svg className="h-3.5 w-3.5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
+              </Link>
+            </>
+          )}
+
+          <a href="https://example.com/download-app" target="_blank" rel="noopener noreferrer"
+            className="group mb-0.5 flex items-center gap-3 rounded-xl px-3 py-3 text-slate-600 transition-all duration-150 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+          >
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors">
+              <svg className="h-[17px] w-[17px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            </span>
+            <span className="flex-1 text-[14px] font-semibold leading-none">Download App</span>
+            <svg className="h-3 w-3 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+          </a>
+        </div>
+
+        {/* ── Drawer Footer ── */}
+        {user && (
+          <div className="shrink-0 border-t border-slate-100 px-4 py-4">
+            <button
+              onClick={() => { clearAuth(); setMobileMenuOpen(false); }}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 active:bg-red-100"
+            >
+              <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+              Sign out of account
+            </button>
+          </div>
+        )}
+
+        {/* Thin accent bar on right edge of drawer */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-slate-200 to-transparent" />
+      </aside>
 
       {/* ══════════ REQUEST MODAL ══════════ */}
       {requestOpen && user && (

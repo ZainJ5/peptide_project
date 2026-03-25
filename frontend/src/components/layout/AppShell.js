@@ -1,17 +1,9 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export default function AppShell({ children }) {
-  const pathname = usePathname();
-  const isAuthPage = pathname === "/login" || pathname === "/signup";
-
-  if (isAuthPage) {
-    return <div className="min-h-screen bg-(--color-bg) px-4 py-8 md:px-6">{children}</div>;
-  }
-
   return (
     <div className="min-h-screen bg-(--color-bg)">
       <Navbar />

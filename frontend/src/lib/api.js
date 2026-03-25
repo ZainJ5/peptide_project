@@ -67,12 +67,29 @@ export async function apiRequest(path, { method = "GET", body, token, refreshTok
   }
 }
 
-export async function downloadSchedulePdf(scheduleId, token) {
-  const response = await fetch(`${API_BASE_URL}/pdf/schedules/${scheduleId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export async function downloadSchedulePdf(scheduleId, { token, refreshToken, onRefresh } = {}) {
+  const makeRequest = async (jwt) =>
+    fetch(`${API_BASE_URL}/pdf/schedules/${scheduleId}`, {
+      headers: {
+        ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
+      },
+    });
+
+  let response = await makeRequest(token);
+
+  if (response.status === 401 && refreshToken && typeof onRefresh === "function") {
+    const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    const refreshPayload = await refreshResponse.json();
+    if (refreshResponse.ok && refreshPayload?.token) {
+      onRefresh(refreshPayload);
+      response = await makeRequest(refreshPayload.token);
+    }
+  }
 
   if (!response.ok) {
     throw new Error("Unable to download PDF");
