@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useToast } from "@/components/ui/ToastProvider";
 import { apiRequest, downloadSchedulePdf } from "@/lib/api";
@@ -40,6 +41,7 @@ function emptySlot(position) {
 
 export default function ScheduleWizard() {
   const authState = useAuthStore();
+  const searchParams = useSearchParams();
   const { showToast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -71,6 +73,7 @@ export default function ScheduleWizard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generateStep, setGenerateStep] = useState("");
   const [result, setResult] = useState({ scheduleId: "", calendar: null, message: "" });
+  const prefillHandledRef = useRef(false);
 
   const peptideOptions = peptidesQuery.data?.data || [];
   const filledSlots = slots.filter((s) => s.peptideId).length;
@@ -89,6 +92,59 @@ export default function ScheduleWizard() {
       setVariantMap((prev) => ({ ...prev, [peptideId]: [] }));
     }
   }, [authState, variantMap]);
+
+  useEffect(() => {
+    const prefillId = searchParams.get("add");
+    if (!prefillId || prefillHandledRef.current || peptideOptions.length === 0) return;
+
+    const matchedPeptide = peptideOptions.find((item) => String(item.id) === String(prefillId));
+    if (!matchedPeptide) return;
+
+    let addStatus = "unchanged";
+    let addedPosition = null;
+
+    setSlots((prev) => {
+      if (prev.some((slot) => String(slot.peptideId) === String(matchedPeptide.id))) {
+        addStatus = "already-added";
+        return prev;
+      }
+
+      const emptyIndex = prev.findIndex((slot) => !slot.peptideId);
+      if (emptyIndex === -1) {
+        addStatus = "no-space";
+        return prev;
+      }
+
+      addStatus = "added";
+      addedPosition = emptyIndex + 1;
+      const next = [...prev];
+      next[emptyIndex] = {
+        ...next[emptyIndex],
+        peptideId: matchedPeptide.id,
+        peptideName: matchedPeptide.name,
+        peptideImage: matchedPeptide.imageUrl || null,
+        peptideMg: matchedPeptide.mgAmount || null,
+        peptideType: matchedPeptide.type || null,
+      };
+      return next;
+    });
+
+    if (addStatus === "added") {
+      loadVariants(matchedPeptide.id);
+      setEditingSlot((current) => current ?? addedPosition);
+      showToast("Peptide added to schedule.", "success");
+    } else if (addStatus === "no-space") {
+      showToast("No empty slot available to add this peptide.", "info");
+    }
+
+    prefillHandledRef.current = true;
+
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("add");
+      window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    }
+  }, [searchParams, peptideOptions, loadVariants, showToast]);
 
   const updateSlot = (position, patch) => {
     setSlots((prev) => prev.map((s) => (s.position === position ? { ...s, ...patch } : s)));

@@ -63,7 +63,7 @@ export default function CommunityPage() {
             </p>
           </div>
           {authUser ? (
-            <Button size="lg" className="shrink-0 shadow-md shadow-(--color-primary)/20" onClick={() => setIsModalOpen(true)}>
+            <Button size="lg" className="w-full justify-center md:w-auto md:justify-start shrink-0 shadow-md shadow-(--color-primary)/20" onClick={() => setIsModalOpen(true)}>
               <span className="flex items-center gap-2">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
                 Start a Discussion
@@ -77,14 +77,14 @@ export default function CommunityPage() {
         </div>
 
         {/* Action Bar (Tabs & Filters) */}
-        <div className="sticky top-16 z-30 mb-8 flex flex-col gap-4 bg-slate-50/95 py-3 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/80">
+        <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 sm:sticky sm:top-16 sm:z-30 sm:flex-row sm:items-center sm:justify-between">
           
           {/* Navigation Tabs */}
-          <nav className="mx-auto flex w-fit items-center justify-center space-x-1 rounded-xl border border-slate-200 bg-white/80 p-1 shadow-sm sm:mx-0 sm:border-0 sm:bg-slate-200/50 sm:shadow-none shrink-0">
+          <nav className="flex w-full items-center justify-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:w-auto sm:shrink-0 sm:justify-start sm:bg-white">
             <button
               onClick={() => setActiveTab("all")}
-              className={`rounded-lg px-3.5 sm:px-4 py-1.5 text-sm font-bold transition-all text-center ${
-                activeTab === "all" ? "bg-slate-900 text-white shadow-sm sm:bg-white sm:text-slate-900" : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+              className={`flex-1 rounded-lg px-3.5 py-2 text-sm font-bold transition-all text-center sm:flex-none sm:px-4 sm:py-1.5 ${
+                activeTab === "all" ? "bg-slate-900 text-white shadow-sm sm:bg-white sm:text-slate-900" : "text-slate-500 hover:text-slate-700 hover:bg-white"
               }`}
             >
               All Discussions
@@ -92,8 +92,8 @@ export default function CommunityPage() {
             {authUser && (
               <button
                 onClick={() => setActiveTab("mine")}
-                className={`rounded-lg px-3.5 sm:px-4 py-1.5 text-sm font-bold transition-all text-center ${
-                  activeTab === "mine" ? "bg-slate-900 text-white shadow-sm sm:bg-white sm:text-slate-900" : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                className={`flex-1 rounded-lg px-3.5 py-2 text-sm font-bold transition-all text-center sm:flex-none sm:px-4 sm:py-1.5 ${
+                  activeTab === "mine" ? "bg-slate-900 text-white shadow-sm sm:bg-white sm:text-slate-900" : "text-slate-500 hover:text-slate-700 hover:bg-white"
                 }`}
               >
                 My Posts
@@ -110,7 +110,7 @@ export default function CommunityPage() {
               placeholder="Search protocols, peptides, or side effects..."
               value={filters.search}
               onChange={(e) => setFilters((s) => ({ ...s, search: e.target.value }))}
-              className="w-full rounded-full border border-slate-300/60 bg-transparent py-2 pl-9 pr-4 text-sm shadow-sm transition-all focus:border-(--color-primary)/50 focus:bg-white focus:ring-4 focus:ring-(--color-primary)/10 outline-none placeholder:text-slate-500"
+              className="w-full rounded-xl border border-slate-300/60 bg-white py-2.5 pl-9 pr-4 text-sm shadow-sm transition-all focus:border-(--color-primary)/50 focus:ring-4 focus:ring-(--color-primary)/10 outline-none placeholder:text-slate-500"
             />
           </div>
         </div>
