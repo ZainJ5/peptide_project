@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
-import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useToast } from "@/components/ui/ToastProvider";
 import { apiRequest, downloadSchedulePdf } from "@/lib/api";
@@ -41,7 +40,6 @@ function emptySlot(position) {
 
 export default function ScheduleWizard() {
   const authState = useAuthStore();
-  const searchParams = useSearchParams();
   const { showToast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -94,7 +92,8 @@ export default function ScheduleWizard() {
   }, [authState, variantMap]);
 
   useEffect(() => {
-    const prefillId = searchParams.get("add");
+    if (typeof window === "undefined") return;
+    const prefillId = new URLSearchParams(window.location.search).get("add");
     if (!prefillId || prefillHandledRef.current || peptideOptions.length === 0) return;
 
     const matchedPeptide = peptideOptions.find((item) => String(item.id) === String(prefillId));
@@ -144,7 +143,7 @@ export default function ScheduleWizard() {
       url.searchParams.delete("add");
       window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
     }
-  }, [searchParams, peptideOptions, loadVariants, showToast]);
+  }, [peptideOptions, loadVariants, showToast]);
 
   const updateSlot = (position, patch) => {
     setSlots((prev) => prev.map((s) => (s.position === position ? { ...s, ...patch } : s)));
