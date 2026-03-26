@@ -12,7 +12,6 @@ import DataTable from "@/components/ui/DataTable";
 import Skeleton from "@/components/ui/Skeleton";
 import StickyNav from "@/components/library/StickyNav";
 import { usePeptideDetail } from "@/lib/hooks";
-import { toDisplayImageUrl } from "@/lib/imageUrl";
 
 const RECONSTITUTION_REFERENCE_IMAGE = "/OXYTOCIN 5MG RECONSTITUTION IMAGE.png";
 
@@ -106,79 +105,31 @@ export default function PeptideDetailPage() {
     { id: "final-prep-notes", label: "Final Prep Notes" },
   ];
 
-  const imageSrc = toDisplayImageUrl(peptide.imageUrl) || "/fallback-peptide.png";
   const primaryCategory = formatCategoryLabel(peptide.healthCategories?.[0] || "General");
 
   return (
     <PageTransition>
       <div className="pt-2 sm:pt-6 lg:pt-8">
 
-        {/* ═══ HERO SECTION ═══ */}
-        <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm">
+        <div className="mb-8 rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+          <div className="p-5 sm:p-7 lg:p-9">
+            <div className="mb-4 flex flex-wrap gap-2">
+              <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-emerald-700 ring-1 ring-inset ring-emerald-600/15">{primaryCategory}</span>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-slate-600">{peptide.type}</span>
+              {peptide.mgAmount && <span className="rounded-full bg-blue-50 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-blue-700">{peptide.mgAmount}</span>}
+            </div>
 
-          {/* Mobile: stacked layout — image on top, content below */}
-          <div className="block md:hidden">
-            {/* Image — full width, contained */}
-            <div className="relative w-full bg-gradient-to-b from-slate-100 to-slate-50">
-              {peptide.imageUrl ? (
-                <div className="flex items-center justify-center p-6 pb-4">
-                  <img src={imageSrc} alt={peptide.name} className="h-48 w-auto max-w-full object-contain drop-shadow-md" />
-                </div>
-              ) : (
-                <div className="flex h-44 items-center justify-center">
-                  <Syringe className="h-16 w-16 text-slate-300" strokeWidth={1} />
-                </div>
-              )}
-            </div>
-            {/* Content */}
-            <div className="px-5 pb-6 pt-4">
-              <div className="mb-3 flex flex-wrap gap-1.5">
-                <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-emerald-700 ring-1 ring-inset ring-emerald-600/15">{primaryCategory}</span>
-                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-slate-600">{peptide.type}</span>
-                {peptide.mgAmount && <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-blue-700">{peptide.mgAmount}</span>}
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start">
+              <div className="min-w-0">
+                <h1 className="text-3xl font-extrabold tracking-tight text-(--color-primary) lg:text-4xl xl:text-[2.6rem] xl:leading-tight">{peptide.name}</h1>
+                <p className="mt-2 text-sm font-semibold uppercase tracking-[0.15em] text-slate-500">{peptide.mgAmount || "Standard Dosage"} Protocol</p>
+                {peptide.protocolTitle && <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-500">{peptide.protocolTitle}</p>}
               </div>
-              <h1 className="text-2xl font-extrabold tracking-tight text-(--color-primary)">{peptide.name}</h1>
-              {peptide.protocolTitle && <p className="mt-2 text-sm leading-relaxed text-slate-500">{peptide.protocolTitle}</p>}
-              <div className="mt-5">
-                <Button size="lg" className="w-full shadow-lg shadow-emerald-600/15" onClick={() => router.push(`/schedule?add=${peptide.id}`)}>
-                  Add to Schedule
-                </Button>
-              </div>
-            </div>
-          </div>
 
-          {/* Desktop: side-by-side */}
-          <div className="hidden md:grid md:grid-cols-[1fr_340px] lg:grid-cols-[1fr_400px]">
-            {/* Left: content */}
-            <div className="flex flex-col justify-center p-8 lg:p-10 xl:p-12">
-              <div className="mb-4 flex flex-wrap gap-2">
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-emerald-700 ring-1 ring-inset ring-emerald-600/15">{primaryCategory}</span>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-slate-600">{peptide.type}</span>
-                {peptide.mgAmount && <span className="rounded-full bg-blue-50 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-blue-700">{peptide.mgAmount}</span>}
-              </div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-(--color-primary) lg:text-4xl xl:text-[2.75rem] xl:leading-tight">{peptide.name}</h1>
-              <p className="mt-2 text-lg font-medium text-slate-600">{peptide.mgAmount || "Standard Dosage"} Protocol</p>
-              {peptide.protocolTitle && <p className="mt-3 text-sm leading-relaxed text-slate-500 max-w-lg">{peptide.protocolTitle}</p>}
-              <div className="mt-7">
-                <Button size="lg" className="shadow-lg shadow-emerald-600/15" onClick={() => router.push(`/schedule?add=${peptide.id}`)}>
-                  Add to Schedule
-                </Button>
-              </div>
-            </div>
-            {/* Right: image */}
-            <div className="relative bg-gradient-to-br from-slate-50 to-slate-100/80">
-              {peptide.imageUrl ? (
-                <>
-                  <div className="absolute inset-0 flex items-center justify-center p-2">
-                    <img src={imageSrc} alt={peptide.name} className="h-full w-full object-contain drop-shadow-sm" />
-                  </div>
-                  <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-                </>
-              ) : (
-                <div className="flex h-full min-h-[280px] items-center justify-center">
-                  <Syringe className="h-20 w-20 text-slate-300" strokeWidth={0.8} />
-                </div>
-              )}
+              {/* <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 lg:self-start">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Actions</p>
+                <p className="mt-1 text-xs text-slate-500">Use the floating action button to add this protocol to your schedule.</p>
+              </div> */}
             </div>
           </div>
         </div>
@@ -397,6 +348,16 @@ export default function PeptideDetailPage() {
 
           </section>
         </div>
+      </div>
+
+      <div className="fixed bottom-5 right-5 z-40">
+        <Button
+          size="lg"
+          className="shadow-xl shadow-emerald-600/25"
+          onClick={() => router.push(`/schedule?add=${peptide.id}`)}
+        >
+          Add to Schedule
+        </Button>
       </div>
     </PageTransition>
   );

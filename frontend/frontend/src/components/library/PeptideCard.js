@@ -37,7 +37,7 @@ export default function PeptideCard({ peptide, view = "grid" }) {
       <div className="flex flex-1 flex-col p-4 sm:p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-(--color-primary) transition-colors leading-snug wrap-break-word sm:line-clamp-1">{peptide.name}</h3>
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-(--color-primary) transition-colors leading-snug wrap-break-word line-clamp-2 sm:line-clamp-1">{peptide.name}</h3>
             <p className="mt-1 text-sm font-medium text-slate-500">{peptide.mgAmount || "Varies"}</p>
           </div>
           <span className={`shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold capitalize tracking-tight text-emerald-700 ring-1 ring-inset ring-emerald-600/20 ${isGeneralCategory ? "hidden sm:inline-flex" : "inline-flex"}`}>
@@ -50,8 +50,8 @@ export default function PeptideCard({ peptide, view = "grid" }) {
         </p>
         
         <div className=" flex items-center justify-between border-t border-slate-100 pt-2 sm:pt-2">
-          <Link href={`/library/${peptide.id}`} className="w-full">
-            <Button variant="secondary" className="w-full font-bold bg-slate-50 hover:bg-slate-200 hover:text-slate-900 transition-colors text-sm">
+              <Link href={`/library/${peptide.id}`} className="flex w-full md:w-auto">
+                <Button variant="secondary" className="w-full bg-slate-50 px-4 py-2 text-xs font-bold transition-colors hover:bg-slate-200 hover:text-slate-900 sm:text-sm md:w-auto">
               <span className="sm:hidden">View Details</span>
               <span className="hidden sm:inline">View Protocol Details</span>
             </Button>
