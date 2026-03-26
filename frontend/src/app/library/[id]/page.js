@@ -182,8 +182,8 @@ export default function PeptideDetailPage() {
                 }
               >
                 {hasReconstitutionImage && (
-                  <div className="bg-gradient-to-b from-slate-900 to-slate-800 px-5 sm:px-8 py-6 sm:py-8">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4 text-center">Reconstitution Method</p>
+                  <div className="bg-gradient-to-b from-slate-900 to-slate-800 px-3 sm:px-4 py-2 sm:py-4">
+                    {/* <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4 text-center">Reconstitution Method</p> */}
                     <img
                       src={RECONSTITUTION_REFERENCE_IMAGE}
                       alt="Reconstitution method reference"

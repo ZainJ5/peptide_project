@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 const slides = [
   { src: "/header/header-1.png", alt: "Precision Peptide Intelligence" },
-  { src: "/header/header-2.jpeg", alt: "Advanced Protocol Management" },
+  { src: "/header/header-2.png", alt: "Advanced Protocol Management" },
   { src: "/header/header-3.png", alt: "Clinical-Grade Dosage Planning" },
 ];
 
