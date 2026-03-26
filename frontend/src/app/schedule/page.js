@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Syringe } from "lucide-react";
 import PageTransition from "@/components/shared/PageTransition";
 import ScheduleWizard from "@/components/schedule/ScheduleWizard";
 import { useSchedules } from "@/lib/hooks";
@@ -134,7 +135,7 @@ function SavedSchedules({ schedules, loading, token, refreshToken, setAuth, onNe
                     {schedule.durationWeeks} weeks
                   </span>
                   <span className="flex items-center gap-1">
-                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0" /></svg>
+                    <Syringe className="h-3.5 w-3.5" strokeWidth={2} />
                     {schedule.items?.length || 0} peptides
                   </span>
                 </div>

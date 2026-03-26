@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Syringe } from "lucide-react";
 import { useToast } from "@/components/ui/ToastProvider";
 import { apiRequest, downloadSchedulePdf } from "@/lib/api";
 import { usePeptides, useScheduleBuilderMutations } from "@/lib/hooks";
@@ -370,9 +371,7 @@ export default function ScheduleWizard() {
                   {imgSrc ? (
                     <img src={imgSrc} alt="" className="h-full w-full object-contain" />
                   ) : (
-                    <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0" />
-                    </svg>
+                    <Syringe className="h-5 w-5 text-slate-400" strokeWidth={1.5} />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -418,9 +417,7 @@ export default function ScheduleWizard() {
         {filledSlots === 0 && (
           <div className="flex flex-col items-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/30 py-12 px-6 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 mb-4">
-              <svg className="h-7 w-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082" />
-              </svg>
+              <Syringe className="h-7 w-7 text-slate-400" strokeWidth={1.5} />
             </div>
             <p className="text-sm font-semibold text-slate-700">No peptides added yet</p>
             <p className="mt-1 text-xs text-slate-500">Click &quot;Add Peptides&quot; to browse and select from the library</p>
@@ -568,9 +565,7 @@ export default function ScheduleWizard() {
                             {imgSrc ? (
                               <img src={imgSrc} alt="" className="h-full w-full object-contain" loading="lazy" />
                             ) : (
-                              <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0" />
-                              </svg>
+                                <Syringe className="h-5 w-5 text-slate-400" strokeWidth={1.5} />
                             )}
                           </div>
 
@@ -624,7 +619,7 @@ function SlotEditor({ slot, variants, onUpdate }) {
       {variants.length > 0 && (
         <div>
           <label className="flex items-center gap-2 mb-3 text-xs font-bold text-slate-600 uppercase tracking-wider">
-            <svg className="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5" /></svg>
+              <Syringe className="h-3.5 w-3.5 text-emerald-600" strokeWidth={2} />
             Dosing Protocol
           </label>
           <div className="space-y-1.5">
