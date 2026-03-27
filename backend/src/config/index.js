@@ -51,9 +51,12 @@ const config = {
   },
 
   email: {
-    resendApiKey: optional('RESEND_API_KEY'),
-    from: optional('EMAIL_FROM', 'PeptideDosage <onboarding@resend.dev>'),
-    adminTo: optional('ADMIN_EMAIL'),
+    smtpHost: optional('SMTP_HOST', 'smtp.office365.com'),
+    smtpPort: parseInt(optional('SMTP_PORT', '587'), 10),
+    smtpUser: optional('SMTP_USER', 'info@mypeptidesdosages.com'),
+    smtpPass: optional('SMTP_PASS', 'Holice1008!'),
+    from: optional('EMAIL_FROM', 'PeptideDosage <info@mypeptidesdosages.com>'),
+    adminTo: optional('ADMIN_EMAIL', 'info@mypeptidesdosages.com'),
   },
 
   clientUrl: isProd ? required('CLIENT_URL') : optional('CLIENT_URL', ''),

@@ -1,11 +1,23 @@
 'use strict';
 
+const nodemailer = require('nodemailer');
 const config = require('../config');
 const logger = require('../utils/logger');
 
+// Configure GoDaddy/Office 365 SMTP transport
+const transporter = nodemailer.createTransport({
+  host: config.email.smtpHost,
+  port: config.email.smtpPort,
+  secure: config.email.smtpPort === 465, // true for 465, false for other ports
+  requireTLS: true,
+  auth: {
+    user: config.email.smtpUser,
+    pass: config.email.smtpPass,
+  },
+});
+
 /**
- * Send an email via the Resend HTTP API.
- * No SDK needed — just a single fetch() call.
+ * Send an email via Nodemailer using GoDaddy/Office 365 SMTP.
  *
  * @param {object} opts
  * @param {string} opts.to       Recipient email
@@ -13,45 +25,27 @@ const logger = require('../utils/logger');
  * @param {string} opts.html     HTML body
  * @param {string} [opts.text]   Plain-text fallback
  * @param {string} [opts.replyTo] Reply-to address
- * @returns {Promise<object>}    Resend API response
+ * @returns {Promise<object>}    Nodemailer message info
  */
 async function sendEmail({ to, subject, html, text, replyTo }) {
-  const apiKey = config.email.resendApiKey;
+  try {
+    const mailOptions = {
+      from: config.email.from,
+      to: Array.isArray(to) ? to.join(', ') : to,
+      subject,
+      html,
+    };
+    
+    if (text) mailOptions.text = text;
+    if (replyTo) mailOptions.replyTo = replyTo;
 
-  if (!apiKey) {
-    logger.warn('Email: Resend API key not configured. Emails will be logged to console only.');
-    logger.info('DEV EMAIL (not sent):', { to, subject, text: text ?? html });
-    return { id: 'dev-noop' };
+    const info = await transporter.sendMail(mailOptions);
+    logger.info('Email sent via SMTP (GoDaddy/Office365)', { messageId: info.messageId, to, subject });
+    return info;
+  } catch (error) {
+    logger.error('SMTP email sending error', { error: error.message, to, subject });
+    throw new Error(`Email sending error: ${error.message}`);
   }
-
-  const body = {
-    from: config.email.from,
-    to: Array.isArray(to) ? to : [to],
-    subject,
-    html,
-  };
-  if (text) body.text = text;
-  if (replyTo) body.reply_to = replyTo;
-
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    const errMsg = data?.message || data?.error || JSON.stringify(data);
-    logger.error('Resend API error', { status: response.status, error: errMsg, to, subject });
-    throw new Error(`Resend API error (${response.status}): ${errMsg}`);
-  }
-
-  logger.info('Email sent via Resend', { id: data.id, to, subject });
-  return data;
 }
 
 /**
