@@ -31,7 +31,7 @@ export default function PeptideCard({ peptide, view = "grid" }) {
             <h3 className="text-sm sm:text-base font-bold leading-snug text-slate-900 transition-colors group-hover:text-(--color-primary) line-clamp-2 sm:line-clamp-1">
               {peptide.name}
             </h3>
-            <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400 sm:text-xs">
+            <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 sm:text-xs">
               Clinical Protocol
             </p>
             <p className="mt-1.5 text-xs leading-relaxed text-slate-600 line-clamp-2 sm:mt-2 sm:text-sm">

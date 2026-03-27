@@ -540,7 +540,6 @@ export default function ScheduleWizard() {
                     {peptideOptions.map((peptide) => {
                       const alreadyInSchedule = isPeptideUsedInSlots(peptide.id);
                       const isSelected = pickerSelections.some((p) => p.id === peptide.id);
-                      const imgSrc = toDisplayImageUrl(peptide.imageUrl);
                       const disabled = alreadyInSchedule;
                       const primaryCat = peptide.healthCategories?.[0];
 
@@ -559,14 +558,6 @@ export default function ScheduleWizard() {
                           }`}>
                             {isSelected && <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
                             {disabled && <svg className="h-3 w-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
-                          </div>
-
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 border border-slate-200/50 overflow-hidden">
-                            {imgSrc ? (
-                              <img src={imgSrc} alt="" className="h-full w-full object-contain" loading="lazy" />
-                            ) : (
-                                <Syringe className="h-5 w-5 text-slate-400" strokeWidth={1.5} />
-                            )}
                           </div>
 
                           <div className="min-w-0 flex-1">
