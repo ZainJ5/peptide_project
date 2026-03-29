@@ -1,23 +1,10 @@
 'use strict';
 
-const nodemailer = require('nodemailer');
 const config = require('../config');
 const logger = require('../utils/logger');
 
-// Configure GoDaddy/Office 365 SMTP transport
-const transporter = nodemailer.createTransport({
-  host: config.email.smtpHost,
-  port: config.email.smtpPort,
-  secure: config.email.smtpPort === 465, // true for 465, false for other ports
-  requireTLS: true,
-  auth: {
-    user: config.email.smtpUser,
-    pass: config.email.smtpPass,
-  },
-});
-
 /**
- * Send an email via Nodemailer using GoDaddy/Office 365 SMTP.
+ * Send an email via the Resend HTTP API.
  *
  * @param {object} opts
  * @param {string} opts.to       Recipient email
@@ -25,26 +12,55 @@ const transporter = nodemailer.createTransport({
  * @param {string} opts.html     HTML body
  * @param {string} [opts.text]   Plain-text fallback
  * @param {string} [opts.replyTo] Reply-to address
- * @returns {Promise<object>}    Nodemailer message info
+ * @returns {Promise<object>}    Resend API response
  */
 async function sendEmail({ to, subject, html, text, replyTo }) {
+  const apiKey = config.email.resendApiKey;
+
+  if (!apiKey) {
+    const err = new Error('Email service is not configured. Please contact support.');
+    err.statusCode = 503;
+    throw err;
+  }
+
   try {
-    const mailOptions = {
+    const body = {
       from: config.email.from,
-      to: Array.isArray(to) ? to.join(', ') : to,
+      to: Array.isArray(to) ? to : [to],
       subject,
       html,
     };
-    
-    if (text) mailOptions.text = text;
-    if (replyTo) mailOptions.replyTo = replyTo;
 
-    const info = await transporter.sendMail(mailOptions);
-    logger.info('Email sent via SMTP (GoDaddy/Office365)', { messageId: info.messageId, to, subject });
-    return info;
+    if (text) body.text = text;
+    if (replyTo) body.reply_to = replyTo;
+
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errMsg = data?.message || data?.error || JSON.stringify(data);
+      logger.error('Resend API error', { status: response.status, error: errMsg, to, subject });
+      const err = new Error('Email service is temporarily unavailable. Please try again shortly.');
+      err.statusCode = 503;
+      throw err;
+    }
+
+    logger.info('Email sent via Resend', { id: data.id, to, subject });
+    return data;
   } catch (error) {
-    logger.error('SMTP email sending error', { error: error.message, to, subject });
-    throw new Error(`Email sending error: ${error.message}`);
+    if (error?.statusCode) throw error;
+    logger.error('Resend transport error', { error: error.message, to, subject });
+    const transportErr = new Error('Email service is temporarily unavailable. Please try again shortly.');
+    transportErr.statusCode = 503;
+    throw transportErr;
   }
 }
 

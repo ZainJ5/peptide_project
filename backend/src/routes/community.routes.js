@@ -37,8 +37,6 @@ router.post('/request-peptide', authenticate, [
   validate,
 ], requestPeptide);
 
-router.get('/:id', optionalAuth, [param('id').isUUID(), validate], getPostById);
-
 router.post('/', authenticate, [
   body('peptideId').isUUID().withMessage('Valid peptideId required'),
   body('title').trim().isLength({ min: 5, max: 300 }).withMessage('Title: 5–300 characters'),
@@ -62,6 +60,8 @@ router.patch('/:id', authenticate, [
   body('sideEffectsTags').optional().isArray(),
   validate,
 ], updatePost);
+
+router.get('/:id', optionalAuth, [param('id').isUUID(), validate], getPostById);
 
 router.delete('/:id', authenticate, [param('id').isUUID(), validate], deletePost);
 router.post('/:id/upvote', authenticate, [param('id').isUUID(), validate], upvotePost);
