@@ -10,6 +10,17 @@ export default function CommunityPostCard({ post, onUpvote, onDelete, isUpvoting
   const authUser = useAuthStore((state) => state.user);
   const isOwner = authUser && authUser.id === post.author?.id;
 
+  const authorDisplayName = useMemo(() => {
+    const first = String(post.author?.firstName || "").trim();
+    const last = String(post.author?.lastName || "").trim();
+
+    if (!first && !last) return "User";
+    if (!first) return `${last.charAt(0).toUpperCase()}.`;
+    if (!last) return first;
+
+    return `${first} ${last.charAt(0).toUpperCase()}.`;
+  }, [post.author?.firstName, post.author?.lastName]);
+
   const timeAgo = useMemo(() => {
     try {
       return formatDistanceToNow(new Date(post.createdAt), { addSuffix: true });
@@ -35,7 +46,7 @@ export default function CommunityPostCard({ post, onUpvote, onDelete, isUpvoting
           <div>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-slate-900">
-                {post.author?.firstName} {post.author?.lastName || ""}
+                {authorDisplayName}
               </span>
               {post.author?.role === "admin" && (
                 <span className="rounded bg-slate-900 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">Admin</span>

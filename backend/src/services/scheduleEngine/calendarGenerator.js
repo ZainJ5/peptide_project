@@ -44,7 +44,7 @@ const DAY_NAMES = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
  */
 function generateEventsForItem({ scheduleItem, scheduleId, startDate, durationWeeks }) {
   const peptide  = scheduleItem.peptide;
-  const freqRaw  = (scheduleItem.isOverridden && scheduleItem.overrideFrequency)
+  const freqRaw  = scheduleItem.overrideFrequency
     ? String(scheduleItem.overrideFrequency).replace(/[_-]+/g, ' ')
     : (peptide.injectionFrequencyRaw || '');
   const cycleRaw = peptide.cycleDurationRaw      || '';
@@ -55,7 +55,7 @@ function generateEventsForItem({ scheduleItem, scheduleId, startDate, durationWe
   // ─── Resolve active days of week ────────────────────────────────────────
   let activeDayIndices;
 
-  if (scheduleItem.isOverridden && scheduleItem.overrideDaysOfWeek?.length > 0) {
+  if (scheduleItem.overrideDaysOfWeek?.length > 0) {
     activeDayIndices = scheduleItem.overrideDaysOfWeek
       .map((d) => DAY_NAMES.indexOf(d.toUpperCase()))
       .filter((i) => i !== -1)
@@ -81,9 +81,7 @@ function generateEventsForItem({ scheduleItem, scheduleId, startDate, durationWe
     ? durationWeeks
     : Math.min(cycle.activeWeeks || 8, durationWeeks);
 
-  const restWeeks = scheduleItem.isOverridden
-    ? (scheduleItem.overrideRestWeeks ?? 0)
-    : (cycle.restWeeks ?? 0);
+  const restWeeks = scheduleItem.overrideRestWeeks ?? (cycle.restWeeks ?? 0);
 
   const totalCycleWeeks = activeWeeks + restWeeks;
 
@@ -92,7 +90,7 @@ function generateEventsForItem({ scheduleItem, scheduleId, startDate, durationWe
   const flatDoseUnits   = useOverrideDose ? scheduleItem.overrideDoseUnits : null;
 
   // ─── Time of day ────────────────────────────────────────────────────────
-  const timeOfDay = (scheduleItem.isOverridden && scheduleItem.overrideTimeOfDay)
+  const timeOfDay = scheduleItem.overrideTimeOfDay
     ? scheduleItem.overrideTimeOfDay
     : 'AM';
 
@@ -150,7 +148,10 @@ function generateEventsForItem({ scheduleItem, scheduleId, startDate, durationWe
 
     const doseLabel = useOverrideDose
       ? `${flatDoseUnits} units (override)`
-      : (escalationEntry?.label ?? '');
+      : _formatDoseLabel({
+          doseUnits,
+          rawLabel: escalationEntry?.label,
+        });
 
     const escalationStep = useOverrideDose
       ? null
@@ -246,6 +247,21 @@ function _resolveInjectionTimes(timeOfDay, timesPerDay) {
   if (timesPerDay === 2)     return ['AM', 'PM'];
   if (timeOfDay === 'BOTH')  return ['AM', 'PM'];
   return [timeOfDay || 'AM'];
+}
+
+function _formatDoseLabel({ doseUnits, rawLabel }) {
+  const hasUnits = doseUnits != null && Number.isFinite(Number(doseUnits));
+  const cleanRaw = String(rawLabel || '').trim();
+
+  if (hasUnits) {
+    const unitsText = `${Number(doseUnits)} units`;
+    if (!cleanRaw) return unitsText;
+
+    const rawHasUnits = /\bunits?\b/i.test(cleanRaw);
+    return rawHasUnits ? cleanRaw : `${unitsText} (${cleanRaw})`;
+  }
+
+  return cleanRaw;
 }
 
 module.exports = { generateSchedule, generateEventsForItem, groupEventsByMonth };

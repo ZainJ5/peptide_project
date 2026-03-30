@@ -27,7 +27,22 @@ const logger = require('../utils/logger');
 
 let Peptide, DosingStep;
 
-const MASTER_PATH = path.resolve(__dirname, '../../..', 'peptide dosage master.xlsx');
+const DATA_DIR = path.resolve(__dirname, '../../data');
+const MASTER_PATH_CANDIDATES = [
+  path.join(DATA_DIR, 'peptide_dosage_master_updated_1_replaced.xlsx'),
+  path.join(DATA_DIR, 'peptide dosage master.xlsx'),
+  path.resolve(__dirname, '../../..', 'peptide dosage master.xlsx'),
+];
+const HEALTH_OBJECTIVE_PATH = path.join(DATA_DIR, 'Peptide by health objective.xlsx');
+
+function resolveExistingPath(candidates) {
+  for (const candidate of candidates) {
+    if (require('fs').existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+const MASTER_PATH = resolveExistingPath(MASTER_PATH_CANDIDATES);
 
 async function main() {
   try {
@@ -44,13 +59,21 @@ async function main() {
     await sequelize.sync({ alter: true });
     logger.info('Tables synced.');
 
+    if (!MASTER_PATH) {
+      throw new Error(`Master workbook not found. Checked: ${MASTER_PATH_CANDIDATES.join(', ')}`);
+    }
+
     logger.info(`Reading Excel: ${MASTER_PATH}`);
 
     // ExcelJS reads the workbook asynchronously — no CVEs, actively maintained.
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(MASTER_PATH);
 
-    await seedPeptides(workbook);
+    const healthObjectiveMap = await loadHealthObjectiveMap();
+
+    await resetPeptideData();
+
+    await seedPeptides(workbook, healthObjectiveMap);
     await enrichSourceUrls(workbook);
     await seedDosingSteps(workbook);
 
@@ -60,6 +83,66 @@ async function main() {
     logger.error('Seed failed', { message: err.message, stack: err.stack });
     process.exit(1);
   }
+}
+
+async function resetPeptideData() {
+  await sequelize.query('TRUNCATE TABLE peptides RESTART IDENTITY CASCADE;');
+  logger.info('Existing peptide-related data truncated (peptides + dependent rows).');
+}
+
+async function loadHealthObjectiveMap() {
+  const fs = require('fs');
+  if (!fs.existsSync(HEALTH_OBJECTIVE_PATH)) {
+    logger.warn(`Health objective workbook not found: ${HEALTH_OBJECTIVE_PATH}`);
+    return {};
+  }
+
+  logger.info(`Reading health objective map: ${HEALTH_OBJECTIVE_PATH}`);
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(HEALTH_OBJECTIVE_PATH);
+
+  const ws = workbook.getWorksheet('Peptide Protocols') || workbook.worksheets[0];
+  if (!ws) {
+    logger.warn('No worksheet found in health objective workbook.');
+    return {};
+  }
+
+  const peptideToCategories = {};
+
+  ws.eachRow((row) => {
+    const rawCells = row.values
+      .slice(1)
+      .map((v) => extractCellValue(v))
+      .map((v) => String(v || '').trim())
+      .filter(Boolean);
+
+    if (rawCells.length < 2) return;
+
+    const category = normalizeHealthCategory(rawCells[0]);
+    if (!category) return;
+
+    for (const peptideName of rawCells.slice(1)) {
+      const key = makeMatchKey(peptideName);
+      if (!key) continue;
+      if (!peptideToCategories[key]) peptideToCategories[key] = new Set();
+      peptideToCategories[key].add(category);
+    }
+  });
+
+  const flattened = Object.fromEntries(
+    Object.entries(peptideToCategories).map(([key, set]) => [key, Array.from(set)])
+  );
+
+  logger.info(`Health objective map loaded for ${Object.keys(flattened).length} peptides.`);
+  return flattened;
+}
+
+function normalizeHealthCategory(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 // Helpers: ExcelJS sheet → array of row objects
@@ -91,15 +174,7 @@ function worksheetToJson(worksheet) {
     headers.forEach((header, i) => {
       if (!header) return;
       const cell = values[i];
-      // Normalize: extract text from rich-text / hyperlink cells
-      if (cell && typeof cell === 'object') {
-        if (cell.text !== undefined)  obj[header] = cell.text;       // RichText
-        else if (cell.hyperlink)      obj[header] = cell.hyperlink;  // Hyperlink
-        else if (cell instanceof Date) obj[header] = cell;
-        else                          obj[header] = String(cell);
-      } else {
-        obj[header] = cell != null ? cell : '';
-      }
+      obj[header] = extractCellValue(cell);
     });
 
     rows.push(obj);
@@ -108,9 +183,19 @@ function worksheetToJson(worksheet) {
   return rows;
 }
 
+function extractCellValue(cell) {
+  if (cell && typeof cell === 'object') {
+    if (cell.text !== undefined) return cell.text;       // RichText
+    if (cell.hyperlink) return cell.hyperlink;           // Hyperlink
+    if (cell instanceof Date) return cell;
+    return String(cell);
+  }
+  return cell != null ? cell : '';
+}
+
 // Seed functions
 
-async function seedPeptides(workbook) {
+async function seedPeptides(workbook, healthObjectiveMap = {}) {
   const sheetsToSeed = [
     { name: 'Single Peptides', type: 'single' },
     { name: 'Peptide Blends',  type: 'blend'  },
@@ -140,6 +225,7 @@ async function seedPeptides(workbook) {
 
       const reconRaw = String(row['Reconstitution (BAC water amount)'] || '').trim();
       const reconMl  = parseFloat(reconRaw) || null;
+      const healthCategories = getHealthCategoriesForPeptide(protocolTitle, baseName, healthObjectiveMap);
 
       const peptideData = {
         name:                  baseName,
@@ -154,7 +240,7 @@ async function seedPeptides(workbook) {
         injectionFrequencyRaw: String(row['Injection frequency (from protocol)'] || '').trim() || null,
         cycleDurationRaw:      String(row['Cycle / protocol duration (from protocol)'] || '').trim() || null,
         preparationNotes:      String(row['Preparation Notes (typical reconstitution)'] || '').trim() || null,
-        healthCategories:      [],
+        healthCategories,
         isActive:              true,
       };
 
@@ -168,6 +254,22 @@ async function seedPeptides(workbook) {
   }
 
   logger.info(`Peptides — created: ${totalCreated}, updated: ${totalUpdated}`);
+}
+
+function getHealthCategoriesForPeptide(protocolTitle, baseName, healthObjectiveMap) {
+  const keys = [
+    makeMatchKey(protocolTitle),
+    makeMatchKey(baseName),
+    makeMatchKey(String(baseName).replace(/\s*\([^)]*\)/g, '').trim()),
+  ].filter(Boolean);
+
+  const categories = new Set();
+  for (const key of keys) {
+    for (const category of healthObjectiveMap[key] || []) {
+      categories.add(category);
+    }
+  }
+  return Array.from(categories);
 }
 
 async function enrichSourceUrls(workbook) {

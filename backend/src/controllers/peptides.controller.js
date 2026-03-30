@@ -8,6 +8,22 @@ const { sequelize } = require('../config/database');
 const scheduleEngine = require('../services/scheduleEngine');
 const { createError } = require('../middleware/errorHandler');
 
+function normalizeLooseSearch(value) {
+  return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+function buildLooseSearchClause(search) {
+  const normalized = normalizeLooseSearch(search);
+  if (!normalized) return null;
+
+  const likeValue = sequelize.escape(`%${normalized}%`);
+  return sequelize.literal(`(
+    regexp_replace(lower(name), '[^a-z0-9]+', '', 'g') LIKE ${likeValue}
+    OR regexp_replace(lower(protocol_title), '[^a-z0-9]+', '', 'g') LIKE ${likeValue}
+    OR regexp_replace(lower(coalesce(mg_amount, '')), '[^a-z0-9]+', '', 'g') LIKE ${likeValue}
+  )`);
+}
+
 /**
  * Attach an absolute imageUrl to a peptide JSON object.
  * Converts the stored relative path (e.g. "/images/singles/file.webp")
@@ -30,7 +46,12 @@ async function listPeptides(req, res, next) {
 
     const where = { isActive: true };
     if (type) where.type = type;
-    if (search) where.name = { [Op.iLike]: `%${search}%` };
+    if (search) {
+      where[Op.and] = [
+        ...(where[Op.and] || []),
+        buildLooseSearchClause(search),
+      ].filter(Boolean);
+    }
     if (category) where.healthCategories = { [Op.contains]: [category.toLowerCase()] };
 
     const { count, rows } = await Peptide.findAndCountAll({
@@ -74,8 +95,12 @@ async function listCategories(req, res, next) {
 
 async function findByName(req, res, next) {
   try {
+    const looseSearch = buildLooseSearchClause(req.params.name);
     const peptides = await Peptide.findAll({
-      where: { isActive: true, name: { [Op.iLike]: `%${req.params.name}%` } },
+      where: {
+        isActive: true,
+        ...(looseSearch ? { [Op.and]: [looseSearch] } : {}),
+      },
       order: [['name', 'ASC']],
       limit: 20,
     });

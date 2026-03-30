@@ -5,8 +5,11 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 const slides = [
   { src: "/header/header-1.png", alt: "Precision Peptide Intelligence" },
-  { src: "/header/header-2.png", alt: "Advanced Protocol Management" },
-  { src: "/header/header-3.png", alt: "Clinical-Grade Dosage Planning" },
+  // { src: "/header/header-2.png", alt: "Advanced Protocol Management" },
+  // { src: "/header/header-3.png", alt: "Clinical-Grade Dosage Planning" },
+  { src: "/header/header-4.png", alt: "How-to peptide videos" },
+  { src: "/header/header-5.png", alt: "Search popular peptides" },
+  { src: "/header/header-6.png", alt: "Search popular peptides" },
 ];
 
 export default function HeroCarousel() {

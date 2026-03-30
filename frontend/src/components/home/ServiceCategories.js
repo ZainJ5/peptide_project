@@ -63,8 +63,8 @@ export default function ServiceCategories() {
     <section className="mx-auto max-w-7xl px-0 sm:px-6 w-full">
       <div className="mb-10 px-4 sm:px-0">
         <h2 className="text-sm font-bold tracking-widest uppercase text-emerald-600">Explore Categories</h2>
-        <h3 className="mt-2 text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">Find Your Protocol</h3>
-        <p className="mt-3 text-base text-slate-500 max-w-lg">Browse peptide protocols organized by health objective. Each category contains research-backed dosing schedules.</p>
+        <h3 className="mt-2 text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">Search by Health Objectives</h3>
+        <p className="mt-3 text-base text-slate-500 max-w-lg">Browse the most popular peptide protocols for your specific health objective. Each category contains research-backed dosing schedules</p>
       </div>
 
       {/* ↓ Only change: grid-cols-2 (was grid-cols-1) for the base/mobile breakpoint */}

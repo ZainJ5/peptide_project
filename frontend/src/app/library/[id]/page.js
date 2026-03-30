@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
@@ -13,7 +13,8 @@ import Skeleton from "@/components/ui/Skeleton";
 import StickyNav from "@/components/library/StickyNav";
 import { usePeptideDetail } from "@/lib/hooks";
 
-const RECONSTITUTION_REFERENCE_IMAGE = "/OXYTOCIN 5MG RECONSTITUTION IMAGE.png";
+const RECONSTITUTION_REFERENCE_IMAGE = "/oxytocin-5mg-reconstitution-image.png";
+const LEGACY_RECONSTITUTION_REFERENCE_IMAGE = "/OXYTOCIN 5MG RECONSTITUTION IMAGE.png";
 
 function asCleanText(value) {
   if (value === null || value === undefined) return "";
@@ -61,6 +62,11 @@ export default function PeptideDetailPage() {
     [peptide?.reconstitutionRaw, peptide?.reconstitutionMl]
   );
   const hasReconstitutionImage = Boolean(peptide?.reconstitutionRaw || peptide?.preparationNotes);
+  const [reconstitutionImageSrc, setReconstitutionImageSrc] = useState(RECONSTITUTION_REFERENCE_IMAGE);
+
+  useEffect(() => {
+    setReconstitutionImageSrc(RECONSTITUTION_REFERENCE_IMAGE);
+  }, [params.id]);
 
   const columns = useMemo(
     () => [
@@ -105,8 +111,6 @@ export default function PeptideDetailPage() {
     { id: "final-prep-notes", label: "Final Prep Notes" },
   ];
 
-  const primaryCategory = formatCategoryLabel(peptide.healthCategories?.[0] || "General");
-
   return (
     <PageTransition>
       <div className="pt-2 sm:pt-6 lg:pt-8">
@@ -114,7 +118,6 @@ export default function PeptideDetailPage() {
         <div className="mb-8 rounded-2xl border border-slate-200/80 bg-white shadow-sm">
           <div className="p-5 sm:p-7 lg:p-9">
             <div className="mb-4 flex flex-wrap gap-2">
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-emerald-700 ring-1 ring-inset ring-emerald-600/15">{primaryCategory}</span>
               <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-slate-600">{peptide.type}</span>
               {peptide.mgAmount && <span className="rounded-full bg-blue-50 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-blue-700">{peptide.mgAmount}</span>}
             </div>
@@ -185,9 +188,14 @@ export default function PeptideDetailPage() {
                   <div className="bg-gradient-to-b from-slate-900 to-slate-800 px-3 sm:px-4 py-2 sm:py-4">
                     {/* <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4 text-center">Reconstitution Method</p> */}
                     <img
-                      src={RECONSTITUTION_REFERENCE_IMAGE}
+                      src={reconstitutionImageSrc}
                       alt="Reconstitution method reference"
                       className="mx-auto w-full max-w-md rounded-xl object-contain shadow-lg"
+                      onError={() => {
+                        if (reconstitutionImageSrc !== LEGACY_RECONSTITUTION_REFERENCE_IMAGE) {
+                          setReconstitutionImageSrc(LEGACY_RECONSTITUTION_REFERENCE_IMAGE);
+                        }
+                      }}
                     />
                   </div>
                 )}

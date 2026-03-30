@@ -162,10 +162,10 @@ async function addScheduleItem(req, res, next) {
         position,
         selectedScheduleName: selectedScheduleName || null,
         isOverridden: isOverridden || false,
-        overrideTimeOfDay: isOverridden ? overrideTimeOfDay || null : null,
-        overrideDaysOfWeek: isOverridden ? overrideDaysOfWeek || null : null,
+        overrideTimeOfDay: overrideTimeOfDay || null,
+        overrideDaysOfWeek: overrideDaysOfWeek || null,
         overrideDoseUnits: isOverridden ? (overrideDoseUnits ?? null) : null,
-        overrideFrequency: isOverridden ? overrideFrequency || null : null,
+        overrideFrequency: overrideFrequency || null,
         overrideRestWeeks: overrideRestWeeks ?? null,
       }, { transaction });
 

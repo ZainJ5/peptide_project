@@ -4,8 +4,6 @@ import Button from "@/components/ui/Button";
 
 export default function PeptideCard({ peptide, view = "grid" }) {
   const isList = view === "list";
-  const primaryCategory = peptide.healthCategories?.[0] || "General";
-  const isGeneralCategory = String(primaryCategory).toLowerCase() === "general";
   const summaryText = peptide.protocolTitle || peptide.howItWorks || "Comprehensive clinical protocol data unavailable.";
 
   if (isList) {
@@ -17,9 +15,6 @@ export default function PeptideCard({ peptide, view = "grid" }) {
             <div className="mb-1.5 flex flex-wrap items-center gap-1.5 sm:mb-2">
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-700">
                 {peptide.type}
-              </span>
-              <span className={`rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-700 ring-1 ring-inset ring-emerald-600/20 ${isGeneralCategory ? "hidden sm:inline-flex" : "inline-flex"}`}>
-                {primaryCategory}
               </span>
               {peptide.mgAmount && (
                 <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-blue-700">
@@ -58,9 +53,6 @@ export default function PeptideCard({ peptide, view = "grid" }) {
         <div className="mb-2 flex flex-wrap items-center gap-1 sm:mb-3 sm:gap-2">
           <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-slate-700 sm:px-2.5 sm:py-1 sm:text-[10px] sm:tracking-[0.14em]">
             {peptide.type}
-          </span>
-          <span className={`rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-emerald-700 ring-1 ring-inset ring-emerald-600/20 sm:px-2.5 sm:py-1 sm:text-[10px] sm:tracking-[0.14em] ${isGeneralCategory ? "hidden sm:inline-flex" : "inline-flex"}`}>
-            {primaryCategory}
           </span>
           {peptide.mgAmount && (
             <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-blue-700 sm:px-2.5 sm:py-1 sm:text-[10px] sm:tracking-[0.14em]">

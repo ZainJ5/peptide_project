@@ -63,6 +63,7 @@ export default function ScheduleWizard() {
   // Editing & picking state
   const [editingSlot, setEditingSlot] = useState(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [authPromptOpen, setAuthPromptOpen] = useState(false);
   const [pickerSelections, setPickerSelections] = useState([]);
 
   // Variant data
@@ -158,6 +159,10 @@ export default function ScheduleWizard() {
 
   // Open picker
   const openPicker = () => {
+    if (!isLoggedIn) {
+      setAuthPromptOpen(true);
+      return;
+    }
     setPickerOpen(true);
     setSearchQuery("");
     setPickerSelections([]);
@@ -353,6 +358,15 @@ export default function ScheduleWizard() {
           Add Peptides
         </button>
       </div>
+
+      {!isLoggedIn && (
+        <div className="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+          <p className="font-semibold">Account required to create a schedule</p>
+          <p className="mt-1 text-blue-800">
+            Please sign in or create an account before selecting peptides. We require an account so your calendar is saved for daily use, and your information is never sold.
+          </p>
+        </div>
+      )}
 
       {/* ── Slot Cards ── */}
       <div className="space-y-2.5">
@@ -589,6 +603,45 @@ export default function ScheduleWizard() {
                     Add {pickerSelections.length > 0 ? `(${pickerSelections.length})` : "Selected"}
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {authPromptOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/55 backdrop-blur-sm p-4"
+            onClick={() => setAuthPromptOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.96, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"
+            >
+              <h3 className="text-lg font-bold text-slate-900">Sign in required</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                You need an account to create a schedule. This lets us save your calendar for daily use. Your information is never sold.
+              </p>
+              <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <button
+                  onClick={() => { window.location.href = "/login"; }}
+                  className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => { window.location.href = "/signup"; }}
+                  className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-500"
+                >
+                  Create Account
+                </button>
               </div>
             </motion.div>
           </motion.div>

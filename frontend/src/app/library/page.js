@@ -9,6 +9,10 @@ import { useToast } from "@/components/ui/ToastProvider";
 import PeptideCard from "@/components/library/PeptideCard";
 import { usePeptides, usePeptideCategories } from "@/lib/hooks";
 
+function normalizeLooseSearch(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
 export default function LibraryPage() {
   const { showToast } = useToast();
   const [search, setSearch] = useState("");
@@ -33,20 +37,14 @@ export default function LibraryPage() {
 
   const peptides = useMemo(() => {
     const source = peptidesQuery.data?.data || [];
-    const normalizedSearch = search.trim().toLowerCase();
+    const normalizedSearch = normalizeLooseSearch(search.trim());
 
     return source.filter((item) => {
-      const concernPool = [
-        ...(item.healthCategories || []),
-        ...(item.benefits || []),
-        ...(item.sideEffects || []),
-        item.injectionFrequencyRaw,
-        item.cycleDurationRaw,
-      ]
+      const categoryPool = (item.healthCategories || [])
         .filter(Boolean)
         .map((value) => String(value).toLowerCase());
 
-      const categoryMatch = !category || concernPool.some((value) => value.includes(category.toLowerCase()));
+      const categoryMatch = !category || categoryPool.some((value) => value.includes(category.toLowerCase()));
       if (!categoryMatch) return false;
       if (!normalizedSearch) return true;
 
@@ -59,7 +57,7 @@ export default function LibraryPage() {
         ...(item.sideEffects || []),
       ]
         .filter(Boolean)
-        .some((value) => String(value).toLowerCase().includes(normalizedSearch));
+        .some((value) => normalizeLooseSearch(value).includes(normalizedSearch));
     });
   }, [peptidesQuery.data, search, category]);
 

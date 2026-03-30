@@ -11,7 +11,7 @@ export default function AboutSection() {
         {/* Left — Heading */}
         <div className="px-4 sm:px-0 lg:col-span-2">
           <h3 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl leading-[1.15]">
-            Your Research-Grade{" "}
+            Your {" "}
             <span className="text-emerald-600">Peptide Protocol</span>{" "}
             Platform
           </h3>
@@ -20,7 +20,7 @@ export default function AboutSection() {
         {/* Right — Description */}
         <div className="px-4 sm:px-0 lg:col-span-3">
           <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            MyPeptideDosage is a data-driven peptide education and schedule planning ecosystem. We organize intricate protocol tables, escalation logic, and calendar outputs into a clinical-grade mathematical workflow that is fully transparent and research-backed.
+            MyPeptideDosage is a data-driven peptide education and schedule planning ecosystem. We have used 1000's of articles and videos, 100's medical research studies, and other research methods to determine the best starting points for researchers to begin working with peptides.
           </p>
           <div className="mt-6 flex items-center gap-6">
             <Link href="/library" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors group">
