@@ -7,7 +7,6 @@ import { useToast } from "@/components/ui/ToastProvider";
 import { apiRequest, downloadSchedulePdf } from "@/lib/api";
 import { usePeptides, useScheduleBuilderMutations } from "@/lib/hooks";
 import { useAuthStore } from "@/lib/auth-store";
-import { toDisplayImageUrl } from "@/lib/imageUrl";
 
 const ALL_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const WEEKDAY_HEADERS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -382,19 +381,14 @@ export default function ScheduleWizard() {
           const filled = Boolean(slot.peptideId);
           if (!filled) return null;
 
-          const imgSrc = toDisplayImageUrl(slot.peptideImage);
           return (
             <div key={slot.position} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:border-slate-300 overflow-hidden">
               <div className="flex items-center gap-3.5 px-4 py-3.5">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-xs font-bold text-emerald-700">
                   {slot.position}
                 </div>
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 border border-slate-200/50 overflow-hidden">
-                  {imgSrc ? (
-                    <img src={imgSrc} alt="" className="h-full w-full object-contain" />
-                  ) : (
-                    <Syringe className="h-5 w-5 text-slate-400" strokeWidth={1.5} />
-                  )}
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 border border-slate-200/50">
+                  <Syringe className="h-5 w-5 text-slate-400" strokeWidth={1.5} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-bold text-slate-900 truncate">{slot.peptideName}</p>
