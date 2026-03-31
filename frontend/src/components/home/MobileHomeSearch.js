@@ -51,7 +51,7 @@ export default function MobileHomeSearch() {
   };
 
   return (
-    <div className="sm:hidden block px-2 w-full mt-6 relative z-40 max-w-lg mx-auto" ref={searchRef}>
+    <div className="sm:hidden block px-2 w-full mt-6 relative z-30 max-w-lg mx-auto" ref={searchRef}>
       <form onSubmit={handleSearchSubmit} className="relative group">
         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
           <svg className="h-5 w-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,15 +61,15 @@ export default function MobileHomeSearch() {
         <input type="search" value={searchQuery} onChange={handleSearchChange}
           onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
           placeholder="Search peptides, protocols..."  
-          className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-10 text-[15px] font-semibold text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-4px_rgba(0,0,0,0.08)] appearance-none [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-cancel-button]:hidden"
+          className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-12 text-[15px] font-semibold text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-4px_rgba(0,0,0,0.08)] [&::-webkit-search-cancel-button]:hidden"
         />
         {searchQuery && (
           <button 
             type="button" 
             onClick={() => { setSearchQuery(""); setSearchOpen(false); }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-slate-600 rounded-full transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-slate-600 rounded-full transition-colors flex items-center justify-center bg-transparent"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         )}
       </form>
