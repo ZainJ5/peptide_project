@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 
+Sitemap: https://mypeptidedosages.com/sitemap.xml
+
 Sitemap: https://www.mypeptidedosages.com/sitemap.xml
