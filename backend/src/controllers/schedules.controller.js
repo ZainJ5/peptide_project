@@ -39,12 +39,20 @@ async function requireScheduleShallow(scheduleId, userId) {
 
 function flattenWithPeptide(value) {
   const json = value && typeof value.toJSON === 'function' ? value.toJSON() : { ...value };
-  const { peptide, ...rest } = json;
+  const { peptide, scheduleItem, ...rest } = json;
+
+  const primaryName = peptide?.name && String(peptide.name).trim();
+  const fallbackName = scheduleItem?.peptide?.name && String(scheduleItem.peptide.name).trim();
+  const protocolTitle = peptide?.protocolTitle && String(peptide.protocolTitle).trim();
+  const fallbackProtocolTitle = scheduleItem?.peptide?.protocolTitle && String(scheduleItem.peptide.protocolTitle).trim();
+  const peptideDisplayName = primaryName || fallbackName || protocolTitle || fallbackProtocolTitle || null;
 
   return {
     ...rest,
-    peptideName: peptide?.name ?? null,
-    peptideMgAmount: peptide?.mgAmount ?? null,
+    peptideName: peptideDisplayName,
+    peptideDisplayName,
+    peptideProtocolTitle: protocolTitle || fallbackProtocolTitle || null,
+    peptideMgAmount: peptide?.mgAmount ?? scheduleItem?.peptide?.mgAmount ?? null,
   };
 }
 
@@ -293,7 +301,15 @@ async function getScheduleCalendar(req, res, next) {
 
     const events = await CalendarEvent.findAll({
       where,
-      include: [{ model: Peptide, as: 'peptide', attributes: ['id', 'name', 'mgAmount'] }],
+      include: [
+        { model: Peptide, as: 'peptide', attributes: ['id', 'name', 'mgAmount', 'protocolTitle'] },
+        {
+          model: ScheduleItem,
+          as: 'scheduleItem',
+          attributes: ['id', 'peptideId'],
+          include: [{ model: Peptide, as: 'peptide', attributes: ['id', 'name', 'mgAmount', 'protocolTitle'] }],
+        },
+      ],
       order: [['event_date', 'ASC']],
     });
 

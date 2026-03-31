@@ -110,11 +110,11 @@ export default function VideosPage() {
               className="relative w-full max-w-5xl overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-white/10 animate-in zoom-in-95"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between bg-zinc-900/80 px-4 py-3 border-b border-zinc-800">
-                <h3 className="text-sm font-semibold text-white truncate pr-4">{playingVideo.title}</h3>
+              <div className="flex items-center justify-between bg-zinc-900/80 px-4 py-3 border-b border-zinc-800 text-white">
+                <h3 className="text-sm font-semibold text-white drop-shadow-sm truncate pr-4">{playingVideo.title}</h3>
                 <button 
                   onClick={() => setPlayingVideoId(null)}
-                  className="rounded-full bg-zinc-800 p-2 text-zinc-400 hover:bg-zinc-700 hover:text-white transition-colors"
+                  className="rounded-full bg-zinc-800/80 p-2 text-zinc-200 hover:bg-zinc-700 hover:text-white transition-colors"
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>

@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Syringe } from "lucide-react";
 import PageTransition from "@/components/shared/PageTransition";
 import Accordion from "@/components/ui/Accordion";
@@ -49,11 +48,6 @@ export default function PeptideDetailPage() {
   const primaryVariant = peptide?.scheduleVariants?.[0];
 
   const tableData = primaryVariant?.steps || [];
-  const chartData = tableData.map((step) => ({
-    week: step.weekStart || step.stepOrder,
-    units: step.unitsPerInjection || 0,
-  }));
-
   const benefits = useMemo(() => toBulletList(peptide?.benefits), [peptide?.benefits]);
   const sideEffects = useMemo(() => toBulletList(peptide?.sideEffects), [peptide?.sideEffects]);
   const preparationNotes = useMemo(() => toBulletList(peptide?.preparationNotes), [peptide?.preparationNotes]);
@@ -101,14 +95,14 @@ export default function PeptideDetailPage() {
   }
 
   const sections = [
-    { id: "overview", label: "Peptide Overview" },
-    { id: "reconstitution", label: "Reconstitution Method" },
-    { id: "dosage", label: "Dosing Schedule" },
     { id: "benefits", label: "Benefits" },
-    { id: "side-effects", label: "Side effects" },
+    { id: "reconstitution", label: "Reconstitution" },
+    { id: "dosage", label: "Dosing Schedule" },
     { id: "injection-frequency", label: "Injection Frequency" },
     { id: "cycle-schedule", label: "Cycle Schedule" },
-    { id: "final-prep-notes", label: "Final Prep Notes" },
+    { id: "overview", label: "Peptide Overview" },
+    { id: "side-effects", label: "Side effect" },
+    { id: "final-prep-notes", label: "Final Prep" },
   ];
 
   return (
@@ -165,12 +159,23 @@ export default function PeptideDetailPage() {
           {/* Content panels */}
           <section className="flex-1 min-w-0 space-y-6">
 
-            {/* Peptide Overview */}
-            <div id="overview" className="scroll-mt-6">
-              <SectionCard title="Peptide Overview" icon="overview">
-                <div className="text-[15px] leading-[1.8] text-slate-600">
-                  {peptide.howItWorks || "Detailed mechanism of action data is currently unavailable for this protocol."}
-                </div>
+            {/* Benefits */}
+            <div id="benefits" className="scroll-mt-6">
+              <SectionCard title="Benefits" icon="benefits">
+                {benefits.length > 0 ? (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {benefits.map((item, idx) => (
+                      <div key={idx} className="flex items-start gap-3 rounded-xl bg-emerald-50/50 border border-emerald-100/80 p-3.5">
+                        <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500">
+                          <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        </div>
+                        <span className="text-[13px] leading-relaxed text-slate-700">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-400">No specific benefits listed.</p>
+                )}
               </SectionCard>
             </div>
 
@@ -243,23 +248,8 @@ export default function PeptideDetailPage() {
                   </div>
                 )}
                 {tableData.length > 0 ? (
-                  <div className="space-y-5">
-                    <div className="overflow-hidden rounded-xl border border-slate-200">
-                      <DataTable data={tableData} columns={columns} />
-                    </div>
-                    <div className="rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4 sm:p-5">
-                      <h3 className="mb-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Dose Escalation Curve</h3>
-                      <div className="h-52 sm:h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={chartData}>
-                            <XAxis dataKey="week" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
-                            <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} width={35} />
-                            <Tooltip contentStyle={{ borderRadius: "10px", border: "1px solid #e2e8f0", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", fontSize: "13px" }} />
-                            <Line type="monotone" dataKey="units" stroke="#1E3A8A" strokeWidth={2.5} dot={{ r: 3, strokeWidth: 2, fill: "#fff" }} activeDot={{ r: 5 }} />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </div>
+                  <div className="overflow-hidden rounded-xl border border-slate-200">
+                    <DataTable data={tableData} columns={columns} />
                   </div>
                 ) : (
                   <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
@@ -270,30 +260,33 @@ export default function PeptideDetailPage() {
               </SectionCard>
             </div>
 
-            {/* Benefits */}
-            <div id="benefits" className="scroll-mt-6">
-              <SectionCard title="Benefits" icon="benefits">
-                {benefits.length > 0 ? (
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {benefits.map((item, idx) => (
-                      <div key={idx} className="flex items-start gap-3 rounded-xl bg-emerald-50/50 border border-emerald-100/80 p-3.5">
-                        <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500">
-                          <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                        </div>
-                        <span className="text-[13px] leading-relaxed text-slate-700">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-slate-400">No specific benefits listed.</p>
-                )}
+            {/* Injection Frequency */}
+            <div id="injection-frequency" className="scroll-mt-6">
+              <SectionCard title="Injection Frequency" icon="guidance">
+                <p className="text-sm leading-relaxed text-slate-600">{asCleanText(peptide.injectionFrequencyRaw) || "No injection frequency listed."}</p>
+              </SectionCard>
+            </div>
+
+            {/* Cycle Schedule */}
+            <div id="cycle-schedule" className="scroll-mt-6">
+              <SectionCard title="Cycle Schedule" icon="dosage">
+                <p className="text-sm leading-relaxed text-slate-600">{asCleanText(peptide.cycleDurationRaw) || "No cycle duration listed."}</p>
+              </SectionCard>
+            </div>
+
+            {/* Peptide Overview */}
+            <div id="overview" className="scroll-mt-6">
+              <SectionCard title="Peptide Overview" icon="overview">
+                <div className="text-[15px] leading-[1.8] text-slate-600">
+                  {peptide.howItWorks || "Detailed mechanism of action data is currently unavailable for this protocol."}
+                </div>
               </SectionCard>
             </div>
 
             {/* Side effects */}
             <div id="side-effects" className="scroll-mt-6">
               <CustomCollapsibleSection
-                title="Side effects"
+                title="Side effect"
                 headerBg="bg-red-50/40"
                 headerBorder="border-red-100"
                 titleColor="text-red-900"
@@ -322,23 +315,9 @@ export default function PeptideDetailPage() {
               </CustomCollapsibleSection>
             </div>
 
-            {/* Injection Frequency */}
-            <div id="injection-frequency" className="scroll-mt-6">
-              <SectionCard title="Injection Frequency" icon="guidance">
-                <p className="text-sm leading-relaxed text-slate-600">{asCleanText(peptide.injectionFrequencyRaw) || "No injection frequency listed."}</p>
-              </SectionCard>
-            </div>
-
-            {/* Cycle Schedule */}
-            <div id="cycle-schedule" className="scroll-mt-6">
-              <SectionCard title="Cycle Schedule" icon="dosage">
-                <p className="text-sm leading-relaxed text-slate-600">{asCleanText(peptide.cycleDurationRaw) || "No cycle duration listed."}</p>
-              </SectionCard>
-            </div>
-
             {/* Final Prep Notes */}
             <div id="final-prep-notes" className="scroll-mt-6">
-              <SectionCard title="Final Prep Notes" icon="reconstitution">
+              <SectionCard title="Final Prep" icon="reconstitution">
                 {preparationNotes.length > 0 ? (
                   <ul className="space-y-2.5">
                     {preparationNotes.map((item, idx) => (

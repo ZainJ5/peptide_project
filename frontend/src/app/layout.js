@@ -12,8 +12,12 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://www.mypeptidedosages.com"),
   title: "MyPeptidedosage",
-  description: "Premium peptide information and schedule planning platform",
+  description: "Your trusted platform for accurate peptide dosage research and protocol planning",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;

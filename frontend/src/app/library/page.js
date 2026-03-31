@@ -19,7 +19,7 @@ export default function LibraryPage() {
   const [type, setType] = useState("");
   const [category, setCategory] = useState("");
   const [view, setView] = useState("grid");
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(true);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -66,14 +66,16 @@ export default function LibraryPage() {
     if (backendCategories.length > 0) return backendCategories;
 
     return [
-      "weight",
-      "recovery",
-      "sleep",
-      "focus",
-      "inflammation",
-      "energy",
-      "joint",
-      "gut",
+      "cognitive perfromance",
+      "energy, vitality, and anit-oxidation",
+      "immune system health",
+      "longevity and anit-aging",
+      "mobilty joint and back health",
+      "muscle growth and gym performance",
+      "recovery and healing",
+      "sexual health and performance",
+      "sleep optimization",
+      "weight management",
     ];
   }, [categoryQuery.data]);
 

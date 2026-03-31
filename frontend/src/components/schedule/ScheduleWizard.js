@@ -994,7 +994,7 @@ function CalendarView({ calendar, scheduleId, message, authState, onToggleComple
                       {/* Name + dose */}
                       <div className="min-w-0 flex-1">
                         <p className={`text-[13px] font-semibold truncate leading-tight ${completed ? "text-slate-400 line-through decoration-slate-300" : "text-slate-800"}`}>
-                          {ev.peptideName || "Peptide"}
+                          {ev.peptideDisplayName || ev.peptideName || ev.peptideProtocolTitle || "Peptide"}
                         </p>
                       </div>
 
