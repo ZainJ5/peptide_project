@@ -146,77 +146,38 @@ export default function ScheduleBanner() {
             </div>
           </div>
 
-          {/* Right — Mock schedule card */}
-          <div className="hidden lg:flex flex-col items-center justify-center gap-5 p-8 lg:p-12">
-            <div className="w-full max-w-sm">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="h-10 w-10 rounded-xl bg-linear-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-white">Recovery Protocol</p>
-                    <p className="text-xs text-slate-400">8 Week Cycle</p>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  {[
-                    { week: "Week 1-2", dose: "200 mcg", active: true },
-                    { week: "Week 3-4", dose: "400 mcg", active: false },
-                    { week: "Week 5-8", dose: "600 mcg", active: false },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <div
-                        className={`h-2.5 w-2.5 rounded-full flex-shrink-0 ${
-                          item.active ? "bg-emerald-400 shadow-sm shadow-emerald-400/50" : "bg-slate-600"
-                        }`}
-                      />
-                      <div className="flex flex-1 items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
-                        <span className="text-xs font-medium text-slate-300">{item.week}</span>
-                        <span className={`text-xs font-bold ${item.active ? "text-emerald-400" : "text-slate-500"}`}>
-                          {item.dose}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-5 flex items-center justify-between rounded-lg bg-emerald-500/10 border border-emerald-500/15 px-3 py-2.5">
-                  <span className="text-xs font-medium text-emerald-300">Auto-escalation</span>
-                  <span className="text-xs font-bold text-emerald-400">Enabled</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Desktop-only demo text link */}
-            <button
+          {/* Right — Video Thumbnail */}
+          <div className="hidden lg:flex flex-col items-center justify-center gap-6 p-8 lg:p-12">
+            <button 
               type="button"
               onClick={() => setShowDemo(true)}
-              className="group flex items-center gap-2.5 text-slate-500 transition-colors duration-150 hover:text-slate-300"
+              className="group relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_8px_30px_rgba(16,185,129,0.2)] hover:border-emerald-500/30 ring-1 ring-white/5"
             >
-              {/* Mini play circle */}
-              <span className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-700 bg-white/[0.03] transition-all duration-150 group-hover:border-emerald-500/50 group-hover:bg-emerald-500/10">
-                <svg
-                  className="h-3 w-3 translate-x-px text-slate-500 transition-colors duration-150 group-hover:text-emerald-400"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-              <span className="text-[12px] font-black tracking-wide">
-                Watch how it works
-              </span>
-              <svg
-                className="h-3 w-3 opacity-0 -translate-x-1 transition-all duration-150 group-hover:opacity-100 group-hover:translate-x-0 text-slate-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              <div className="aspect-video w-full bg-slate-800 relative">
+                <img 
+                  src="/videos/thumbnail/build_peptide_plan.png" 
+                  alt="Schedule Builder Tutorial"
+                  className="absolute inset-0 h-full w-full object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent transition-opacity duration-300 group-hover:opacity-60" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/90 text-white shadow-lg backdrop-blur-md transition-transform duration-300 group-hover:scale-110 group-hover:bg-emerald-400">
+                    <svg className="h-8 w-8 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </button>
+            <button
+              onClick={() => setShowDemo(true)}
+              className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+            >
+              <svg className="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
+              Watch how it works
             </button>
           </div>
         </div>
