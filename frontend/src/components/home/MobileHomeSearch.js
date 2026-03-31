@@ -61,7 +61,7 @@ export default function MobileHomeSearch() {
         <input type="search" value={searchQuery} onChange={handleSearchChange}
           onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
           placeholder="Search peptides, protocols..."  
-          className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-10 text-[15px] font-semibold text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-4px_rgba(0,0,0,0.08)] appearance-none"
+          className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-10 text-[15px] font-semibold text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-4px_rgba(0,0,0,0.08)] appearance-none [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-cancel-button]:hidden"
         />
         {searchQuery && (
           <button 
