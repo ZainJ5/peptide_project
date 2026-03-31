@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const SCHEDULER_DEMO_URL = "https://www.youtube.com/embed/Dm9dZS12QDk";
 
@@ -154,10 +155,13 @@ export default function ScheduleBanner() {
               className="group relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_8px_30px_rgba(16,185,129,0.2)] hover:border-emerald-500/30 ring-1 ring-white/5"
             >
               <div className="aspect-video w-full bg-slate-800 relative">
-                <img 
+                <Image 
                   src="/videos/thumbnail/build_peptide_plan.png" 
                   alt="Schedule Builder Tutorial"
-                  className="absolute inset-0 h-full w-full object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent transition-opacity duration-300 group-hover:opacity-60" />
                 <div className="absolute inset-0 flex items-center justify-center">
