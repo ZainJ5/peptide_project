@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 const slides = [
-  { src: "/header/header-1-v2.jpg", alt: "Precision Peptide Intelligence" },
+  { src: "/header/header-1-v2.png", alt: "Precision Peptide Intelligence" },
   // { src: "/header/header-2.png", alt: "Advanced Protocol Management" },
   // { src: "/header/header-3.png", alt: "Clinical-Grade Dosage Planning" },
   { src: "/header/header-4.png", alt: "How-to peptide videos" },
