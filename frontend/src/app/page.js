@@ -1,5 +1,6 @@
 import PageTransition from "@/components/shared/PageTransition";
 import HeroCarousel from "@/components/home/HeroCarousel";
+import MobileHomeSearch from "@/components/home/MobileHomeSearch";
 import AboutSection from "@/components/home/AboutSection";
 import ServiceCategories from "@/components/home/ServiceCategories";
 import ScheduleBanner from "@/components/home/ScheduleBanner";
@@ -10,7 +11,10 @@ export default function HomePage() {
   return (
     <PageTransition>
       <div className="flex flex-col gap-10 sm:gap-28">
-        <HeroCarousel />
+        <div className="flex flex-col">
+          <HeroCarousel />
+          <MobileHomeSearch />
+        </div>
         <AboutSection />
         <ScheduleBanner />
         <ServiceCategories />
