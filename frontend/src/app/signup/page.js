@@ -41,7 +41,7 @@ export default function SignupPage() {
     setIsVerifying(true);
     try {
       await apiRequest("/auth/verify-email", { method: "POST", body: { email: userEmail, code } });
-      showToast("Email verified! Welcome to PeptideDosage.", "success");
+      showToast("Email verified! Welcome to MyPeptideDosages.", "success");
       router.push("/");
     } catch (error) {
       showToast(error?.message || "Invalid code.", "error");

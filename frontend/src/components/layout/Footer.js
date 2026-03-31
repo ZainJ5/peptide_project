@@ -88,7 +88,7 @@ export default function Footer() {
                   <div className="absolute -inset-1 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 opacity-0 blur transition-opacity duration-300 group-hover:opacity-100" />
                   <Image
                     src="/logo.png"
-                    alt="MyPeptideDosage logo"
+                    alt="MyPeptideDosages logo"
                     width={48}
                     height={48}
                     className="relative h-11 w-11 rounded-xl border border-slate-700 bg-white object-contain p-1.5"
@@ -98,7 +98,7 @@ export default function Footer() {
                   <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-emerald-400">
                     Research Platform
                   </p>
-                  <p className="text-lg font-bold text-white">MyPeptideDosage</p>
+                  <p className="text-lg font-bold text-white">MyPeptideDosages</p>
                 </div>
               </Link>
 
@@ -161,7 +161,7 @@ export default function Footer() {
                   { href: "/login", label: "Sign In" },
                   { href: "/signup", label: "Create Account" },
                   { href: "/community?type=request-peptide", label: "Request a Peptide" },
-                  { href: "mailto:feedback@mypeptidedosage.com", label: "Send Feedback", external: true },
+                  { href: "mailto:feedback@mypeptidedosages.com", label: "Send Feedback", external: true },
                 ].map((link) => (
                   <li key={link.label}>
                     {link.external ? (
@@ -187,7 +187,7 @@ export default function Footer() {
                 {[
                   { href: "/privacy", label: "Privacy Policy" },
                   { href: "/terms", label: "Terms of Service" },
-                  { href: "mailto:support@mypeptidedosage.com", label: "Contact Support", external: true },
+                  { href: "mailto:support@mypeptidedosages.com", label: "Contact Support", external: true },
                 ].map((link) => (
                   <li key={link.label}>
                     {link.external ? (
@@ -265,7 +265,7 @@ export default function Footer() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
               </svg>
               <p className="text-xs leading-relaxed text-amber-200/80">
-                <span className="font-bold text-amber-300">Disclaimer:</span> Content on MyPeptideDosage is provided for educational and research-awareness purposes only and does not constitute medical advice, diagnosis, or treatment. Always consult a licensed healthcare professional before starting, stopping, or modifying any peptide-related protocol.
+                <span className="font-bold text-amber-300">Disclaimer:</span> Content on MyPeptideDosages is provided for educational and research-awareness purposes only and does not constitute medical advice, diagnosis, or treatment. Always consult a licensed healthcare professional before starting, stopping, or modifying any peptide-related protocol.
               </p>
             </div>
           </div>
@@ -275,7 +275,7 @@ export default function Footer() {
         <div className="border-t border-slate-800">
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-5 md:flex-row lg:px-8">
             <p className="text-xs text-slate-500">
-              &copy; {currentYear} MyPeptideDosage. All rights reserved.
+              &copy; {currentYear} MyPeptideDosages. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
               <Link href="/privacy" className="text-xs text-slate-500 transition-colors hover:text-slate-300">
@@ -284,7 +284,7 @@ export default function Footer() {
               <Link href="/terms" className="text-xs text-slate-500 transition-colors hover:text-slate-300">
                 Terms
               </Link>
-              <a href="mailto:support@mypeptidedosage.com" className="text-xs text-slate-500 transition-colors hover:text-slate-300">
+              <a href="mailto:support@mypeptidedosages.com" className="text-xs text-slate-500 transition-colors hover:text-slate-300">
                 Contact
               </a>
             </div>

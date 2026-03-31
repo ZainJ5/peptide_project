@@ -52,7 +52,7 @@ const config = {
 
   email: {
     resendApiKey: optional('RESEND_API_KEY'),
-    from: optional('EMAIL_FROM', 'PeptideDosage <no-reply@mypeptidedosages.com>'),
+    from: optional('EMAIL_FROM', 'MyPeptideDosages <no-reply@mypeptidedosages.com>'),
     adminTo: optional('ADMIN_EMAIL', 'info@mypeptidedosages.com'),
   },
 
@@ -62,7 +62,7 @@ const config = {
   baseUrl: optional('BASE_URL', 'http://139.59.34.214'),
 
   // Allowed domains for avatar URLs (prevents SSRF / stored XSS)
-  avatarAllowedDomains: (optional('AVATAR_ALLOWED_DOMAINS', 'cdn.peptidedosage.com') || '')
+  avatarAllowedDomains: (optional('AVATAR_ALLOWED_DOMAINS', 'cdn.mypeptidedosages.com') || '')
     .split(',').map((d) => d.trim()).filter(Boolean),
 
   seed: {

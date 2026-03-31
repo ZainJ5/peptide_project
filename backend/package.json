@@ -1,7 +1,7 @@
 {
   "name": "peptidedosage-backend",
   "version": "1.0.0",
-  "description": "PeptideDosage.com — REST API backend powering the mobile app and website",
+  "description": "MyPeptideDosages.com — REST API backend powering the mobile app and website",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",

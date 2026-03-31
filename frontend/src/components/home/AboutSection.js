@@ -20,7 +20,7 @@ export default function AboutSection() {
         {/* Right — Description */}
         <div className="px-4 sm:px-0 lg:col-span-3">
           <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            MyPeptideDosage is a data-driven peptide education and schedule planning ecosystem. We have used 1000's of articles and videos, 100's medical research studies, and other research methods to determine the best starting points for researchers to begin working with peptides.
+            MyPeptideDosages is a data-driven peptide education and schedule planning ecosystem. We have used 1000's of articles and videos, 100's medical research studies, and other research methods to determine the best starting points for researchers to begin working with peptides.
           </p>
           <div className="mt-6 flex items-center gap-6">
             <Link href="/library" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors group">

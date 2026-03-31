@@ -76,10 +76,10 @@ const sections = [
       <>
         If you have any questions or concerns about this Privacy Policy or the information we collect, please contact us at{" "}
         <a
-          href="mailto:info@peptidedosages.com"
+          href="mailto:info@mypeptidedosages.com"
           className="font-medium text-blue-600 underline underline-offset-2 transition-colors hover:text-blue-700"
         >
-          info@peptidedosages.com
+          info@mypeptidedosages.com
         </a>
         .
       </>
@@ -117,7 +117,7 @@ export default function PrivacyPolicyPage() {
             Last updated: March 24, 2026
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            Welcome to Mypeptidedosage (the &quot;Website&quot;). We take your privacy seriously and strive to protect any personal information you provide to us. This Privacy Policy outlines how we collect, use, and safeguard your information.
+            Welcome to Mypeptidedosages (the &quot;Website&quot;). We take your privacy seriously and strive to protect any personal information you provide to us. This Privacy Policy outlines how we collect, use, and safeguard your information.
           </p>
         </div>
 
@@ -142,7 +142,7 @@ export default function PrivacyPolicyPage() {
         {/* Closing */}
         <div className="pt-10 text-center">
           <p className="text-base font-medium text-slate-700">
-            Thank you for visiting Mypeptidedosage! Your privacy is important to us.
+            Thank you for visiting Mypeptidedosages! Your privacy is important to us.
           </p>
           <div className="mt-5 flex items-center justify-center gap-4">
             <Link
@@ -153,7 +153,7 @@ export default function PrivacyPolicyPage() {
             </Link>
             <span className="text-slate-300">|</span>
             <a
-              href="mailto:info@peptidedosages.com"
+              href="mailto:info@mypeptidedosages.com"
               className="text-sm font-medium text-emerald-600 underline underline-offset-2 transition-colors hover:text-emerald-700"
             >
               Contact Us

@@ -7,7 +7,7 @@ const sections = [
   {
     title: "INFORMATIONAL NATURE OF THE WEBSITE",
     content:
-      "Mypeptidedosage provides educational and informational content about peptide dosages, research protocols, and related topics. We do not sell products or services, and the information presented is not intended to replace professional medical advice or treatment.",
+      "Mypeptidedosages provides educational and informational content about peptide dosages, research protocols, and related topics. We do not sell products or services, and the information presented is not intended to replace professional medical advice or treatment.",
   },
   {
     title: "NO MEDICAL OR PROFESSIONAL ADVICE",
@@ -17,7 +17,7 @@ const sections = [
   {
     title: "INTELLECTUAL PROPERTY",
     content:
-      "All materials on the Website, including text, graphics, logos, and images, are the property of Mypeptidedosage or its content suppliers and are protected by applicable intellectual property laws. You may not reproduce, distribute, modify, or create derivative works of any materials from this Website without our express written permission.",
+      "All materials on the Website, including text, graphics, logos, and images, are the property of Mypeptidedosages or its content suppliers and are protected by applicable intellectual property laws. You may not reproduce, distribute, modify, or create derivative works of any materials from this Website without our express written permission.",
   },
   {
     title: "USER RESPONSIBILITIES",
@@ -53,7 +53,7 @@ const sections = [
   {
     title: "LIMITATION OF LIABILITY",
     content:
-      "Under no circumstances shall Mypeptidedosage, its affiliates, contributors, or employees be liable for any direct, indirect, incidental, special, or consequential damages arising from or in connection with your use of the Website or reliance on any information provided on the Website.",
+      "Under no circumstances shall Mypeptidedosages, its affiliates, contributors, or employees be liable for any direct, indirect, incidental, special, or consequential damages arising from or in connection with your use of the Website or reliance on any information provided on the Website.",
   },
   {
     title: "EXTERNAL LINKS",
@@ -68,7 +68,7 @@ const sections = [
   {
     title: "GOVERNING LAW",
     content:
-      "These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Mypeptidedosage operates, without regard to its conflict of law provisions.",
+      "These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Mypeptidedosages operates, without regard to its conflict of law provisions.",
   },
   {
     title: "CONTACT US",
@@ -76,10 +76,10 @@ const sections = [
       <>
         If you have any questions or concerns regarding these Terms &amp; Conditions, please contact us at{" "}
         <a
-          href="mailto:info@peptidedosages.com"
+          href="mailto:info@mypeptidedosages.com"
           className="font-medium text-blue-600 underline underline-offset-2 transition-colors hover:text-blue-700"
         >
-          info@peptidedosages.com
+          info@mypeptidedosages.com
         </a>
         .
       </>
@@ -117,7 +117,7 @@ export default function TermsOfServicePage() {
             Last updated: March 24, 2026
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            Welcome to Mypeptidedosage (the &quot;Website&quot;). These Terms &amp; Conditions (the &quot;Terms&quot;) govern your access to and use of our Website. By using our Website, you agree to be bound by these Terms.
+            Welcome to Mypeptidedosages (the &quot;Website&quot;). These Terms &amp; Conditions (the &quot;Terms&quot;) govern your access to and use of our Website. By using our Website, you agree to be bound by these Terms.
           </p>
         </div>
 
@@ -142,7 +142,7 @@ export default function TermsOfServicePage() {
         {/* Closing */}
         <div className="pt-10 text-center">
           <p className="text-base font-medium text-slate-700">
-            Your continued use of Mypeptidedosage indicates that you accept and agree to abide by these Terms &amp; Conditions.
+            Your continued use of Mypeptidedosages indicates that you accept and agree to abide by these Terms &amp; Conditions.
           </p>
           <div className="mt-5 flex items-center justify-center gap-4">
             <Link
@@ -153,7 +153,7 @@ export default function TermsOfServicePage() {
             </Link>
             <span className="text-slate-300">|</span>
             <a
-              href="mailto:info@peptidedosages.com"
+              href="mailto:info@mypeptidedosages.com"
               className="text-sm font-medium text-emerald-600 underline underline-offset-2 transition-colors hover:text-emerald-700"
             >
               Contact Us

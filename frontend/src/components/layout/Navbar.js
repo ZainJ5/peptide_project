@@ -197,11 +197,11 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-5 py-3.5">
             {/* Logo */}
             <Link href="/" className="flex shrink-0 items-center gap-3 transition-opacity hover:opacity-80">
-              <Image src="/logo.png" alt="MyPeptideDosage" width={44} height={44}
+              <Image src="/logo.png" alt="MyPeptideDosages" width={44} height={44}
                 className="h-[42px] w-[42px] rounded-xl border border-slate-200 bg-white object-contain p-1 shadow-sm" priority />
               <div className="leading-tight">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Research Portal</p>
-                <p className="text-base font-extrabold tracking-tight text-slate-900">MyPeptideDosage</p>
+                <p className="text-base font-extrabold tracking-tight text-slate-900">MyPeptideDosages</p>
               </div>
             </Link>
 
@@ -293,9 +293,9 @@ export default function Navbar() {
 
             {/* Center — Logo (flex-1, centered) */}
             <Link href="/" className="flex flex-1 items-center justify-center gap-2 transition-opacity hover:opacity-80">
-              <Image src="/logo.png" alt="MyPeptideDosage" width={32} height={32}
+              <Image src="/logo.png" alt="MyPeptideDosages" width={32} height={32}
                 className="h-8 w-8 shrink-0 rounded-xl border border-slate-200 bg-white object-contain p-[3px] shadow-sm" priority />
-              <span className="text-[15px] font-extrabold tracking-tight text-slate-900 whitespace-nowrap">MyPeptideDosage</span>
+              <span className="text-[15px] font-extrabold tracking-tight text-slate-900 whitespace-nowrap">MyPeptideDosages</span>
             </Link>
 
             {/* Right — avatar or sign-in, fixed width to balance layout */}
@@ -351,11 +351,11 @@ export default function Navbar() {
           {/* Brand row */}
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Image src="/logo.png" alt="MyPeptideDosage" width={28} height={28}
+              <Image src="/logo.png" alt="MyPeptideDosages" width={28} height={28}
                 className="h-7 w-7 rounded-lg border border-slate-200 bg-white object-contain p-[2px] shadow-sm" />
               <div className="leading-none">
                 <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Research Portal</p>
-                <p className="text-[13px] font-extrabold tracking-tight text-slate-900">MyPeptideDosage</p>
+                <p className="text-[13px] font-extrabold tracking-tight text-slate-900">MyPeptideDosages</p>
               </div>
             </div>
             <button

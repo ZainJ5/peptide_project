@@ -70,15 +70,15 @@ async function sendEmail({ to, subject, html, text, replyTo }) {
 async function sendVerificationEmail(to, code) {
   await sendEmail({
     to,
-    subject: `${code} — Verify your PeptideDosage account`,
-    text: `Welcome to PeptideDosage!\n\nYour verification code is: ${code}\n\nThis code expires in 10 minutes.\n\nIf you did not create this account, you can safely ignore this email.`,
+    subject: `${code} — Verify your MyPeptideDosages account`,
+    text: `Welcome to MyPeptideDosages!\n\nYour verification code is: ${code}\n\nThis code expires in 10 minutes.\n\nIf you did not create this account, you can safely ignore this email.`,
     html: `
       <div style="font-family:Inter,Segoe UI,Arial,sans-serif;max-width:600px;margin:auto;padding:40px 20px">
         <div style="text-align:center;margin-bottom:32px">
-          <h1 style="color:#0f172a;font-size:24px;margin:0">PeptideDosage</h1>
+          <h1 style="color:#0f172a;font-size:24px;margin:0">MyPeptideDosages</h1>
         </div>
         <h2 style="color:#0f172a;font-size:20px;margin-bottom:8px">Verify your email</h2>
-        <p style="color:#475569;font-size:15px;line-height:1.6">Welcome to PeptideDosage! Use the code below to verify your email address.</p>
+        <p style="color:#475569;font-size:15px;line-height:1.6">Welcome to MyPeptideDosages! Use the code below to verify your email address.</p>
         <div style="margin:32px 0;text-align:center">
           <div style="display:inline-block;background:#f1f5f9;border:2px dashed #cbd5e1;border-radius:12px;padding:20px 40px">
             <span style="font-size:32px;font-weight:800;letter-spacing:8px;color:#0f172a">${code}</span>
@@ -88,7 +88,7 @@ async function sendVerificationEmail(to, code) {
           This code expires in <strong style="color:#475569">10 minutes</strong>.
         </p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:32px 0">
-        <p style="color:#94a3b8;font-size:12px">If you did not create a PeptideDosage account, you can safely ignore this email.</p>
+        <p style="color:#94a3b8;font-size:12px">If you did not create a MyPeptideDosages account, you can safely ignore this email.</p>
       </div>
     `,
   });
@@ -102,15 +102,15 @@ async function sendVerificationEmail(to, code) {
 async function sendPasswordResetEmail(to, code) {
   await sendEmail({
     to,
-    subject: `${code} — Reset your PeptideDosage password`,
-    text: `You requested a password reset for your PeptideDosage account.\n\nYour reset code is: ${code}\n\nThis code expires in 10 minutes.\n\nIf you did not request this, please ignore this email.`,
+    subject: `${code} — Reset your MyPeptideDosages password`,
+    text: `You requested a password reset for your MyPeptideDosages account.\n\nYour reset code is: ${code}\n\nThis code expires in 10 minutes.\n\nIf you did not request this, please ignore this email.`,
     html: `
       <div style="font-family:Inter,Segoe UI,Arial,sans-serif;max-width:600px;margin:auto;padding:40px 20px">
         <div style="text-align:center;margin-bottom:32px">
-          <h1 style="color:#0f172a;font-size:24px;margin:0">PeptideDosage</h1>
+          <h1 style="color:#0f172a;font-size:24px;margin:0">MyPeptideDosages</h1>
         </div>
         <h2 style="color:#0f172a;font-size:20px;margin-bottom:8px">Reset your password</h2>
-        <p style="color:#475569;font-size:15px;line-height:1.6">You requested a password reset for your PeptideDosage account. Use the code below.</p>
+        <p style="color:#475569;font-size:15px;line-height:1.6">You requested a password reset for your MyPeptideDosages account. Use the code below.</p>
         <div style="margin:32px 0;text-align:center">
           <div style="display:inline-block;background:#fef2f2;border:2px dashed #fca5a5;border-radius:12px;padding:20px 40px">
             <span style="font-size:32px;font-weight:800;letter-spacing:8px;color:#0f172a">${code}</span>

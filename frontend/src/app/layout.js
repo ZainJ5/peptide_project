@@ -13,7 +13,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata = {
   metadataBase: new URL("https://www.mypeptidedosages.com"),
-  title: "MyPeptidedosage",
+  title: "MyPeptidedosages",
   description: "Your trusted platform for accurate peptide dosage research and protocol planning",
   alternates: {
     canonical: "/",
