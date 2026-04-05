@@ -234,7 +234,7 @@ export default function Navbar() {
               ) : (
                 <div className="flex items-center gap-2">
                   <Link href="/signup">
-                    <Button variant="secondary" className="h-9 cursor-pointer rounded-xl border-slate-200 px-5 text-sm font-bold text-slate-700 transition-all hover:-translate-y-0.5 hover:bg-slate-50 hover:border-slate-300">
+                    <Button className="h-9 cursor-pointer rounded-xl bg-emerald-500 px-5 text-sm font-bold text-white shadow-md shadow-emerald-500/20 transition-all hover:-translate-y-0.5 hover:bg-emerald-600">
                       Get Started
                     </Button>
                   </Link>
