@@ -1,6 +1,11 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://mypeptidedosages.com/sitemap.xml
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /backend-api/
+Disallow: /backend-images/
 
 Sitemap: https://www.mypeptidedosages.com/sitemap.xml

@@ -20,10 +20,54 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata = {
   metadataBase: new URL("https://www.mypeptidedosages.com"),
-  title: "MyPeptidedosages",
-  description: "Your trusted platform for accurate peptide dosage research and protocol planning",
+  title: {
+    default: "MyPeptideDosages – Peptide Dosage Calculator & Protocol Guide",
+    template: "%s | MyPeptideDosages",
+  },
+  description:
+    "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules. Plan accurate BPC-157, Semaglutide, TB-500, and 90+ peptide dosing protocols.",
+  keywords: [
+    "peptide dosage calculator",
+    "peptide reconstitution",
+    "BPC-157 dosage",
+    "semaglutide dosage",
+    "TB-500 protocol",
+    "peptide protocol guide",
+    "peptide schedule builder",
+    "my peptide dosages",
+    "mypeptidedosages",
+  ],
+  authors: [{ name: "MyPeptideDosages" }],
+  creator: "MyPeptideDosages",
+  publisher: "MyPeptideDosages",
   alternates: {
     canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "MyPeptideDosages",
+    title: "MyPeptideDosages – Peptide Dosage Calculator & Protocol Guide",
+    description:
+      "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 90+ peptides.",
+    url: "https://www.mypeptidedosages.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MyPeptideDosages – Peptide Dosage Calculator & Protocol Guide",
+    description:
+      "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 90+ peptides.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -79,6 +123,43 @@ export default function RootLayout({ children }) {
       </head>
 
       <body className="min-h-full">
+        {/* JSON-LD: Organization Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "MyPeptideDosages",
+              url: "https://www.mypeptidedosages.com",
+              logo: "https://www.mypeptidedosages.com/favicon.ico",
+              sameAs: [],
+              description:
+                "Research-backed peptide dosage calculator, reconstitution guides, and protocol scheduling platform.",
+            }),
+          }}
+        />
+        {/* JSON-LD: WebSite Schema with SearchAction */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "MyPeptideDosages",
+              url: "https://www.mypeptidedosages.com",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate:
+                    "https://www.mypeptidedosages.com/library?search={search_term_string}",
+                },
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
         {PIXEL_ID && (
           <noscript>
             <img

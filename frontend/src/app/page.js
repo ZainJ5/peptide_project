@@ -8,6 +8,19 @@ const ScheduleBanner = dynamic(() => import("@/components/home/ScheduleBanner"))
 const ReconstitutionCalculator = dynamic(() => import("@/components/home/ReconstitutionCalculator"));
 const FaqSection = dynamic(() => import("@/components/home/FaqSection"));
 
+export const metadata = {
+  title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
+  description:
+    "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for BPC-157, Semaglutide, TB-500, and 90+ peptides. Free tools for researchers.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
+    description:
+      "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 90+ peptides.",
+    url: "https://www.mypeptidedosages.com",
+  },
+};
+
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-10 sm:gap-28">

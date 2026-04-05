@@ -10,9 +10,28 @@ const faqItems = [
   { title: "Is my data stored securely?", content: "All user data is encrypted in transit and at rest. We use industry-standard JWT authentication with automatic token refresh. Your schedules and protocols are private by default." },
 ];
 
+export { faqItems };
+
 export default function FaqSection() {
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.title,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.content,
+      },
+    })),
+  };
+
   return (
     <section className="mx-auto max-w-7xl px-0 sm:px-6 pb-16 sm:pb-20 w-full">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <div className="grid lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-16">
 
         {/* ── Left: Heading ── */}
