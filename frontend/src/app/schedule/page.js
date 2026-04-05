@@ -184,7 +184,8 @@ function TodayDashboard({ schedules, loading, token, refreshToken, setAuth, onNe
 }
 
 function TodayScheduleCard({ schedule, todayStr, token, refreshToken, setAuth, completeEventMutation, showToast }) {
-  const calendarQuery = useScheduleCalendar(schedule.id);
+  const currentMonth = todayStr.slice(0, 7);
+  const calendarQuery = useScheduleCalendar(schedule.id, currentMonth);
   const calendarData = calendarQuery.data?.data;
 
   const todayEvents = useMemo(() => {

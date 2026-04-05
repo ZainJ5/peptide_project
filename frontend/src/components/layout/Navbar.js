@@ -232,11 +232,18 @@ export default function Navbar() {
                   )}
                 </div>
               ) : (
-                <Link href="/login">
-                  <Button className="h-9 cursor-pointer rounded-xl bg-slate-900 px-5 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-slate-800">
-                    Login
-                  </Button>
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link href="/signup">
+                    <Button variant="secondary" className="h-9 cursor-pointer rounded-xl border-slate-200 px-5 text-sm font-bold text-slate-700 transition-all hover:-translate-y-0.5 hover:bg-slate-50 hover:border-slate-300">
+                      Get Started
+                    </Button>
+                  </Link>
+                  <Link href="/login">
+                    <Button className="h-9 cursor-pointer rounded-xl bg-slate-900 px-5 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-slate-800">
+                      Login
+                    </Button>
+                  </Link>
+                </div>
               )}
             </div>
           </div>

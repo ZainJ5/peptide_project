@@ -175,13 +175,15 @@ export function useScheduleBuilderMutations() {
   return { createSchedule, addItem, preview, generate, calendar, completeEvent };
 }
 
-export function useScheduleCalendar(scheduleId) {
+export function useScheduleCalendar(scheduleId, month) {
   const request = useAuthedRequest();
   const token = useAuthStore((s) => s.token);
+  const qs = month ? `?month=${month}` : '';
   return useQuery({
-    queryKey: ["schedule-calendar", scheduleId],
-    queryFn: () => request(`/schedules/${scheduleId}/calendar`),
+    queryKey: month ? ["schedule-calendar", scheduleId, month] : ["schedule-calendar", scheduleId],
+    queryFn: () => request(`/schedules/${scheduleId}/calendar${qs}`),
     enabled: Boolean(token) && Boolean(scheduleId),
+    staleTime: 2 * 60 * 1000,
   });
 }
 
@@ -194,7 +196,38 @@ export function useCompleteEvent() {
         method: "PATCH",
         body: { completed },
       }),
-    onSuccess: (_, variables) => {
+    onMutate: async (variables) => {
+      const { scheduleId, eventId, completed } = variables;
+      const allKeys = queryClient.getQueriesData({ queryKey: ["schedule-calendar", scheduleId] });
+      const snapshots = [];
+      for (const [key, data] of allKeys) {
+        if (!data?.data) continue;
+        snapshots.push({ key, data: structuredClone(data) });
+        const updated = { ...data, data: { ...data.data } };
+        for (const [month, dates] of Object.entries(updated.data)) {
+          const newDates = { ...dates };
+          for (const [date, events] of Object.entries(newDates)) {
+            const idx = events.findIndex((e) => e.id === eventId);
+            if (idx !== -1) {
+              const newEvents = [...events];
+              newEvents[idx] = { ...newEvents[idx], isCompleted: completed, completedAt: completed ? new Date().toISOString() : null };
+              newDates[date] = newEvents;
+            }
+          }
+          updated.data[month] = newDates;
+        }
+        queryClient.setQueryData(key, updated);
+      }
+      return { snapshots };
+    },
+    onError: (_, __, context) => {
+      if (context?.snapshots) {
+        for (const { key, data } of context.snapshots) {
+          queryClient.setQueryData(key, data);
+        }
+      }
+    },
+    onSettled: (_, __, variables) => {
       queryClient.invalidateQueries({ queryKey: ["schedule-calendar", variables.scheduleId] });
     },
   });
