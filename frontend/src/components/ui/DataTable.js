@@ -2,7 +2,7 @@
 
 import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 
-export default function DataTable({ data, columns }) {
+export default function DataTable({ data, columns, caption }) {
   const table = useReactTable({
     data,
     columns,
@@ -12,6 +12,7 @@ export default function DataTable({ data, columns }) {
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
       <table className="min-w-full text-sm">
+        {caption && <caption className="sr-only">{caption}</caption>}
         <thead className="bg-slate-50">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>

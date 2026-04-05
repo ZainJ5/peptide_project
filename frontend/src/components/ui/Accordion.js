@@ -15,6 +15,9 @@ export default function Accordion({ items }) {
             <button
               type="button"
               onClick={() => setOpenIndex(open ? -1 : index)}
+              aria-expanded={open}
+              aria-controls={`accordion-panel-${index}`}
+              id={`accordion-header-${index}`}
               className="flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-slate-50/50"
             >
               <div className="flex items-center gap-3.5">
@@ -38,6 +41,9 @@ export default function Accordion({ items }) {
             <AnimatePresence initial={false}>
               {open && (
                 <motion.div
+                  id={`accordion-panel-${index}`}
+                  role="region"
+                  aria-labelledby={`accordion-header-${index}`}
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}

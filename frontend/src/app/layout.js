@@ -5,10 +5,17 @@ import Providers from "@/app/providers";
 import AppShell from "@/components/layout/AppShell";
 import Analytics from "@/components/analytics/Analytics";
 
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
+});
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
 export const metadata = {
@@ -30,13 +37,19 @@ export default function RootLayout({ children }) {
       className={`${inter.variable} ${plusJakarta.variable} h-full antialiased`}
     >
       <head>
+        {/* Preconnect to critical third-party origins */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {GA_ID && <link rel="preconnect" href="https://www.googletagmanager.com" />}
+        {PIXEL_ID && <link rel="preconnect" href="https://connect.facebook.net" />}
+
         {GA_ID && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
-            <Script id="ga-init" strategy="afterInteractive">
+            <Script id="ga-init" strategy="lazyOnload">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){window.dataLayer.push(arguments);}
@@ -47,9 +60,9 @@ export default function RootLayout({ children }) {
           </>
         )}
 
-        {/* ── Meta Pixel ── */}
+        {/* ── Meta Pixel (deferred to idle) ── */}
         {PIXEL_ID && (
-          <Script id="meta-pixel-init" strategy="afterInteractive">
+          <Script id="meta-pixel-init" strategy="lazyOnload">
             {`
               !function(f,b,e,v,n,t,s)
               {if(f.fbq)return;n=f.fbq=function(){n.callMethod?

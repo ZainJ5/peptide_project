@@ -116,11 +116,12 @@ export default function ReconstitutionCalculator() {
 
               {/* Peptide Amount */}
               <div>
-                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500 sm:text-sm sm:font-semibold sm:normal-case sm:tracking-normal">
+                <label htmlFor="calc-peptide-amount" className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500 sm:text-sm sm:font-semibold sm:normal-case sm:tracking-normal">
                   Peptide Amount
                 </label>
                 <div className="flex gap-2">
                   <input
+                    id="calc-peptide-amount"
                     type="number"
                     value={peptideAmount}
                     onChange={(e) => setPeptideAmount(e.target.value)}
@@ -132,6 +133,7 @@ export default function ReconstitutionCalculator() {
                   <select
                     value={peptideUnit}
                     onChange={(e) => setPeptideUnit(e.target.value)}
+                    aria-label="Peptide amount unit"
                     className="h-12 w-18 shrink-0 rounded-xl border border-slate-200 bg-white px-2 text-sm font-semibold text-slate-700 outline-none transition-all focus:border-emerald-300 focus:ring-2 focus:ring-emerald-500/10"
                   >
                     <option value="mg">mg</option>
@@ -142,10 +144,11 @@ export default function ReconstitutionCalculator() {
 
               {/* BAC Water */}
               <div>
-                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500 sm:text-sm sm:font-semibold sm:normal-case sm:tracking-normal">
+                <label htmlFor="calc-bac-water" className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500 sm:text-sm sm:font-semibold sm:normal-case sm:tracking-normal">
                   BAC Water (mL)
                 </label>
                 <input
+                  id="calc-bac-water"
                   type="number"
                   value={bacWater}
                   onChange={(e) => setBacWater(e.target.value)}
@@ -158,11 +161,12 @@ export default function ReconstitutionCalculator() {
 
               {/* Desired Dose */}
               <div>
-                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500 sm:text-sm sm:font-semibold sm:normal-case sm:tracking-normal">
+                <label htmlFor="calc-desired-dose" className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500 sm:text-sm sm:font-semibold sm:normal-case sm:tracking-normal">
                   Desired Dose
                 </label>
                 <div className="flex gap-2">
                   <input
+                    id="calc-desired-dose"
                     type="number"
                     value={desiredDose}
                     onChange={(e) => setDesiredDose(e.target.value)}
@@ -174,6 +178,7 @@ export default function ReconstitutionCalculator() {
                   <select
                     value={doseUnit}
                     onChange={(e) => setDoseUnit(e.target.value)}
+                    aria-label="Desired dose unit"
                     className="h-12 w-18 shrink-0 rounded-xl border border-slate-200 bg-white px-2 text-sm font-semibold text-slate-700 outline-none transition-all focus:border-emerald-300 focus:ring-2 focus:ring-emerald-500/10"
                   >
                     <option value="mcg">mcg</option>

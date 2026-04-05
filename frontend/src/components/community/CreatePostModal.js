@@ -40,7 +40,7 @@ export default function CreatePostModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div role="dialog" aria-modal="true" aria-labelledby="create-post-title" className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
@@ -50,9 +50,10 @@ export default function CreatePostModal({ isOpen, onClose }) {
       {/* Modal */}
       <div className="relative w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 sm:p-8 text-left align-middle shadow-2xl transition-all h-auto max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between mb-5 border-b border-slate-100 pb-4 shrink-0">
-          <h2 className="text-xl font-bold text-slate-900 leading-none">Create a Post</h2>
+          <h2 id="create-post-title" className="text-xl font-bold text-slate-900 leading-none">Create a Post</h2>
           <button 
             type="button"
+            aria-label="Close dialog"
             className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none transition-colors"
             onClick={onClose}
           >
@@ -63,8 +64,8 @@ export default function CreatePostModal({ isOpen, onClose }) {
         <div className="overflow-y-auto pr-2 pb-4 flex-1 custom-scrollbar">
           <form id="create-post-form" onSubmit={handleSubmit(onSubmit)} className="grid gap-5">
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700">Topic / Peptide</label>
-              <Select {...register("peptideId", { required: true })} className="w-full bg-slate-50">
+              <label htmlFor="create-post-peptide" className="text-sm font-semibold text-slate-700">Topic / Peptide</label>
+              <Select id="create-post-peptide" {...register("peptideId", { required: true })} className="w-full bg-slate-50">
                 <option value="">Select peptide</option>
                 {(peptidesQuery.data?.data || []).map((item) => (
                   <option key={item.id} value={item.id}>{item.name}</option>
@@ -73,8 +74,9 @@ export default function CreatePostModal({ isOpen, onClose }) {
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700">Title <span className="text-red-500">*</span></label>
+              <label htmlFor="create-post-title-input" className="text-sm font-semibold text-slate-700">Title <span className="text-red-500">*</span></label>
               <input 
+                id="create-post-title-input"
                 {...register("title", { required: true, minLength: 5 })} 
                 placeholder="Share your primary observation..." 
                 className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm focus:border-(--color-primary) focus:ring-1 focus:ring-(--color-primary) focus:outline-none transition-all" 
@@ -82,8 +84,9 @@ export default function CreatePostModal({ isOpen, onClose }) {
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700">Detailed Experience <span className="text-red-500">*</span></label>
+              <label htmlFor="create-post-content" className="text-sm font-semibold text-slate-700">Detailed Experience <span className="text-red-500">*</span></label>
               <textarea 
+                id="create-post-content"
                 {...register("content", { required: true, minLength: 10 })} 
                 placeholder="Describe your protocol, results, timeline, and subjective experience..." 
                 className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm focus:border-(--color-primary) focus:ring-1 focus:ring-(--color-primary) focus:outline-none transition-all resize-y min-h-[120px]" 

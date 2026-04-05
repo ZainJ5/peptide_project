@@ -5,8 +5,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 const slides = [
   { src: "/header/header-1-v2.png", alt: "Precision Peptide Intelligence" },
-  // { src: "/header/header-2.png", alt: "Advanced Protocol Management" },
-  // { src: "/header/header-3.png", alt: "Clinical-Grade Dosage Planning" },
   { src: "/header/header-4.png", alt: "How-to peptide videos" },
   { src: "/header/header-7.png", alt: "Search popular peptides" },
   { src: "/header/header-6.png", alt: "Search popular peptides" },
@@ -41,17 +39,32 @@ export default function HeroCarousel() {
 
   return (
     <section
+      aria-roledescription="carousel"
+      aria-label="Featured content"
       className="relative -mx-2 w-[calc(100%+1rem)] overflow-hidden rounded-none bg-slate-100 sm:mx-0 sm:w-full sm:rounded-3xl"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        Slide {currentSlide + 1} of {slides.length}: {slides[currentSlide].alt}
+      </div>
       <div className="relative aspect-16/7 sm:aspect-16/6 w-full">
         {slides.map((slide, index) => (
           <div
             key={index}
             className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"}`}
           >
-            <Image src={slide.src} alt={slide.alt} fill className="object-cover" priority={index === 0} sizes="100vw" />
+            <Image
+              src={slide.src}
+              alt={slide.alt}
+              fill
+              className="object-cover"
+              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : "auto"}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1280px"
+              quality={75}
+            />
           </div>
         ))}
 

@@ -74,7 +74,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-      <footer className="relative md:mt-16 mt-2 w-full overflow-hidden bg-slate-900 text-slate-300">
+      <footer aria-label="Site footer" className="relative md:mt-16 mt-2 w-full overflow-hidden bg-slate-900 text-slate-300">
         {/* Subtle top accent line */}
         <div className="h-[2px] w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500" />
 
@@ -229,13 +229,14 @@ export default function Footer() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Your email address"
+                        aria-label="Email address for newsletter"
                         disabled={isSubmitting}
                         className="h-11 w-full rounded-full bg-transparent pl-4 pr-12 text-sm text-white outline-none placeholder:text-slate-500"
                       />
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="absolute right-1 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white transition-all duration-200 hover:bg-emerald-400 active:scale-95 disabled:opacity-50"
+                        className="absolute right-1 flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500 text-white transition-all duration-200 hover:bg-emerald-400 active:scale-95 disabled:opacity-50"
                         aria-label="Subscribe"
                       >
                         {isSubmitting ? (

@@ -1,14 +1,16 @@
 "use client";
 
-export default function Toggle({ checked, onChange }) {
+export default function Toggle({ checked, onChange, label }) {
   return (
     <button
       type="button"
+      role="switch"
       onClick={() => onChange(!checked)}
-      className={`relative h-7 w-12 rounded-full transition ${checked ? "bg-(--color-accent)" : "bg-slate-300"}`}
-      aria-pressed={checked}
+      className={`relative inline-flex h-8 w-14 min-h-[44px] min-w-[44px] items-center rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary) ${checked ? "bg-(--color-accent)" : "bg-slate-300"}`}
+      aria-checked={checked}
+      aria-label={label}
     >
-      <span className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${checked ? "left-6" : "left-1"}`} />
+      <span className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow transition ${checked ? "left-7" : "left-1"}`} />
     </button>
   );
 }

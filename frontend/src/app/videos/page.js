@@ -43,7 +43,8 @@ export default function VideosPage() {
             <h1 className="text-3xl pt-4 font-bold">Video Library</h1>
             <p className="text-sm text-slate-600">Learn reconstitution, injection techniques, and peptide-specific workflows.</p>
           </div>
-          <Select value={category} onChange={(event) => setCategory(event.target.value)} className="max-w-xs">
+          <label htmlFor="video-category-filter" className="sr-only">Filter by category</label>
+          <Select id="video-category-filter" value={category} onChange={(event) => setCategory(event.target.value)} className="max-w-xs">
             {VIDEO_CATEGORIES.map((item) => (
               <option key={item.value} value={item.value}>{item.label}</option>
             ))}
@@ -55,14 +56,17 @@ export default function VideosPage() {
             <Card key={video.id} className="overflow-hidden flex flex-col group hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] transition-shadow">
               
               {/* Interactive Player Frame */}
-              <div 
-                className="relative aspect-video w-full bg-slate-950 overflow-hidden cursor-pointer"
+              <button 
+                type="button"
+                className="relative aspect-video w-full bg-slate-950 overflow-hidden cursor-pointer block"
                 onClick={() => setPlayingVideoId(video.id)}
+                aria-label={`Play video: ${video.title}`}
               >
                   <Image 
                     src={video.customThumbnail} 
                     alt={video.title} 
                     fill
+                    loading="lazy"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     quality={60}
                     className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-90"
@@ -82,7 +86,7 @@ export default function VideosPage() {
                       {durationLabel(video.durationSeconds)}
                     </div>
                   )}
-              </div>
+              </button>
 
               {/* Video Metadata */}
               <div className="flex flex-col flex-1 p-5 lg:p-6 bg-white">
@@ -101,7 +105,7 @@ export default function VideosPage() {
 
         {/* Cinematic Video Player Modal */}
         {playingVideo && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <div role="dialog" aria-modal="true" aria-label={playingVideo.title} className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
             <div 
               className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity animate-in fade-in"
               onClick={() => setPlayingVideoId(null)}
@@ -114,6 +118,7 @@ export default function VideosPage() {
                 <h3  className="text-sm font-semibold text-white! drop-shadow-sm truncate pr-4">{playingVideo.title}</h3>
                 <button 
                   onClick={() => setPlayingVideoId(null)}
+                  aria-label="Close video player"
                   className="rounded-full bg-zinc-800/80 p-2 text-zinc-200 hover:bg-zinc-700 hover:text-white transition-colors"
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>

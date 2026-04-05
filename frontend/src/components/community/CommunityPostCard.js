@@ -37,7 +37,7 @@ export default function CommunityPostCard({ post, onUpvote, onDelete, isUpvoting
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           {post.author?.avatarUrl ? (
-            <img src={post.author.avatarUrl} alt="Avatar" className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-slate-100" />
+            <img src={post.author.avatarUrl} alt={`${authorDisplayName}'s avatar`} loading="lazy" decoding="async" className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-slate-100" />
           ) : (
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-(--color-primary) to-blue-700 text-sm font-bold text-white shadow-sm">
               {avatarInitial}
@@ -66,7 +66,7 @@ export default function CommunityPostCard({ post, onUpvote, onDelete, isUpvoting
             onClick={() => onDelete(post.id)}
             disabled={isDeleting}
             className="rounded-full p-2 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50"
-            title="Delete Post"
+            aria-label="Delete post"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
           </button>
@@ -117,6 +117,7 @@ export default function CommunityPostCard({ post, onUpvote, onDelete, isUpvoting
         <button
           onClick={() => onUpvote(post.id, post.hasUpvoted)}
           disabled={isUpvoting || !authUser}
+          aria-label={`${post.hasUpvoted ? "Remove upvote" : "Upvote"}, ${post.upvotes || 0} upvotes`}
           className={`group flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors disabled:opacity-50 ${
             post.hasUpvoted 
               ? "bg-blue-50 text-(--color-primary)" 

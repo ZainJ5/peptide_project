@@ -6,7 +6,7 @@ export default function DeleteConfirmModal({ isOpen, onClose, onConfirm, isDelet
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div role="dialog" aria-modal="true" aria-labelledby="delete-confirm-title" className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity animate-in fade-in"
@@ -21,7 +21,7 @@ export default function DeleteConfirmModal({ isOpen, onClose, onConfirm, isDelet
           </svg>
         </div>
         
-        <h3 className="text-xl font-bold text-slate-900 mb-2">Delete Discussion?</h3>
+        <h3 id="delete-confirm-title" className="text-xl font-bold text-slate-900 mb-2">Delete Discussion?</h3>
         <p className="text-sm text-slate-500 mb-8 whitespace-pre-wrap leading-relaxed">
           Are you sure you want to permanently delete this post? This action cannot be undone and all engagement data will be lost.
         </p>

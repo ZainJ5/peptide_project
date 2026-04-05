@@ -152,6 +152,7 @@ export default function ScheduleBanner() {
             <button 
               type="button"
               onClick={() => setShowDemo(true)}
+              aria-label="Watch schedule builder tutorial video"
               className="group relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_8px_30px_rgba(16,185,129,0.2)] hover:border-emerald-500/30 ring-1 ring-white/5"
             >
               <div className="aspect-video w-full bg-slate-800 relative">
@@ -159,7 +160,7 @@ export default function ScheduleBanner() {
                   src="/videos/thumbnail/build_peptide_plan.png" 
                   alt="Schedule Builder Tutorial"
                   fill
-                  priority
+                  loading="lazy"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100"
                 />
@@ -188,7 +189,7 @@ export default function ScheduleBanner() {
 
         {/* Demo modal */}
         {showDemo && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <div role="dialog" aria-modal="true" aria-label="Schedule Builder demo video" className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
             <div
               className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
               onClick={() => setShowDemo(false)}
@@ -206,6 +207,7 @@ export default function ScheduleBanner() {
                 </div>
                 <button
                   onClick={() => setShowDemo(false)}
+                  aria-label="Close video"
                   className="rounded-full bg-slate-800/80 p-2 text-slate-200 hover:bg-slate-700 hover:text-white transition-colors"
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

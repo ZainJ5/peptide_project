@@ -12,8 +12,15 @@ import Skeleton from "@/components/ui/Skeleton";
 import StickyNav from "@/components/library/StickyNav";
 import { usePeptideDetail } from "@/lib/hooks";
 
-const RECONSTITUTION_REFERENCE_IMAGE = "/oxytocin-5mg-reconstitution-image.png";
-const LEGACY_RECONSTITUTION_REFERENCE_IMAGE = "/OXYTOCIN 5MG RECONSTITUTION IMAGE.png";
+const FALLBACK_RECONSTITUTION_IMAGE = "/images/reconstitution/oxytocin-5mg.webp";
+
+function toReconstitutionSlug(name, mgAmount) {
+  return `${name} ${mgAmount}`
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
 function asCleanText(value) {
   if (value === null || value === undefined) return "";
@@ -56,11 +63,17 @@ export default function PeptideDetailPage() {
     [peptide?.reconstitutionRaw, peptide?.reconstitutionMl]
   );
   const hasReconstitutionImage = Boolean(peptide?.reconstitutionRaw || peptide?.preparationNotes);
-  const [reconstitutionImageSrc, setReconstitutionImageSrc] = useState(RECONSTITUTION_REFERENCE_IMAGE);
+  const reconstitutionSlug = useMemo(
+    () => peptide ? toReconstitutionSlug(peptide.name, peptide.mgAmount || "") : null,
+    [peptide?.name, peptide?.mgAmount]
+  );
+  const [reconstitutionImageSrc, setReconstitutionImageSrc] = useState(null);
 
   useEffect(() => {
-    setReconstitutionImageSrc(RECONSTITUTION_REFERENCE_IMAGE);
-  }, [params.id]);
+    if (reconstitutionSlug) {
+      setReconstitutionImageSrc(`/images/reconstitution/${reconstitutionSlug}.webp`);
+    }
+  }, [reconstitutionSlug]);
 
   const columns = useMemo(
     () => [
@@ -189,23 +202,26 @@ export default function PeptideDetailPage() {
                   </div>
                 }
               >
-                {hasReconstitutionImage && (
-                  <div className="bg-gradient-to-b from-slate-900 to-slate-800 px-3 sm:px-4 py-2 sm:py-4">
-                    {/* <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4 text-center">Reconstitution Method</p> */}
-                    <img
-                      src={reconstitutionImageSrc}
-                      alt="Reconstitution method reference"
-                      className="mx-auto w-full max-w-md rounded-xl object-contain shadow-lg"
-                      onError={() => {
-                        if (reconstitutionImageSrc !== LEGACY_RECONSTITUTION_REFERENCE_IMAGE) {
-                          setReconstitutionImageSrc(LEGACY_RECONSTITUTION_REFERENCE_IMAGE);
-                        }
-                      }}
-                    />
+                {hasReconstitutionImage && reconstitutionImageSrc && (
+                  <div className="p-4 sm:p-6">
+                    <div className="overflow-hidden rounded-xl border border-slate-200/60 bg-gradient-to-br from-slate-50/80 via-white to-slate-50/50">
+                      <img
+                        src={reconstitutionImageSrc}
+                        alt={`Reconstitution method for ${peptide?.name || "peptide"} ${peptide?.mgAmount || ""}`}
+                        loading="lazy"
+                        decoding="async"
+                        className="mx-auto w-full max-w-lg object-contain"
+                        onError={() => {
+                          if (reconstitutionImageSrc !== FALLBACK_RECONSTITUTION_IMAGE) {
+                            setReconstitutionImageSrc(FALLBACK_RECONSTITUTION_IMAGE);
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
-                <div className="p-5 sm:p-6">
-                  <div className="rounded-xl bg-gradient-to-br from-slate-50 to-white border border-slate-200/60 p-5">
+                <div className="px-4 pb-5 sm:px-6 sm:pb-6 pt-0">
+                  <div className="rounded-xl bg-gradient-to-br from-slate-50 to-white border border-slate-200/60 p-4 sm:p-5">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-(--color-primary) text-white text-xs font-bold">1</div>
                       <h3 className="text-sm font-bold text-slate-900">Reconstitution Requirements</h3>
@@ -356,8 +372,10 @@ function CustomCollapsibleSection({ title, children, iconElem, headerBg = "bg-wh
   const [isOpen, setIsOpen] = useState(startsOpen);
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white shadow-sm overflow-hidden transition-all">
-      <div 
-        className={`flex items-center justify-between px-5 sm:px-6 py-4 border-b cursor-pointer select-none hover:opacity-90 transition-opacity ${headerBg} ${headerBorder}`}
+      <button 
+        type="button"
+        aria-expanded={isOpen}
+        className={`flex w-full items-center justify-between px-5 sm:px-6 py-4 border-b cursor-pointer select-none hover:opacity-90 transition-opacity ${headerBg} ${headerBorder}`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-2.5 sm:gap-3">
@@ -367,10 +385,11 @@ function CustomCollapsibleSection({ title, children, iconElem, headerBg = "bg-wh
         <svg
           className={`h-5 w-5 text-slate-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"
+          aria-hidden="true"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
-      </div>
+      </button>
       {isOpen && <div className="animate-in fade-in slide-in-from-top-2">{children}</div>}
     </div>
   );
@@ -397,8 +416,10 @@ function SectionCard({ title, icon, children, startsOpen = true }) {
 
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white shadow-sm overflow-hidden transition-all">
-      <div 
-        className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-slate-100 bg-white hover:bg-slate-50 cursor-pointer select-none transition-colors"
+      <button 
+        type="button"
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between px-5 sm:px-6 py-4 border-b border-slate-100 bg-white hover:bg-slate-50 cursor-pointer select-none transition-colors"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-2.5">
@@ -414,10 +435,11 @@ function SectionCard({ title, icon, children, startsOpen = true }) {
         <svg
           className={`h-5 w-5 text-slate-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"
+          aria-hidden="true"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
-      </div>
+      </button>
       {isOpen && <div className="p-5 sm:p-6 bg-white animate-in fade-in slide-in-from-top-2">{children}</div>}
     </div>
   );

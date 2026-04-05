@@ -32,7 +32,7 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="pointer-events-none fixed right-4 top-4 z-100 space-y-2">
+      <div role="status" aria-live="polite" className="pointer-events-none fixed right-4 top-4 z-100 space-y-2">
         <AnimatePresence>
           {toasts.map((toast) => (
             <motion.div
@@ -43,7 +43,16 @@ export function ToastProvider({ children }) {
               transition={{ duration: 0.2 }}
               className={`pointer-events-auto min-w-72 max-w-sm rounded-2xl border px-4 py-3 shadow-[0_12px_30px_rgba(15,23,42,0.12)] backdrop-blur ${toneStyles[toast.tone] || toneStyles.info}`}
             >
-              <p className="text-sm font-semibold">{toast.message}</p>
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-sm font-semibold">{toast.message}</p>
+                <button
+                  onClick={() => removeToast(toast.id)}
+                  className="shrink-0 rounded-full p-1 transition-colors hover:bg-black/10"
+                  aria-label="Dismiss notification"
+                >
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
             </motion.div>
           ))}
         </AnimatePresence>

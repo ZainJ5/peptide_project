@@ -64,6 +64,18 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileMenuOpen]);
 
+  /* close drawer on Escape */
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        if (requestOpen) setRequestOpen(false);
+        else if (mobileMenuOpen) setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [mobileMenuOpen, requestOpen]);
+
   /* outside-click handlers */
   useEffect(() => {
     const handler = (e) => {
@@ -214,6 +226,7 @@ export default function Navbar() {
                 <input type="search" value={searchQuery} onChange={handleSearchChange}
                   onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
                   placeholder="Search peptides, protocols, or health goals..."
+                  aria-label="Search peptides"
                   className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm font-medium text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:ring-2 focus:ring-(--color-primary)/10 focus:shadow-sm"
                 />
               </form>
@@ -246,6 +259,8 @@ export default function Navbar() {
               {user ? (
                 <div className="relative ml-1" ref={desktopDropdownRef}>
                   <button onClick={() => setDesktopDropdownOpen(!desktopDropdownOpen)}
+                    aria-label="Account menu"
+                    aria-expanded={desktopDropdownOpen}
                     className="flex h-[38px] w-[38px] cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-slate-800 to-slate-950 text-xs font-bold text-white ring-2 ring-transparent transition-all hover:ring-slate-200 hover:shadow-md active:scale-95"
                   >{initials}</button>
                   {desktopDropdownOpen && (
@@ -265,7 +280,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Nav Strip */}
-          <nav className="hidden items-center justify-center gap-1 border-t border-slate-100 py-2 md:flex">
+          <nav aria-label="Main navigation" className="hidden items-center justify-center gap-1 border-t border-slate-100 py-2 md:flex">
             {links.map(({ href, label }) => {
               const active = pathname === href || pathname.startsWith(`${href}/`);
               return (
@@ -304,6 +319,8 @@ export default function Navbar() {
                 <div className="relative" ref={mobileDropdownRef}>
                   <button
                     onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
+                    aria-label="Account menu"
+                    aria-expanded={mobileDropdownOpen}
                     className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-950 text-[11px] font-bold text-white ring-2 ring-transparent transition-all active:scale-95 hover:ring-slate-200 shadow-sm"
                   >
                     {initials}
@@ -341,6 +358,9 @@ export default function Navbar() {
 
       {/* ══════════ MOBILE LEFT DRAWER — PANEL ══════════ */}
       <aside
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
         className={`fixed inset-y-0 left-0 z-50 md:hidden flex flex-col bg-white transition-transform duration-[350ms] ease-[cubic-bezier(.32,.72,0,1)] ${
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
@@ -360,9 +380,10 @@ export default function Navbar() {
             </div>
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 active:scale-95"
+              aria-label="Close navigation menu"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 active:scale-95"
             >
-              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
 
@@ -534,14 +555,15 @@ export default function Navbar() {
 
       {/* ══════════ REQUEST MODAL ══════════ */}
       {requestOpen && user && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-md">
+        <div role="dialog" aria-modal="true" aria-labelledby="request-modal-title" className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-md">
           <div className="w-full max-w-xl overflow-hidden rounded-3xl border border-slate-200/50 bg-white shadow-2xl shadow-slate-900/30">
             <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-5">
               <div>
-                <h3 className="text-xl font-extrabold text-slate-900">Request Data & Protocol</h3>
+                <h3 id="request-modal-title" className="text-xl font-extrabold text-slate-900">Request Data & Protocol</h3>
                 <p className="mt-1 text-sm font-medium text-slate-500">Submit a research ticket for admin review.</p>
               </div>
               <button type="button" onClick={() => setRequestOpen(false)}
+                aria-label="Close dialog"
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600 shadow-sm"
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -549,22 +571,22 @@ export default function Navbar() {
             </div>
             <form onSubmit={handleRequestSubmit} className="space-y-5 px-6 py-6">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700">Peptide / Compound Name</label>
-                <input value={requestForm.peptideName} onChange={(e) => setRequestForm((p) => ({ ...p, peptideName: e.target.value }))}
+                <label htmlFor="request-peptide-name" className="text-sm font-bold text-slate-700">Peptide / Compound Name</label>
+                <input id="request-peptide-name" value={requestForm.peptideName} onChange={(e) => setRequestForm((p) => ({ ...p, peptideName: e.target.value }))}
                   required minLength={2} maxLength={120} placeholder="e.g., BPC-157 or Semaglutide"
                   className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-slate-100"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700">Primary Goal</label>
-                <input value={requestForm.goal} onChange={(e) => setRequestForm((p) => ({ ...p, goal: e.target.value }))}
+                <label htmlFor="request-goal" className="text-sm font-bold text-slate-700">Primary Goal</label>
+                <input id="request-goal" value={requestForm.goal} onChange={(e) => setRequestForm((p) => ({ ...p, goal: e.target.value }))}
                   required minLength={5} maxLength={300} placeholder="What are you trying to research?"
                   className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-slate-100"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700">Additional Context</label>
-                <textarea value={requestForm.details} onChange={(e) => setRequestForm((p) => ({ ...p, details: e.target.value }))}
+                <label htmlFor="request-details" className="text-sm font-bold text-slate-700">Additional Context</label>
+                <textarea id="request-details" value={requestForm.details} onChange={(e) => setRequestForm((p) => ({ ...p, details: e.target.value }))}
                   required minLength={10} maxLength={5000} rows={4}
                   placeholder="Share protocol context, dosage questions, or specifics."
                   className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3.5 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-slate-100"
