@@ -8,6 +8,21 @@ export const metadata = {
     description:
       "Join the MyPeptideDosages community to discuss peptide protocols and share dosing experiences.",
     url: "https://www.mypeptidedosages.com/community",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "MyPeptideDosages – Peptide Community",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Peptide Community – Discuss Protocols & Share Experiences",
+    description:
+      "Join the MyPeptideDosages community to discuss peptide protocols and share dosing experiences.",
+    images: ["/opengraph-image"],
   },
 };
 

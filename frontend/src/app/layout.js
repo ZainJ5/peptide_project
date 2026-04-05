@@ -21,7 +21,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata = {
   metadataBase: new URL("https://www.mypeptidedosages.com"),
   title: {
-    default: "MyPeptideDosages – Peptide Dosage Calculator & Protocol Guide",
+    default: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     template: "%s | MyPeptideDosages",
   },
   description:
@@ -59,16 +59,25 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     siteName: "MyPeptideDosages",
-    title: "MyPeptideDosages – Peptide Dosage Calculator & Protocol Guide",
+    title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
       "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 90+ peptides.",
     url: "https://www.mypeptidedosages.com",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MyPeptideDosages – Peptide Dosage Calculator & Protocol Guide",
+    title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
       "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 90+ peptides.",
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
@@ -173,6 +182,37 @@ export default function RootLayout({ children }) {
                 },
                 "query-input": "required name=search_term_string",
               },
+            }),
+          }}
+        />
+        {/* JSON-LD: SiteNavigationElement for Google Sitelinks */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "SiteNavigationElement",
+                  name: "Peptide Dosage Library",
+                  url: "https://www.mypeptidedosages.com/library",
+                },
+                {
+                  "@type": "SiteNavigationElement",
+                  name: "Peptide Calendar Builder",
+                  url: "https://www.mypeptidedosages.com/schedule",
+                },
+                {
+                  "@type": "SiteNavigationElement",
+                  name: "Peptide How-To & Info Videos",
+                  url: "https://www.mypeptidedosages.com/videos",
+                },
+                {
+                  "@type": "SiteNavigationElement",
+                  name: "Community",
+                  url: "https://www.mypeptidedosages.com/community",
+                },
+              ],
             }),
           }}
         />

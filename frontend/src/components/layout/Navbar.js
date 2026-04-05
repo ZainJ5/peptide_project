@@ -299,7 +299,7 @@ export default function Navbar() {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Open navigation"
-              className="flex h-9 w-9 shrink-0 flex-col items-center justify-center gap-[5px] rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-200 active:scale-95 active:bg-slate-50"
+              className="flex h-11 w-11 shrink-0 flex-col items-center justify-center gap-[5px] rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-200 active:scale-95 active:bg-slate-50"
             >
               <span className="block h-[1.75px] w-[14px] rounded-full bg-slate-700" />
               <span className="block h-[1.75px] w-[10px] self-start ml-[9px] rounded-full bg-slate-400" />
@@ -314,7 +314,7 @@ export default function Navbar() {
             </Link>
 
             {/* Right — avatar or sign-in, fixed width to balance layout */}
-            <div className="shrink-0 w-9 flex justify-end">
+            <div className="shrink-0 w-11 flex justify-end">
               {user ? (
                 <div className="relative" ref={mobileDropdownRef}>
                   <button

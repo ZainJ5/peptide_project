@@ -1,13 +1,28 @@
 export const metadata = {
-  title: "Peptide Education Videos – Dosage Tutorials & Protocol Guides",
+  title: "Peptide How-To & Info Videos – Dosage Tutorials & Guides",
   description:
-    "Watch expert peptide education videos covering dosage protocols, reconstitution techniques, and research-backed peptide guides.",
+    "Watch expert peptide how-to and info videos covering dosage protocols, reconstitution techniques, and research-backed peptide guides.",
   alternates: { canonical: "/videos" },
   openGraph: {
-    title: "Peptide Education Videos – Dosage Tutorials & Protocol Guides",
+    title: "Peptide How-To & Info Videos – Dosage Tutorials & Guides",
     description:
-      "Watch expert peptide education videos covering dosage protocols, reconstitution techniques, and research-backed guides.",
+      "Watch expert peptide how-to and info videos covering dosage protocols, reconstitution techniques, and research-backed guides.",
     url: "https://www.mypeptidedosages.com/videos",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "MyPeptideDosages – Peptide How-To & Info Videos",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Peptide How-To & Info Videos – Dosage Tutorials & Guides",
+    description:
+      "Watch expert peptide how-to and info videos covering dosage protocols, reconstitution techniques, and research-backed guides.",
+    images: ["/opengraph-image"],
   },
 };
 

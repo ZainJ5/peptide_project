@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { apiRequest } from "@/lib/api";
@@ -161,20 +161,21 @@ export default function Footer() {
                   { href: "/login", label: "Sign In" },
                   { href: "/signup", label: "Create Account" },
                   { href: "/community?type=request-peptide", label: "Request a Peptide" },
-                  { href: "mailto:feedback@mypeptidedosages.com", label: "Send Feedback", external: true },
                 ].map((link) => (
                   <li key={link.label}>
-                    {link.external ? (
-                      <a href={link.href} className="text-sm text-slate-400 transition-colors duration-200 hover:text-white">
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link href={link.href} className="text-sm text-slate-400 transition-colors duration-200 hover:text-white">
-                        {link.label}
-                      </Link>
-                    )}
+                    <Link href={link.href} className="text-sm text-slate-400 transition-colors duration-200 hover:text-white">
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
+                <li>
+                  <a
+                    href={`mailto:${['info', 'mypeptidedosages.com'].join('@')}`}
+                    className="text-sm text-slate-400 transition-colors duration-200 hover:text-white"
+                  >
+                    Send Feedback
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -187,20 +188,21 @@ export default function Footer() {
                 {[
                   { href: "/privacy", label: "Privacy Policy" },
                   { href: "/terms", label: "Terms of Service" },
-                  { href: "mailto:support@mypeptidedosages.com", label: "Contact Support", external: true },
                 ].map((link) => (
                   <li key={link.label}>
-                    {link.external ? (
-                      <a href={link.href} className="text-sm text-slate-400 transition-colors duration-200 hover:text-white">
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link href={link.href} className="text-sm text-slate-400 transition-colors duration-200 hover:text-white">
-                        {link.label}
-                      </Link>
-                    )}
+                    <Link href={link.href} className="text-sm text-slate-400 transition-colors duration-200 hover:text-white">
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
+                <li>
+                  <a
+                    href={`mailto:${['support', 'mypeptidedosages.com'].join('@')}`}
+                    className="text-sm text-slate-400 transition-colors duration-200 hover:text-white"
+                  >
+                    Contact Support
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -308,7 +310,7 @@ export default function Footer() {
               <Link href="/terms" className="text-xs text-slate-500 transition-colors hover:text-slate-300">
                 Terms
               </Link>
-              <a href="mailto:support@mypeptidedosages.com" className="text-xs text-slate-500 transition-colors hover:text-slate-300">
+              <a href={`mailto:${['support', 'mypeptidedosages.com'].join('@')}`} className="text-xs text-slate-500 transition-colors hover:text-slate-300">
                 Contact
               </a>
             </div>

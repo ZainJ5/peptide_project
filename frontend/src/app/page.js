@@ -11,13 +11,28 @@ const FaqSection = dynamic(() => import("@/components/home/FaqSection"));
 export const metadata = {
   title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
   description:
-    "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for BPC-157, Semaglutide, TB-500, and 90+ peptides. Free tools for researchers.",
+    "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for BPC-157, Semaglutide, TB-500, and 100+ peptides. Free calculator and schedule tools for researchers.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
-      "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 90+ peptides.",
+      "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 100+ peptides.",
     url: "https://www.mypeptidedosages.com",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
+    description:
+      "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 100+ peptides.",
+    images: ["/opengraph-image"],
   },
 };
 
