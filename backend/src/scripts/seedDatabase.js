@@ -3,18 +3,18 @@
 /**
  * Database Seed Script
  *
- * Reads all peptide data from the Excel master workbook and
- * upserts it into PostgreSQL.
+ * Reads peptide metadata from the master workbook and dosing schedules
+ * from the new per-sheet dosage tables workbook, then upserts into PostgreSQL.
  *
  * Run:  node src/scripts/seedDatabase.js
  *   or: npm run seed
  *
- * Safe to re-run — uses upsert (INSERT OR UPDATE) on protocolTitle.
+ * Safe to re-run — truncates peptide data and re-seeds.
  *
- * Source sheets consumed:
- *   1. "Single Peptides"   — 93 rows
- *   2. "Peptide Blends"    —  9 rows
- *   3. "Dosing Schedules"  — 423 rows (escalation steps + sourceUrl)
+ * Data sources:
+ *   1. Master workbook  — peptide metadata (howItWorks, sideEffects, benefits, etc.)
+ *   2. Dosage tables workbook — Index sheet + individual per-peptide dosing sheets
+ *   3. Health objective workbook — category mapping
  */
 
 require('dotenv').config();
@@ -33,7 +33,16 @@ const MASTER_PATH_CANDIDATES = [
   path.join(DATA_DIR, 'peptide dosage master.xlsx'),
   path.resolve(__dirname, '../../..', 'peptide dosage master.xlsx'),
 ];
+const DOSAGE_TABLES_PATH = path.join(DATA_DIR, 'Peptide_dosaing_tables_replaced_completed (1).xlsx');
 const HEALTH_OBJECTIVE_PATH = path.join(DATA_DIR, 'Peptide by health objective.xlsx');
+
+// Old coded names → real names used in the new dosage tables file
+const NAME_REMAP = {
+  'GLP-1S':              'Semaglutide',
+  'GLP-2T':              'Trizepatide',
+  'GLP-3R':              'Retatrutide',
+  'Cagrilintide + GLP-1S': 'Cagrilintide + Semaglutide',
+};
 
 function resolveExistingPath(candidates) {
   for (const candidate of candidates) {
@@ -63,19 +72,35 @@ async function main() {
       throw new Error(`Master workbook not found. Checked: ${MASTER_PATH_CANDIDATES.join(', ')}`);
     }
 
-    logger.info(`Reading Excel: ${MASTER_PATH}`);
+    logger.info(`Reading master metadata Excel: ${MASTER_PATH}`);
+    const masterWorkbook = new ExcelJS.Workbook();
+    await masterWorkbook.xlsx.readFile(MASTER_PATH);
 
-    // ExcelJS reads the workbook asynchronously — no CVEs, actively maintained.
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(MASTER_PATH);
+    const fs = require('fs');
+    let dosageWorkbook = null;
+    if (fs.existsSync(DOSAGE_TABLES_PATH)) {
+      logger.info(`Reading dosage tables Excel: ${DOSAGE_TABLES_PATH}`);
+      dosageWorkbook = new ExcelJS.Workbook();
+      await dosageWorkbook.xlsx.readFile(DOSAGE_TABLES_PATH);
+    } else {
+      logger.warn(`Dosage tables workbook not found: ${DOSAGE_TABLES_PATH}`);
+    }
 
     const healthObjectiveMap = await loadHealthObjectiveMap();
 
     await resetPeptideData();
 
-    await seedPeptides(workbook, healthObjectiveMap);
-    await enrichSourceUrls(workbook);
-    await seedDosingSteps(workbook);
+    await seedPeptides(masterWorkbook, healthObjectiveMap);
+
+    // Enrich source URLs + frequency/cycle from new dosage tables Index
+    if (dosageWorkbook) {
+      await enrichFromDosageIndex(dosageWorkbook);
+      await seedDosingStepsFromSheets(dosageWorkbook);
+    } else {
+      // Fallback to old format if new file not available
+      await enrichSourceUrls(masterWorkbook);
+      await seedDosingSteps(masterWorkbook);
+    }
 
     logger.info('Seed complete.');
     process.exit(0);
@@ -215,8 +240,11 @@ async function seedPeptides(workbook, healthObjectiveMap = {}) {
     logger.info(`Processing sheet: "${sheetName}" (${rows.length} rows)`);
 
     for (const row of rows) {
-      const protocolTitle = String(row['Peptide / Blend (Protocol Title)'] || '').trim();
+      let protocolTitle = String(row['Peptide / Blend (Protocol Title)'] || '').trim();
       if (!protocolTitle) continue;
+
+      // Remap old coded names to real drug names
+      protocolTitle = remapProtocolTitle(protocolTitle);
 
       const { baseName, mgAmount } = parsePeptideTitle(protocolTitle);
 
@@ -469,6 +497,298 @@ function makeMatchKey(title) {
     .replace(/[^a-z0-9\-+]/g, '')
     .replace(/-+/g, '-')
     .trim();
+}
+
+/**
+ * Remap old coded protocol titles (e.g. "GLP-1S 10MG") to real drug names.
+ */
+function remapProtocolTitle(title) {
+  for (const [oldName, newName] of Object.entries(NAME_REMAP)) {
+    // Match "GLP-1S" at start (possibly followed by space + mg), case-insensitive
+    const pattern = new RegExp(`^${oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    if (pattern.test(title)) {
+      return title.replace(pattern, newName);
+    }
+  }
+  return title;
+}
+
+// ── New dosage tables file parsing ──────────────────────────────────────────
+
+/**
+ * Enrich peptides with source URLs, frequency, and cycle duration from the
+ * new dosage tables workbook's Index sheet.
+ */
+async function enrichFromDosageIndex(dosageWorkbook) {
+  const ws = dosageWorkbook.getWorksheet('Index');
+  if (!ws) {
+    logger.warn('Sheet "Index" not found in dosage tables workbook — skipping enrichment');
+    return;
+  }
+
+  const rows = worksheetToJson(ws);
+  logger.info(`Enriching from dosage tables Index (${rows.length} rows)`);
+
+  const allPeptides = await Peptide.findAll({
+    attributes: ['id', 'protocolTitle', 'sourceUrl', 'injectionFrequencyRaw', 'cycleDurationRaw'],
+    raw: true,
+  });
+
+  // Build match-key lookup
+  const peptidesByKey = {};
+  for (const p of allPeptides) {
+    peptidesByKey[makeMatchKey(p.protocolTitle)] = p;
+  }
+
+  let updated = 0;
+
+  for (const row of rows) {
+    const rawTitle = String(row['Protocol Title (Column A)'] || '').trim();
+    const url      = String(row['URL'] || '').trim();
+    const freq     = String(row['Frequency'] || '').trim();
+    const cycle    = String(row['Cycle/Duration'] || '').trim();
+    if (!rawTitle) continue;
+
+    const key = makeMatchKey(rawTitle);
+    const peptide = peptidesByKey[key];
+    if (!peptide) {
+      logger.warn(`  Index row not matched to DB peptide: "${rawTitle}" (key: ${key})`);
+      continue;
+    }
+
+    const updates = {};
+    if (url && url !== peptide.sourceUrl) updates.sourceUrl = url;
+    if (freq && !peptide.injectionFrequencyRaw) updates.injectionFrequencyRaw = freq;
+    if (cycle && !peptide.cycleDurationRaw) updates.cycleDurationRaw = cycle;
+
+    if (Object.keys(updates).length > 0) {
+      await Peptide.update(updates, { where: { id: peptide.id } });
+      updated++;
+    }
+  }
+
+  logger.info(`Index enrichment — updated: ${updated} peptides`);
+}
+
+/**
+ * Parse dosing steps directly from individual per-peptide sheets in the
+ * new dosage tables workbook.
+ *
+ * Each sheet has:
+ *   Row 1: Protocol title
+ *   Row 2: Source URL
+ *   Row 3: Injection frequency
+ *   Row 4: Cycle / duration
+ *   Row 5: Parent tab
+ *   Row 6: blank
+ *   Row 7: Schedule name (e.g. "Standard / Gradual Approach (3 mL = ~3.33 mg/mL)")
+ *   Row 8: Table headers
+ *   Rows 9+: dosing data rows
+ *   Blank rows separate multiple schedules
+ */
+async function seedDosingStepsFromSheets(dosageWorkbook) {
+  const allPeptides = await Peptide.findAll({ attributes: ['id', 'protocolTitle'], raw: true });
+  const peptidesByKey = {};
+  for (const p of allPeptides) {
+    peptidesByKey[makeMatchKey(p.protocolTitle)] = p;
+  }
+
+  const indexSheet = dosageWorkbook.getWorksheet('Index');
+  if (!indexSheet) {
+    logger.warn('No Index sheet found — cannot seed dosing steps');
+    return;
+  }
+
+  const indexRows = worksheetToJson(indexSheet);
+
+  // Build sheet name → protocol title mapping from Index
+  const sheetToTitle = {};
+  for (const row of indexRows) {
+    const sheetName = String(row['Sheet Name'] || '').trim();
+    const title     = String(row['Protocol Title (Column A)'] || '').trim();
+    if (sheetName && title) sheetToTitle[sheetName] = title;
+  }
+
+  let totalCreated = 0;
+  let totalSkipped = 0;
+
+  for (const ws of dosageWorkbook.worksheets) {
+    if (ws.name === 'Index') continue;
+
+    // Get protocol title from row 1 of the sheet
+    const row1Cell = ws.getCell(1, 1).value;
+    let protocolTitle = extractCellValue(row1Cell);
+    protocolTitle = String(protocolTitle || '').trim();
+
+    // Fallback to Index lookup if row 1 is odd
+    if (!protocolTitle) {
+      protocolTitle = sheetToTitle[ws.name] || '';
+    }
+    if (!protocolTitle) {
+      logger.warn(`  Sheet "${ws.name}" — no protocol title found, skipping`);
+      totalSkipped++;
+      continue;
+    }
+
+    const key = makeMatchKey(protocolTitle);
+    const peptide = peptidesByKey[key];
+    if (!peptide) {
+      logger.warn(`  No DB peptide match for sheet "${ws.name}" / "${protocolTitle}" (key: ${key})`);
+      totalSkipped++;
+      continue;
+    }
+
+    // Parse all rows from the sheet into a flat array
+    const allRows = [];
+    ws.eachRow((row) => {
+      const values = row.values.slice(1).map((v) => extractCellValue(v));
+      allRows.push(values);
+    });
+
+    // Find dosing schedules by scanning for schedule name + header + data patterns
+    const schedules = parseSchedulesFromRows(allRows);
+
+    if (schedules.length === 0) {
+      logger.warn(`  Sheet "${ws.name}" — no dosing schedules detected`);
+      totalSkipped++;
+      continue;
+    }
+
+    for (const schedule of schedules) {
+      for (let i = 0; i < schedule.steps.length; i++) {
+        const step = schedule.steps[i];
+        const stepOrder = i + 1;
+        const tableHeaders = schedule.headers;
+        const rowData = {};
+        tableHeaders.forEach((h, idx) => {
+          if (h) rowData[h] = step[idx] || '';
+        });
+
+        // Parse week, dose, units from the row data
+        const rowDataKeys = Object.keys(rowData);
+
+        let weekStart = null, weekEnd = null;
+        const weekKey = rowDataKeys.find((k) => /week|phase|day/i.test(k));
+        if (weekKey) {
+          const parsed = parseWeekRange(String(rowData[weekKey]));
+          weekStart = parsed.weekStart;
+          weekEnd   = parsed.weekEnd;
+        }
+
+        let doseLabel = null, doseMcg = null;
+        const doseKey = rowDataKeys.find((k) => /dose|mcg/i.test(k));
+        if (doseKey) {
+          const parsed = parseDoseMcg(String(rowData[doseKey]));
+          doseLabel = parsed.label;
+          doseMcg   = parsed.mcg;
+        }
+
+        let doseUnits = null, volumeMl = null;
+        const unitsKey = rowDataKeys.find((k) => /unit|ml|vol/i.test(k));
+        if (unitsKey) {
+          const parsed = parseDoseValue(String(rowData[unitsKey]));
+          doseUnits = parsed.units;
+          volumeMl  = parsed.volumeMl;
+        }
+
+        try {
+          await DosingStep.upsert(
+            {
+              peptideId: peptide.id,
+              scheduleName: schedule.name,
+              stepOrder,
+              weekRangeLabel: weekStart != null ? `Weeks ${weekStart}${weekEnd ? '–' + weekEnd : '+'}` : null,
+              weekStart,
+              weekEnd,
+              dailyDoseLabel:    doseLabel,
+              dailyDoseMcg:      doseMcg,
+              unitsPerInjection: doseUnits,
+              volumeMl,
+              tableHeaders,
+              rowData,
+            },
+            { conflictFields: ['peptide_id', 'schedule_name', 'step_order'] }
+          );
+          totalCreated++;
+        } catch (err) {
+          logger.warn(`  Failed to upsert step for "${protocolTitle}" schedule "${schedule.name}" step ${stepOrder}: ${err.message}`);
+          totalSkipped++;
+        }
+      }
+    }
+  }
+
+  logger.info(`Dosing steps (from sheets) — upserted: ${totalCreated}, skipped: ${totalSkipped}`);
+}
+
+/**
+ * Parse dosing schedule tables from a sheet's raw row arrays.
+ * Returns an array of { name, headers, steps } objects.
+ *
+ * Structure detection:
+ *   - Metadata rows (rows 0-4): title, URL, frequency, cycle, parent tab
+ *   - Blank row
+ *   - Schedule name row (single non-empty cell in col A)
+ *   - Header row (multiple non-empty cells — column labels)
+ *   - Data rows (until blank row or end)
+ */
+function parseSchedulesFromRows(allRows) {
+  const schedules = [];
+  let i = 5; // Skip metadata rows (0-4)
+
+  while (i < allRows.length) {
+    // Skip blank rows
+    if (isBlankRow(allRows[i])) { i++; continue; }
+
+    // Look for a schedule name row — typically single value or a descriptive label
+    const row = allRows[i];
+    const nonEmpty = row.filter((v) => v != null && String(v).trim() !== '');
+
+    // Schedule name is usually a single cell (or first cell of a row where
+    // subsequent cells are empty), containing keywords like "Protocol", "Approach", "Standard", etc.
+    if (nonEmpty.length <= 1 || (nonEmpty.length >= 1 && isScheduleNameRow(row))) {
+      const scheduleName = String(row[0] || '').trim();
+      if (!scheduleName) { i++; continue; }
+
+      i++;
+      if (i >= allRows.length) break;
+
+      // Next row should be headers
+      const headers = allRows[i].map((v) => String(v || '').trim());
+      const validHeaders = headers.filter(Boolean);
+      if (validHeaders.length < 2) { continue; }
+
+      i++;
+
+      // Collect data rows until blank row or end
+      const steps = [];
+      while (i < allRows.length && !isBlankRow(allRows[i])) {
+        steps.push(allRows[i]);
+        i++;
+      }
+
+      if (steps.length > 0) {
+        schedules.push({ name: scheduleName, headers, steps });
+      }
+    } else {
+      i++;
+    }
+  }
+
+  return schedules;
+}
+
+function isBlankRow(row) {
+  if (!row) return true;
+  return row.every((v) => v == null || String(v).trim() === '');
+}
+
+function isScheduleNameRow(row) {
+  // A schedule name row has content in the first cell and empty or null in the rest
+  const first = String(row[0] || '').trim();
+  if (!first) return false;
+  const rest = row.slice(1);
+  return rest.every((v) => v == null || String(v).trim() === '');
 }
 
 main();
