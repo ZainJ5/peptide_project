@@ -7,7 +7,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { apiRequest } from "@/lib/api";
 import Button from "@/components/ui/Button";
-import { ArrowForward } from "@mui/icons-material";
 import { toDisplayImageUrl } from "@/lib/imageUrl";
 
 const links = [
@@ -41,11 +40,7 @@ export default function Navbar() {
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
   const [mobileDropdownOpen, setMobileDropdownOpen]   = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen]           = useState(false);
-  const [requestOpen, setRequestOpen]                 = useState(false);
-  const [submitting, setSubmitting]                   = useState(false);
-  const [requestError, setRequestError]               = useState("");
-  const [requestSuccess, setRequestSuccess]           = useState("");
-  const [requestForm, setRequestForm]                 = useState({ peptideName: "", goal: "", details: "" });
+
 
   const desktopDropdownRef = useRef(null);
   const mobileDropdownRef  = useRef(null);
@@ -67,21 +62,11 @@ export default function Navbar() {
   /* close drawer on Escape */
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        if (requestOpen) setRequestOpen(false);
-        else if (mobileMenuOpen) setMobileMenuOpen(false);
-      }
+      if (e.key === "Escape" && mobileMenuOpen) setMobileMenuOpen(false);
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [mobileMenuOpen, requestOpen]);
-
-  /* listen for open-request-protocol event from Footer */
-  useEffect(() => {
-    const open = () => { setRequestError(""); setRequestSuccess(""); setRequestOpen(true); };
-    window.addEventListener("open-request-protocol", open);
-    return () => window.removeEventListener("open-request-protocol", open);
-  }, []);
+  }, [mobileMenuOpen]);
 
   /* outside-click handlers */
   useEffect(() => {
@@ -124,22 +109,7 @@ export default function Navbar() {
     ? (user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email.split("@")[0])
     : "";
 
-  const handleRequestSubmit = async (event) => {
-    event.preventDefault();
-    setRequestError(""); setRequestSuccess(""); setSubmitting(true);
-    try {
-      const response = await apiRequest("/community/request-peptide", {
-        method: "POST", body: requestForm, token, refreshToken,
-        onRefresh: (p) => setAuth({ token: p.token, refreshToken: p.refreshToken, user: p.user }),
-      });
-      setRequestSuccess(response?.message || "Request submitted successfully.");
-      setRequestForm({ peptideName: "", goal: "", details: "" });
-      setTimeout(() => { setRequestOpen(false); setRequestSuccess(""); }, 1200);
-    } catch (err) {
-      if (err?.status === 401) clearAuth();
-      setRequestError(err?.message || "Unable to submit request right now.");
-    } finally { setSubmitting(false); }
-  };
+
 
   /* ── Reusable Enterprise User Dropdown ── */
   const UserProfileDropdownContent = ({ closeMenu }) => (
@@ -249,21 +219,6 @@ export default function Navbar() {
               </a>
 
               {user ? (
-                <button type="button" onClick={() => { setRequestError(""); setRequestSuccess(""); setRequestOpen(true); }}
-                  className="inline-flex h-9 items-center gap-2 rounded-xl bg-(--color-accent) px-4 text-sm font-bold text-white shadow-md shadow-(--color-accent)/20 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-(--color-accent)/30"
-                >
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" /></svg>
-                  Request Protocol
-                </button>
-              ) : (
-                <Link href="/login">
-                  <Button className="h-9 rounded-xl bg-(--color-accent) px-5 text-sm font-bold text-white shadow-md shadow-(--color-accent)/20 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-(--color-accent)/30">
-                    Sign In to request a protocol <ArrowForward className="ml-1 !text-[18px]" />
-                  </Button>
-                </Link>
-              )}
-
-              {user ? (
                 <div className="relative ml-1" ref={desktopDropdownRef}>
                   <button onClick={() => setDesktopDropdownOpen(!desktopDropdownOpen)}
                     aria-label="Account menu"
@@ -277,9 +232,9 @@ export default function Navbar() {
                   )}
                 </div>
               ) : (
-                <Link href="/signup">
+                <Link href="/login">
                   <Button className="h-9 cursor-pointer rounded-xl bg-slate-900 px-5 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-slate-800">
-                    Get Started
+                    Login
                   </Button>
                 </Link>
               )}
@@ -492,24 +447,7 @@ export default function Navbar() {
           {/* Actions section */}
           <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Actions</p>
 
-          {user ? (
-            <button
-              type="button"
-              onClick={() => {
-                setRequestError("");
-                setRequestSuccess("");
-                setRequestOpen(true);
-                setMobileMenuOpen(false);
-              }}
-              className="group mb-0.5 flex w-full items-center gap-3 rounded-xl px-3 py-3 text-slate-600 transition-all duration-150 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
-            >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors group-hover:bg-(--color-accent)/10 group-hover:text-(--color-accent)">
-                <svg className="h-[17px] w-[17px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" /></svg>
-              </span>
-              <span className=" text-[14px] font-semibold leading-none">Request Protocol</span>
-              <svg className="h-3.5 w-3.5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
-            </button>
-          ) : (
+          {!user && (
             <>
               <Link href="/signup" onClick={() => setMobileMenuOpen(false)}
                 className="group mb-0.5 flex items-center gap-3 rounded-xl px-3 py-3 text-slate-600 transition-all duration-150 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
@@ -559,64 +497,6 @@ export default function Navbar() {
         {/* Thin accent bar on right edge of drawer */}
         <div className="pointer-events-none absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-slate-200 to-transparent" />
       </aside>
-
-      {/* ══════════ REQUEST MODAL ══════════ */}
-      {requestOpen && user && (
-        <div role="dialog" aria-modal="true" aria-labelledby="request-modal-title" className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-md">
-          <div className="w-full max-w-xl overflow-hidden rounded-3xl border border-slate-200/50 bg-white shadow-2xl shadow-slate-900/30">
-            <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-5">
-              <div>
-                <h3 id="request-modal-title" className="text-xl font-extrabold text-slate-900">Request Data & Protocol</h3>
-                <p className="mt-1 text-sm font-medium text-slate-500">Submit a research ticket for admin review.</p>
-              </div>
-              <button type="button" onClick={() => setRequestOpen(false)}
-                aria-label="Close dialog"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600 shadow-sm"
-              >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
-            </div>
-            <form onSubmit={handleRequestSubmit} className="space-y-5 px-6 py-6">
-              <div className="space-y-2">
-                <label htmlFor="request-peptide-name" className="text-sm font-bold text-slate-700">Peptide / Compound Name</label>
-                <input id="request-peptide-name" value={requestForm.peptideName} onChange={(e) => setRequestForm((p) => ({ ...p, peptideName: e.target.value }))}
-                  required minLength={2} maxLength={120} placeholder="e.g., BPC-157 or Semaglutide"
-                  className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-slate-100"
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="request-goal" className="text-sm font-bold text-slate-700">Primary Goal</label>
-                <input id="request-goal" value={requestForm.goal} onChange={(e) => setRequestForm((p) => ({ ...p, goal: e.target.value }))}
-                  required minLength={5} maxLength={300} placeholder="What are you trying to research?"
-                  className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-slate-100"
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="request-details" className="text-sm font-bold text-slate-700">Additional Context</label>
-                <textarea id="request-details" value={requestForm.details} onChange={(e) => setRequestForm((p) => ({ ...p, details: e.target.value }))}
-                  required minLength={10} maxLength={5000} rows={4}
-                  placeholder="Share protocol context, dosage questions, or specifics."
-                  className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3.5 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-slate-100"
-                />
-              </div>
-              
-              {requestError   && <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">{requestError}</p>}
-              {requestSuccess && <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">{requestSuccess}</p>}
-              
-              <div className="flex items-center justify-end gap-3 pt-2">
-                <button type="button" onClick={() => setRequestOpen(false)}
-                  className="h-11 rounded-xl px-5 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-100">
-                  Cancel
-                </button>
-                <button type="submit" disabled={submitting}
-                  className="inline-flex h-11 items-center rounded-xl bg-(--color-accent) px-6 text-sm font-bold text-white shadow-md shadow-(--color-accent)/20 transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70">
-                  {submitting ? "Submitting Ticket…" : "Submit Request"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </>
   );
 }

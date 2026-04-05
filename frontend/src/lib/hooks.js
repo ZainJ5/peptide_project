@@ -174,3 +174,28 @@ export function useScheduleBuilderMutations() {
 
   return { createSchedule, addItem, preview, generate, calendar, completeEvent };
 }
+
+export function useScheduleCalendar(scheduleId) {
+  const request = useAuthedRequest();
+  const token = useAuthStore((s) => s.token);
+  return useQuery({
+    queryKey: ["schedule-calendar", scheduleId],
+    queryFn: () => request(`/schedules/${scheduleId}/calendar`),
+    enabled: Boolean(token) && Boolean(scheduleId),
+  });
+}
+
+export function useCompleteEvent() {
+  const request = useAuthedRequest();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ scheduleId, eventId, completed }) =>
+      request(`/schedules/${scheduleId}/calendar/${eventId}/complete`, {
+        method: "PATCH",
+        body: { completed },
+      }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["schedule-calendar", variables.scheduleId] });
+    },
+  });
+}

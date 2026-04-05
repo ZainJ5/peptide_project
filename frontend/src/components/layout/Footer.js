@@ -3,8 +3,6 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/lib/auth-store";
 import { apiRequest } from "@/lib/api";
 
 /* ─── Premium SVG Social Icons ─── */
@@ -51,8 +49,6 @@ const InstagramIcon = () => (
 );
 
 export default function Footer() {
-  const router = useRouter();
-  const user = useAuthStore((s) => s.user);
   const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscribeError, setSubscribeError] = useState("");
@@ -171,21 +167,6 @@ export default function Footer() {
                     </Link>
                   </li>
                 ))}
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (user) {
-                        window.dispatchEvent(new CustomEvent("open-request-protocol"));
-                      } else {
-                        router.push("/login");
-                      }
-                    }}
-                    className="text-sm text-slate-400 transition-colors duration-200 hover:text-white cursor-pointer bg-transparent border-none p-0"
-                  >
-                    Request a Protocol
-                  </button>
-                </li>
                 <li>
                   <a
                     href={`mailto:${['info', 'mypeptidedosages.com'].join('@')}`}
