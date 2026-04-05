@@ -34,6 +34,7 @@ const MASTER_PATH_CANDIDATES = [
   path.resolve(__dirname, '../../..', 'peptide dosage master.xlsx'),
 ];
 const DOSAGE_TABLES_PATH = path.join(DATA_DIR, 'Peptide_dosaing_tables_replaced_completed (1).xlsx');
+const DOSAGE_TABLES_JSON_PATH = path.join(DATA_DIR, 'dosage_tables.json');
 const HEALTH_OBJECTIVE_PATH = path.join(DATA_DIR, 'Peptide by health objective.xlsx');
 
 // Old coded names → real names used in the new dosage tables file
@@ -77,13 +78,16 @@ async function main() {
     await masterWorkbook.xlsx.readFile(MASTER_PATH);
 
     const fs = require('fs');
-    let dosageWorkbook = null;
-    if (fs.existsSync(DOSAGE_TABLES_PATH)) {
-      logger.info(`Reading dosage tables Excel: ${DOSAGE_TABLES_PATH}`);
-      dosageWorkbook = new ExcelJS.Workbook();
-      await dosageWorkbook.xlsx.readFile(DOSAGE_TABLES_PATH);
+    let dosageData = null;
+    if (fs.existsSync(DOSAGE_TABLES_JSON_PATH)) {
+      logger.info(`Reading dosage tables JSON: ${DOSAGE_TABLES_JSON_PATH}`);
+      dosageData = JSON.parse(fs.readFileSync(DOSAGE_TABLES_JSON_PATH, 'utf-8'));
+    } else if (fs.existsSync(DOSAGE_TABLES_PATH)) {
+      logger.info(`JSON not found, converting Excel to JSON first...`);
+      logger.warn(`Run: python3 src/scripts/convertExcelToJson.py`);
+      logger.warn(`Falling back to old dosing schedule format from master workbook.`);
     } else {
-      logger.warn(`Dosage tables workbook not found: ${DOSAGE_TABLES_PATH}`);
+      logger.warn(`Dosage tables not found (neither JSON nor Excel)`);
     }
 
     const healthObjectiveMap = await loadHealthObjectiveMap();
@@ -92,10 +96,10 @@ async function main() {
 
     await seedPeptides(masterWorkbook, healthObjectiveMap);
 
-    // Enrich source URLs + frequency/cycle from new dosage tables Index
-    if (dosageWorkbook) {
-      await enrichFromDosageIndex(dosageWorkbook);
-      await seedDosingStepsFromSheets(dosageWorkbook);
+    // Enrich source URLs + frequency/cycle from new dosage tables
+    if (dosageData) {
+      await enrichFromDosageIndex(dosageData);
+      await seedDosingStepsFromSheets(dosageData);
     } else {
       // Fallback to old format if new file not available
       await enrichSourceUrls(masterWorkbook);
@@ -513,28 +517,26 @@ function remapProtocolTitle(title) {
   return title;
 }
 
-// ── New dosage tables file parsing ──────────────────────────────────────────
+// ── New dosage tables file parsing (reads from JSON) ───────────────────────
 
 /**
  * Enrich peptides with source URLs, frequency, and cycle duration from the
- * new dosage tables workbook's Index sheet.
+ * dosage tables JSON index array.
  */
-async function enrichFromDosageIndex(dosageWorkbook) {
-  const ws = dosageWorkbook.getWorksheet('Index');
-  if (!ws) {
-    logger.warn('Sheet "Index" not found in dosage tables workbook — skipping enrichment');
+async function enrichFromDosageIndex(dosageData) {
+  const indexRows = dosageData.index;
+  if (!indexRows || indexRows.length === 0) {
+    logger.warn('No index data in dosage tables JSON — skipping enrichment');
     return;
   }
 
-  const rows = worksheetToJson(ws);
-  logger.info(`Enriching from dosage tables Index (${rows.length} rows)`);
+  logger.info(`Enriching from dosage tables Index (${indexRows.length} rows)`);
 
   const allPeptides = await Peptide.findAll({
     attributes: ['id', 'protocolTitle', 'sourceUrl', 'injectionFrequencyRaw', 'cycleDurationRaw'],
     raw: true,
   });
 
-  // Build match-key lookup
   const peptidesByKey = {};
   for (const p of allPeptides) {
     peptidesByKey[makeMatchKey(p.protocolTitle)] = p;
@@ -542,7 +544,7 @@ async function enrichFromDosageIndex(dosageWorkbook) {
 
   let updated = 0;
 
-  for (const row of rows) {
+  for (const row of indexRows) {
     const rawTitle = String(row['Protocol Title (Column A)'] || '').trim();
     const url      = String(row['URL'] || '').trim();
     const freq     = String(row['Frequency'] || '').trim();
@@ -571,39 +573,19 @@ async function enrichFromDosageIndex(dosageWorkbook) {
 }
 
 /**
- * Parse dosing steps directly from individual per-peptide sheets in the
- * new dosage tables workbook.
- *
- * Each sheet has:
- *   Row 1: Protocol title
- *   Row 2: Source URL
- *   Row 3: Injection frequency
- *   Row 4: Cycle / duration
- *   Row 5: Parent tab
- *   Row 6: blank
- *   Row 7: Schedule name (e.g. "Standard / Gradual Approach (3 mL = ~3.33 mg/mL)")
- *   Row 8: Table headers
- *   Rows 9+: dosing data rows
- *   Blank rows separate multiple schedules
+ * Parse dosing steps from individual per-peptide sheets stored in
+ * the dosageData.sheets JSON object.
  */
-async function seedDosingStepsFromSheets(dosageWorkbook) {
+async function seedDosingStepsFromSheets(dosageData) {
   const allPeptides = await Peptide.findAll({ attributes: ['id', 'protocolTitle'], raw: true });
   const peptidesByKey = {};
   for (const p of allPeptides) {
     peptidesByKey[makeMatchKey(p.protocolTitle)] = p;
   }
 
-  const indexSheet = dosageWorkbook.getWorksheet('Index');
-  if (!indexSheet) {
-    logger.warn('No Index sheet found — cannot seed dosing steps');
-    return;
-  }
-
-  const indexRows = worksheetToJson(indexSheet);
-
   // Build sheet name → protocol title mapping from Index
   const sheetToTitle = {};
-  for (const row of indexRows) {
+  for (const row of (dosageData.index || [])) {
     const sheetName = String(row['Sheet Name'] || '').trim();
     const title     = String(row['Protocol Title (Column A)'] || '').trim();
     if (sheetName && title) sheetToTitle[sheetName] = title;
@@ -612,20 +594,16 @@ async function seedDosingStepsFromSheets(dosageWorkbook) {
   let totalCreated = 0;
   let totalSkipped = 0;
 
-  for (const ws of dosageWorkbook.worksheets) {
-    if (ws.name === 'Index') continue;
+  for (const [sheetName, allRows] of Object.entries(dosageData.sheets || {})) {
+    // Get protocol title from row 0, col 0
+    let protocolTitle = (allRows[0] && allRows[0][0]) ? String(allRows[0][0]).trim() : '';
 
-    // Get protocol title from row 1 of the sheet
-    const row1Cell = ws.getCell(1, 1).value;
-    let protocolTitle = extractCellValue(row1Cell);
-    protocolTitle = String(protocolTitle || '').trim();
-
-    // Fallback to Index lookup if row 1 is odd
+    // Fallback to Index lookup
     if (!protocolTitle) {
-      protocolTitle = sheetToTitle[ws.name] || '';
+      protocolTitle = sheetToTitle[sheetName] || '';
     }
     if (!protocolTitle) {
-      logger.warn(`  Sheet "${ws.name}" — no protocol title found, skipping`);
+      logger.warn(`  Sheet "${sheetName}" — no protocol title found, skipping`);
       totalSkipped++;
       continue;
     }
@@ -633,23 +611,15 @@ async function seedDosingStepsFromSheets(dosageWorkbook) {
     const key = makeMatchKey(protocolTitle);
     const peptide = peptidesByKey[key];
     if (!peptide) {
-      logger.warn(`  No DB peptide match for sheet "${ws.name}" / "${protocolTitle}" (key: ${key})`);
+      logger.warn(`  No DB peptide match for sheet "${sheetName}" / "${protocolTitle}" (key: ${key})`);
       totalSkipped++;
       continue;
     }
 
-    // Parse all rows from the sheet into a flat array
-    const allRows = [];
-    ws.eachRow((row) => {
-      const values = row.values.slice(1).map((v) => extractCellValue(v));
-      allRows.push(values);
-    });
-
-    // Find dosing schedules by scanning for schedule name + header + data patterns
     const schedules = parseSchedulesFromRows(allRows);
 
     if (schedules.length === 0) {
-      logger.warn(`  Sheet "${ws.name}" — no dosing schedules detected`);
+      logger.warn(`  Sheet "${sheetName}" — no dosing schedules detected`);
       totalSkipped++;
       continue;
     }
@@ -664,7 +634,6 @@ async function seedDosingStepsFromSheets(dosageWorkbook) {
           if (h) rowData[h] = step[idx] || '';
         });
 
-        // Parse week, dose, units from the row data
         const rowDataKeys = Object.keys(rowData);
 
         let weekStart = null, weekEnd = null;
