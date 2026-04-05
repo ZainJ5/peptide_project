@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest, toQueryString } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
@@ -173,6 +173,24 @@ export function useScheduleBuilderMutations() {
   });
 
   return { createSchedule, addItem, preview, generate, calendar, completeEvent };
+}
+
+export function usePrefetchScheduleCalendars(activeSchedules) {
+  const request = useAuthedRequest();
+  const token = useAuthStore((s) => s.token);
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (!token || !activeSchedules?.length) return;
+    const d = new Date();
+    const month = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    for (const s of activeSchedules) {
+      queryClient.prefetchQuery({
+        queryKey: ["schedule-calendar", s.id, month],
+        queryFn: () => request(`/schedules/${s.id}/calendar?month=${month}`),
+        staleTime: 2 * 60 * 1000,
+      });
+    }
+  }, [token, activeSchedules, queryClient, request]);
 }
 
 export function useScheduleCalendar(scheduleId, month) {

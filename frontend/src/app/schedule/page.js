@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Syringe } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import PageTransition from "@/components/shared/PageTransition";
 import ScheduleWizard from "@/components/schedule/ScheduleWizard";
 import CalendarView from "@/components/schedule/CalendarView";
-import { useSchedules, useScheduleCalendar, useCompleteEvent } from "@/lib/hooks";
+import { useSchedules, useScheduleCalendar, useCompleteEvent, usePrefetchScheduleCalendars } from "@/lib/hooks";
 import { useAuthStore } from "@/lib/auth-store";
 import { downloadSchedulePdf } from "@/lib/api";
 import { useToast } from "@/components/ui/ToastProvider";
@@ -18,7 +18,10 @@ export default function SchedulePage() {
   const schedulesQuery = useSchedules();
   const schedules = schedulesQuery.data?.data || [];
   const activeSchedules = useMemo(() => schedules.filter((s) => s.isGenerated), [schedules]);
-  const [view, setView] = useState(token ? "today" : "builder");
+  const [view, setView] = useState("builder");
+
+  // Prefetch today's calendar data in background so "Today" tab loads instantly
+  usePrefetchScheduleCalendars(activeSchedules);
 
   return (
     <PageTransition>
