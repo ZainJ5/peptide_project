@@ -4,6 +4,9 @@ export const metadata = {
     "Browse research-backed dosage protocols, reconstitution guides, and dosing schedules for BPC-157, Semaglutide, TB-500, CJC-1295, Ipamorelin, and 100+ peptides.",
   alternates: { canonical: "/library" },
   openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "MyPeptideDosages",
     title: "Peptide Dosage Library – Research Protocols for 100+ Peptides",
     description:
       "Browse research-backed dosage protocols, reconstitution guides, and dosing schedules for 100+ peptides.",

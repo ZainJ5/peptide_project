@@ -4,6 +4,9 @@ export const metadata = {
     "Join the MyPeptideDosages community to discuss peptide protocols, share dosing experiences, and learn from fellow researchers.",
   alternates: { canonical: "/community" },
   openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "MyPeptideDosages",
     title: "Peptide Community – Discuss Protocols & Share Experiences",
     description:
       "Join the MyPeptideDosages community to discuss peptide protocols and share dosing experiences.",

@@ -25,7 +25,7 @@ export const metadata = {
     template: "%s | MyPeptideDosages",
   },
   description:
-    "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules. Plan accurate BPC-157, Semaglutide, TB-500, and 90+ peptide dosing protocols.",
+    "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules. Plan accurate BPC-157, Semaglutide, TB-500, and 100+ peptide dosing protocols.",
   keywords: [
     "peptide dosage calculator",
     "peptide reconstitution calculator",
@@ -61,7 +61,7 @@ export const metadata = {
     siteName: "MyPeptideDosages",
     title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
-      "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 90+ peptides.",
+      "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 100+ peptides.",
     url: "https://www.mypeptidedosages.com",
     images: [
       {
@@ -76,7 +76,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
-      "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 90+ peptides.",
+      "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 100+ peptides.",
     images: ["/opengraph-image"],
   },
   robots: {

@@ -14,6 +14,9 @@ export const metadata = {
     "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for BPC-157, Semaglutide, TB-500, and 100+ peptides. Free calculator and schedule tools for researchers.",
   alternates: { canonical: "/" },
   openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "MyPeptideDosages",
     title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
       "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 100+ peptides.",

@@ -4,6 +4,9 @@ export const metadata = {
     "Watch expert peptide how-to and info videos covering dosage protocols, reconstitution techniques, and research-backed peptide guides.",
   alternates: { canonical: "/videos" },
   openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "MyPeptideDosages",
     title: "Peptide How-To & Info Videos – Dosage Tutorials & Guides",
     description:
       "Watch expert peptide how-to and info videos covering dosage protocols, reconstitution techniques, and research-backed guides.",
