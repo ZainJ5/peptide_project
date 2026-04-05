@@ -76,6 +76,13 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [mobileMenuOpen, requestOpen]);
 
+  /* listen for open-request-protocol event from Footer */
+  useEffect(() => {
+    const open = () => { setRequestError(""); setRequestSuccess(""); setRequestOpen(true); };
+    window.addEventListener("open-request-protocol", open);
+    return () => window.removeEventListener("open-request-protocol", open);
+  }, []);
+
   /* outside-click handlers */
   useEffect(() => {
     const handler = (e) => {
