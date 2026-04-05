@@ -8,6 +8,44 @@ const BACKEND_URL = (
 
 const API_BASE = BACKEND_URL.endsWith("/api") ? BACKEND_URL : `${BACKEND_URL}/api`;
 
+async function fetchAllPeptides() {
+  const allPeptides = [];
+  let offset = 0;
+  const limit = 100;
+
+  // Try direct backend URL first, then fallback to site's own proxy
+  const urls = [
+    `${API_BASE}/peptides`,
+    `${SITE_URL}/backend-api/peptides`,
+  ];
+
+  for (const baseUrl of urls) {
+    try {
+      // Paginate until we have all peptides
+      while (true) {
+        const res = await fetch(`${baseUrl}?limit=${limit}&offset=${offset}`, {
+          next: { revalidate: 86400 },
+          signal: AbortSignal.timeout(10000),
+        });
+        if (!res.ok) break;
+        const json = await res.json();
+        const peptides = json.data || json.peptides || [];
+        if (peptides.length === 0) break;
+        allPeptides.push(...peptides);
+        offset += peptides.length;
+        if (allPeptides.length >= (json.total || Infinity)) break;
+      }
+      if (allPeptides.length > 0) return allPeptides;
+    } catch {
+      // Try next URL
+      offset = 0;
+      allPeptides.length = 0;
+    }
+  }
+
+  return allPeptides;
+}
+
 export default async function sitemap() {
   const staticPages = [
     { url: SITE_URL, lastModified: new Date(), changeFrequency: "weekly", priority: 1.0 },
@@ -19,22 +57,13 @@ export default async function sitemap() {
     { url: `${SITE_URL}/terms`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
   ];
 
-  let peptidePages = [];
-  try {
-    const res = await fetch(`${API_BASE}/peptides?limit=500`, { next: { revalidate: 86400 } });
-    if (res.ok) {
-      const json = await res.json();
-      const peptides = json.data || json.peptides || [];
-      peptidePages = peptides.map((p) => ({
-        url: `${SITE_URL}/library/${p.id}`,
-        lastModified: new Date(p.updatedAt || p.createdAt || Date.now()),
-        changeFrequency: "monthly",
-        priority: 0.7,
-      }));
-    }
-  } catch {
-    // Sitemap still works with static pages if API is unavailable
-  }
+  const peptides = await fetchAllPeptides();
+  const peptidePages = peptides.map((p) => ({
+    url: `${SITE_URL}/library/${p.id}`,
+    lastModified: new Date(p.updatedAt || p.createdAt || Date.now()),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
 
   return [...staticPages, ...peptidePages];
 }

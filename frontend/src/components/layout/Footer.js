@@ -256,6 +256,29 @@ export default function Footer() {
               </div>
             </div>
           </div>
+
+          {/* Popular Protocols — SEO internal links */}
+          <div className="mt-10 border-t border-slate-800 pt-8">
+            <h4 style={{color: "white"}} className="mb-4 text-sm font-bold text-white uppercase tracking-wider">
+              Popular Peptide Dosage Protocols
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {[
+                "BPC-157", "Semaglutide", "TB-500", "CJC-1295", "Ipamorelin",
+                "GHK-Cu", "AOD-9604", "Sermorelin", "Tesamorelin", "MK-677",
+                "PT-141", "Selank", "Semax", "Thymosin Beta-4", "DSIP",
+                "Epithalon", "Kisspeptin", "Oxytocin", "Melanotan II", "NAD+",
+              ].map((name) => (
+                <Link
+                  key={name}
+                  href={`/library?search=${encodeURIComponent(name)}`}
+                  className="rounded-full border border-slate-700 px-3 py-1.5 text-xs text-slate-400 transition-colors duration-200 hover:border-emerald-500/40 hover:text-emerald-300"
+                >
+                  {name} Dosage
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* ─── Disclaimer — Inside footer, amber/yellow box ─── */}

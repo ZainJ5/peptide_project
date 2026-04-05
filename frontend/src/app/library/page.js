@@ -92,9 +92,9 @@ export default function LibraryPage() {
         <aside className="w-full lg:w-75 shrink-0 lg:self-start lg:sticky lg:top-32 lg:h-fit lg:border-r lg:border-slate-200 lg:pr-8 lg:mr-8 mb-4 lg:mb-0">
           <div>
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-slate-900 pt-4 tracking-tight">Peptide Library</h1>
+              <h1 className="text-3xl font-bold text-slate-900 pt-4 tracking-tight">Peptide Dosage Library</h1>
               <p className="mt-2 text-base text-slate-500 leading-relaxed">
-                Search and filter our clinical-grade peptides by protocol or target health outcome.
+                Browse 100+ peptide dosage protocols with reconstitution guides, injection schedules, and research-backed dosing charts.
               </p>
             </div>
 

@@ -26,6 +26,9 @@ export default function HomePage() {
     <div className="flex flex-col gap-10 sm:gap-28">
       <div className="flex flex-col">
         <HeroCarousel />
+        <h1 className="sr-only">
+          Free Peptide Dosage Calculator – Reconstitution Guides &amp; Protocol Schedules for 100+ Peptides
+        </h1>
         <MobileHomeSearch />
       </div>
       <AboutSection />
