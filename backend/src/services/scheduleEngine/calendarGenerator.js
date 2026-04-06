@@ -105,9 +105,17 @@ function generateEventsForItem({ scheduleItem, scheduleId, startDate, durationWe
     : 'AM';
 
   // ─── Generate events day by day ─────────────────────────────────────────
+  // Extend the generated window so at least one full restart is visible
+  // after the rest period.  Without this, a 12-week schedule with an 8+4
+  // cycle shows rest but never shows the cycle restarting because the loop
+  // ends exactly when the rest period finishes.
+  const effectiveDurationWeeks = restWeeks > 0 && totalCycleWeeks > 0
+    ? Math.max(durationWeeks, totalCycleWeeks * 2)
+    : durationWeeks;
+
   const events    = [];
   const start     = dayjs(startDate);
-  const totalDays = durationWeeks * 7;
+  const totalDays = effectiveDurationWeeks * 7;
 
   for (let dayOffset = 0; dayOffset < totalDays; dayOffset++) {
     const currentDate  = start.add(dayOffset, 'day');
