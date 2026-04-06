@@ -10,7 +10,7 @@ export const metadata = {
     title: "Peptide How-To & Info Videos – Dosage Tutorials & Guides",
     description:
       "Watch expert peptide how-to and info videos covering dosage protocols, reconstitution techniques, and research-backed guides.",
-    url: "https://www.mypeptidedosages.com/videos",
+    url: "https://mypeptidedosages.com/videos",
     images: [
       {
         url: "/opengraph-image",

@@ -10,7 +10,7 @@ export const metadata = {
     title: "Peptide Dosage Library – Research Protocols for 100+ Peptides",
     description:
       "Browse research-backed dosage protocols, reconstitution guides, and dosing schedules for 100+ peptides.",
-    url: "https://www.mypeptidedosages.com/library",
+    url: "https://mypeptidedosages.com/library",
     images: [
       {
         url: "/opengraph-image",

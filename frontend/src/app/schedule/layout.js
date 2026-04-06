@@ -10,7 +10,7 @@ export const metadata = {
     title: "Peptide Calendar Builder – Custom Dosing Schedules",
     description:
       "Create personalized peptide dosing schedules with our interactive calendar builder.",
-    url: "https://www.mypeptidedosages.com/schedule",
+    url: "https://mypeptidedosages.com/schedule",
     images: [
       {
         url: "/opengraph-image",

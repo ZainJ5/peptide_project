@@ -19,7 +19,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://www.mypeptidedosages.com"),
+  metadataBase: new URL("https://mypeptidedosages.com"),
   title: {
     default: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     template: "%s | MyPeptideDosages",
@@ -63,7 +63,7 @@ export const metadata = {
     title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
       "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 100+ peptides.",
-    url: "https://www.mypeptidedosages.com",
+    url: "https://mypeptidedosages.com",
     images: [
       {
         url: "/opengraph-image",
@@ -157,8 +157,8 @@ export default function RootLayout({ children }) {
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "MyPeptideDosages",
-              url: "https://www.mypeptidedosages.com",
-              logo: "https://www.mypeptidedosages.com/favicon.ico",
+              url: "https://mypeptidedosages.com",
+              logo: "https://mypeptidedosages.com/favicon.ico",
               sameAs: [],
               description:
                 "Research-backed peptide dosage calculator, reconstitution guides, and protocol scheduling platform.",
@@ -173,13 +173,13 @@ export default function RootLayout({ children }) {
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "MyPeptideDosages",
-              url: "https://www.mypeptidedosages.com",
+              url: "https://mypeptidedosages.com",
               potentialAction: {
                 "@type": "SearchAction",
                 target: {
                   "@type": "EntryPoint",
                   urlTemplate:
-                    "https://www.mypeptidedosages.com/library?search={search_term_string}",
+                    "https://mypeptidedosages.com/library?search={search_term_string}",
                 },
                 "query-input": "required name=search_term_string",
               },
@@ -196,22 +196,22 @@ export default function RootLayout({ children }) {
                 {
                   "@type": "SiteNavigationElement",
                   name: "Peptide Dosage Library",
-                  url: "https://www.mypeptidedosages.com/library",
+                  url: "https://mypeptidedosages.com/library",
                 },
                 {
                   "@type": "SiteNavigationElement",
                   name: "Peptide Calendar Builder",
-                  url: "https://www.mypeptidedosages.com/schedule",
+                  url: "https://mypeptidedosages.com/schedule",
                 },
                 {
                   "@type": "SiteNavigationElement",
                   name: "Peptide How-To & Info Videos",
-                  url: "https://www.mypeptidedosages.com/videos",
+                  url: "https://mypeptidedosages.com/videos",
                 },
                 {
                   "@type": "SiteNavigationElement",
                   name: "Community",
-                  url: "https://www.mypeptidedosages.com/community",
+                  url: "https://mypeptidedosages.com/community",
                 },
               ],
             }),

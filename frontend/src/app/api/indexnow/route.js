@@ -1,4 +1,4 @@
-const SITE_URL = "https://www.mypeptidedosages.com";
+const SITE_URL = "https://mypeptidedosages.com";
 const INDEXNOW_KEY = "6ebf7ed4e82c37825de45733e0b4afbb";
 
 const BACKEND_URL = (
@@ -52,7 +52,7 @@ export async function POST(request) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          host: "www.mypeptidedosages.com",
+          host: "mypeptidedosages.com",
           key: INDEXNOW_KEY,
           keyLocation: `${SITE_URL}/${INDEXNOW_KEY}.txt`,
           urlList: urls,

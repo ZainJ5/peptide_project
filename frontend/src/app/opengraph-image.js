@@ -161,7 +161,7 @@ export default function Image() {
           }}
         >
           <span style={{ color: "#64748b", fontSize: "20px" }}>
-            www.mypeptidedosages.com
+            mypeptidedosages.com
           </span>
         </div>
       </div>

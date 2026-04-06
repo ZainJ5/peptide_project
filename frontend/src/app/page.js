@@ -20,7 +20,7 @@ export const metadata = {
     title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
       "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 100+ peptides.",
-    url: "https://www.mypeptidedosages.com",
+    url: "https://mypeptidedosages.com",
     images: [
       {
         url: "/opengraph-image",

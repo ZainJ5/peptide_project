@@ -8,4 +8,4 @@ Disallow: /verify-email
 Disallow: /backend-api/
 Disallow: /backend-images/
 
-Sitemap: https://www.mypeptidedosages.com/sitemap.xml
+Sitemap: https://mypeptidedosages.com/sitemap.xml

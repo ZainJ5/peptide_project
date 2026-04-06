@@ -1,4 +1,4 @@
-const SITE_URL = "https://www.mypeptidedosages.com";
+const SITE_URL = "https://mypeptidedosages.com";
 
 const BACKEND_URL = (
   process.env.NEXT_PUBLIC_BACKEND_BASE_URL ||

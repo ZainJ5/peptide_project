@@ -10,7 +10,7 @@ export const metadata = {
     title: "Peptide Community – Discuss Protocols & Share Experiences",
     description:
       "Join the MyPeptideDosages community to discuss peptide protocols and share dosing experiences.",
-    url: "https://www.mypeptidedosages.com/community",
+    url: "https://mypeptidedosages.com/community",
     images: [
       {
         url: "/opengraph-image",
