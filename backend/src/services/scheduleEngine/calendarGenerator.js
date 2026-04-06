@@ -77,14 +77,15 @@ function generateEventsForItem({ scheduleItem, scheduleId, startDate, durationWe
   );
 
   // ─── Resolve active / rest week counts ──────────────────────────────────
-  // Use the larger of cycle.activeWeeks and the escalation timeline's last
-  // defined week so escalation steps are never cut short by a shorter cycle.
+  // The cycle parser's activeWeeks is the authoritative cycle length.
+  // Do NOT extend it with maxDefinedWeek — dosing steps may cover the
+  // optional extended range (e.g. steps go to week 12 for an "8–12 week"
+  // cycle) but the standard active phase is what the parser returns.
+  // Extending activeWeeks with maxDefinedWeek caused the rest period to be
+  // pushed beyond durationWeeks, so users never saw the cycle-off gap.
   const baseActiveWeeks = scheduleItem.isOverridden
     ? durationWeeks
-    : Math.min(
-        Math.max(cycle.activeWeeks || 8, timeline.maxDefinedWeek || 0),
-        durationWeeks,
-      );
+    : Math.min(cycle.activeWeeks || timeline.maxDefinedWeek || 8, durationWeeks);
 
   const activeWeeks = baseActiveWeeks;
 

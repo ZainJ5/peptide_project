@@ -100,7 +100,8 @@ function parseCycleDuration(raw) {
   // The previously separate "weeklyMatch" branch was dead code because this
   // regex already matches any string containing a week range.
   // Default rest = 4 weeks (1 month cycle-off) — standard peptide protocol.
-  const simpleRangeMatch = text.match(/(\d+)[–\-](\d+)\s*weeks?/i);
+  // The \+? allows "16–20+ weeks" style open-ended ranges.
+  const simpleRangeMatch = text.match(/(\d+)[–\-](\d+)\+?\s*weeks?/i);
   if (simpleRangeMatch) {
     return {
       activeWeeks: parseInt(simpleRangeMatch[1], 10),
