@@ -126,6 +126,13 @@ module.exports = (sequelize) => {
         field:     'image_url',
       },
 
+      // Relative path to the reconstitution guide image, e.g. "/reconstitution-images/bpc-157-10mg.webp"
+      reconstitutionImageUrl: {
+        type:      DataTypes.STRING(500),
+        allowNull: true,
+        field:     'reconstitution_image_url',
+      },
+
       isActive: {
         type:         DataTypes.BOOLEAN,
         allowNull:    false,

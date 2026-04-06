@@ -33,6 +33,9 @@ function attachImageUrl(peptideJson) {
   if (peptideJson && peptideJson.imageUrl) {
     peptideJson.imageUrl = `${config.baseUrl}${peptideJson.imageUrl}`;
   }
+  if (peptideJson && peptideJson.reconstitutionImageUrl) {
+    peptideJson.reconstitutionImageUrl = `${config.baseUrl}${peptideJson.reconstitutionImageUrl}`;
+  }
   return peptideJson;
 }
 
