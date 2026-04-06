@@ -45,14 +45,39 @@ const nextConfig = {
 				],
 			},
 			{
+				source: "/(login|signup|forgot-password|reset-password|verify-email)",
+				headers: [
+					{ key: "X-Robots-Tag", value: "noindex, nofollow" },
+				],
+			},
+			{
 				source: "/(.*)",
 				headers: [
 					{ key: "X-Content-Type-Options", value: "nosniff" },
 					{ key: "X-Frame-Options", value: "SAMEORIGIN" },
 					{ key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-					{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
 					{ key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
 				],
+			},
+		];
+	},
+
+	async redirects() {
+		return [
+			{
+				source: "/forgot-password",
+				destination: "/login",
+				permanent: true,
+			},
+			{
+				source: "/reset-password",
+				destination: "/login",
+				permanent: true,
+			},
+			{
+				source: "/verify-email",
+				destination: "/signup",
+				permanent: true,
 			},
 		];
 	},

@@ -38,6 +38,7 @@ export const metadata = {
     "peptide schedule builder",
     "peptide reconstitution guide",
     "peptide dosing chart 2025",
+    "peptide dosing chart 2026",
     "peptide dosage chart calculator",
     "peptides dosage chart",
     "peptide dose calculator",
@@ -116,14 +117,14 @@ export default function RootLayout({ children }) {
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-              strategy="lazyOnload"
+              strategy="afterInteractive"
             />
-            <Script id="ga-init" strategy="lazyOnload">
+            <Script id="ga-init" strategy="afterInteractive">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){window.dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', '${GA_ID}', { send_page_view: false });
+                gtag('config', '${GA_ID}');
               `}
             </Script>
           </>
@@ -131,7 +132,7 @@ export default function RootLayout({ children }) {
 
         {/* ── Meta Pixel (deferred to idle) ── */}
         {PIXEL_ID && (
-          <Script id="meta-pixel-init" strategy="lazyOnload">
+          <Script id="meta-pixel-init" strategy="afterInteractive">
             {`
               !function(f,b,e,v,n,t,s)
               {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
