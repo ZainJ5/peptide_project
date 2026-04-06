@@ -38,7 +38,8 @@ function parseFrequency(raw) {
   if (!raw) return _unknown(raw);
 
   const text = raw.toLowerCase().trim();
-  const compact = text.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ');
+  // Strip leading "inject" so "Inject 3 times weekly" → "3 times weekly"
+  const compact = text.replace(/^inject\s+/i, '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ');
 
   if (['daily', 'every day'].includes(compact)) {
     return { timesPerDay: 1, daysPerWeek: 7, pattern: 'daily', requiresNonConsecutive: false, raw };
@@ -48,11 +49,11 @@ function parseFrequency(raw) {
     return { timesPerDay: 1, daysPerWeek: 1, pattern: 'once_per_week', requiresNonConsecutive: false, raw };
   }
 
-  if (['twice weekly', 'twice per week', '2x weekly', '2 times per week'].includes(compact)) {
+  if (['twice weekly', 'twice per week', '2x weekly', '2 times per week', '2 times weekly'].includes(compact)) {
     return { timesPerDay: 1, daysPerWeek: 2, pattern: 'twice_per_week', requiresNonConsecutive: true, raw };
   }
 
-  if (['three times weekly', 'three times per week', '3x weekly', '3 times per week'].includes(compact)) {
+  if (['three times weekly', 'three times per week', '3x weekly', '3 times per week', '3 times weekly'].includes(compact)) {
     return { timesPerDay: 1, daysPerWeek: 3, pattern: 'three_per_week', requiresNonConsecutive: true, raw };
   }
 
@@ -94,17 +95,17 @@ function parseFrequency(raw) {
   }
 
   // Three times per week
-  if (/three\s*times?\s*(per|a)\s*week|3\s*times?\s*(per|a|weekly?\b)\s*week?/i.test(text)) {
+  if (/three\s*times?\s*(?:(?:per|a)\s+)?week(?:ly)?|3\s*times?\s*(?:(?:per|a)\s+)?week(?:ly)?/i.test(text)) {
     return { timesPerDay: 1, daysPerWeek: 3, pattern: 'three_per_week', requiresNonConsecutive: true, raw };
   }
 
   // Twice per week
-  if (/twice\s*(per|a)?\s*week|2\s*times?\s*(per|a)\s*week/i.test(text)) {
+  if (/twice\s*(?:(?:per|a)\s+)?week(?:ly)?|2\s*times?\s*(?:(?:per|a)\s+)?week(?:ly)?/i.test(text)) {
     return { timesPerDay: 1, daysPerWeek: 2, pattern: 'twice_per_week', requiresNonConsecutive: true, raw };
   }
 
   // Once per week
-  if (/once\s*(per|a)?\s*week|weekly|once weekly/i.test(text)) {
+  if (/once\s*(?:(?:per|a)\s+)?week(?:ly)?/i.test(text)) {
     return { timesPerDay: 1, daysPerWeek: 1, pattern: 'once_per_week', requiresNonConsecutive: false, raw };
   }
 

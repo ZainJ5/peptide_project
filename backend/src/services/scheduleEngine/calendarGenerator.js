@@ -70,7 +70,7 @@ function generateEventsForItem({ scheduleItem, scheduleId, startDate, durationWe
   const selectedVariant = scheduleItem.selectedScheduleName;
   const relevantSteps  = selectedVariant
     ? dosingSteps.filter((s) => s.scheduleName === selectedVariant)
-    : dosingSteps;
+    : _filterDefaultVariant(dosingSteps);
 
   const timeline = buildEscalationTimeline(
     [...relevantSteps].sort((a, b) => a.stepOrder - b.stepOrder)
@@ -280,6 +280,34 @@ function _formatDoseLabel({ doseUnits, rawLabel }) {
   }
 
   return cleanRaw;
+}
+
+/**
+ * When no variant is selected, default to the first schedule variant's steps.
+ * Prefers "Standard" variants when available; otherwise picks the variant
+ * containing the lowest stepOrder value.
+ *
+ * If all steps share a single scheduleName (or have no scheduleName),
+ * returns them unchanged.
+ */
+function _filterDefaultVariant(dosingSteps) {
+  if (!dosingSteps || dosingSteps.length === 0) return dosingSteps;
+
+  const variantNames = [...new Set(dosingSteps.map((s) => s.scheduleName).filter(Boolean))];
+
+  // Single variant or no named variants — return all
+  if (variantNames.length <= 1) return dosingSteps;
+
+  // Prefer variant whose name contains "Standard"
+  const standardVariant = variantNames.find((n) => /standard/i.test(n));
+  if (standardVariant) {
+    return dosingSteps.filter((s) => s.scheduleName === standardVariant);
+  }
+
+  // Otherwise pick the variant that contains the step with the lowest stepOrder
+  const sorted = [...dosingSteps].sort((a, b) => a.stepOrder - b.stepOrder);
+  const firstVariant = sorted[0].scheduleName;
+  return dosingSteps.filter((s) => s.scheduleName === firstVariant);
 }
 
 module.exports = { generateSchedule, generateEventsForItem, groupEventsByMonth };
