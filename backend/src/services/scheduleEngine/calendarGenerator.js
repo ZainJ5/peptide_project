@@ -77,11 +77,20 @@ function generateEventsForItem({ scheduleItem, scheduleId, startDate, durationWe
   );
 
   // ─── Resolve active / rest week counts ──────────────────────────────────
-  const activeWeeks = scheduleItem.isOverridden
+  // Use the larger of cycle.activeWeeks and the escalation timeline's last
+  // defined week so escalation steps are never cut short by a shorter cycle.
+  const baseActiveWeeks = scheduleItem.isOverridden
     ? durationWeeks
-    : Math.min(cycle.activeWeeks || 8, durationWeeks);
+    : Math.min(
+        Math.max(cycle.activeWeeks || 8, timeline.maxDefinedWeek || 0),
+        durationWeeks,
+      );
 
-  const restWeeks = scheduleItem.overrideRestWeeks ?? (cycle.restWeeks ?? 0);
+  const activeWeeks = baseActiveWeeks;
+
+  // Default rest = 4 weeks (1 month cycle-off) — standard peptide protocol.
+  // Users can override to 0 via overrideRestWeeks if they want continuous dosing.
+  const restWeeks = scheduleItem.overrideRestWeeks ?? (cycle.restWeeks ?? 4);
 
   const totalCycleWeeks = activeWeeks + restWeeks;
 

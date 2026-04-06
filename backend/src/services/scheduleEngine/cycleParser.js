@@ -99,13 +99,14 @@ function parseCycleDuration(raw) {
   // week range — e.g. "8–12 weeks (or longer)" matches here correctly.
   // The previously separate "weeklyMatch" branch was dead code because this
   // regex already matches any string containing a week range.
+  // Default rest = 4 weeks (1 month cycle-off) — standard peptide protocol.
   const simpleRangeMatch = text.match(/(\d+)[–\-](\d+)\s*weeks?/i);
   if (simpleRangeMatch) {
     return {
       activeWeeks: parseInt(simpleRangeMatch[1], 10),
       minWeeks:    parseInt(simpleRangeMatch[1], 10),
       maxWeeks:    parseInt(simpleRangeMatch[2], 10),
-      restWeeks:   0,
+      restWeeks:   4,
       isConsecutiveDays: false,
       consecutiveDays:   0,
       raw,
@@ -113,6 +114,7 @@ function parseCycleDuration(raw) {
   }
 
   // ─── Single week value ─────────────────────────────────────────────────
+  // Default rest = 4 weeks (1 month cycle-off) — standard peptide protocol.
   const singleWeekMatch = text.match(/(\d+)\s*weeks?/i);
   if (singleWeekMatch) {
     const w = parseInt(singleWeekMatch[1], 10);
@@ -120,7 +122,7 @@ function parseCycleDuration(raw) {
       activeWeeks: w,
       minWeeks:    w,
       maxWeeks:    w,
-      restWeeks:   0,
+      restWeeks:   4,
       isConsecutiveDays: false,
       consecutiveDays:   0,
       raw,
@@ -135,7 +137,7 @@ function _default(raw) {
     activeWeeks: 8,
     minWeeks:    8,
     maxWeeks:    12,
-    restWeeks:   0,
+    restWeeks:   4,   // 4-week cycle-off — standard peptide protocol
     isConsecutiveDays: false,
     consecutiveDays:   0,
     raw,
