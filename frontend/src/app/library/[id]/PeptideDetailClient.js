@@ -49,7 +49,7 @@ function formatCategoryLabel(value) {
 export default function PeptideDetailClient() {
   const params = useParams();
   const router = useRouter();
-  const peptideQuery = usePeptideDetail(params.id);
+  const peptideQuery = usePeptideDetail(params.id || params.slug);
 
   const peptide = peptideQuery.data?.data;
   const primaryVariant = peptide?.scheduleVariants?.[0];

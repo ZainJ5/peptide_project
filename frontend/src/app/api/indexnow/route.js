@@ -36,7 +36,7 @@ export async function POST(request) {
       const json = await res.json();
       const peptides = json.data || json.peptides || [];
       if (peptides.length === 0) break;
-      peptides.forEach((p) => urls.push(`${SITE_URL}/library/${p.id}`));
+      peptides.forEach((p) => urls.push(`${SITE_URL}/library/${p.slug || p.id}`));
       offset += peptides.length;
       if (urls.length >= (json.total || Infinity) + 5) break;
     }

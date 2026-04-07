@@ -30,8 +30,8 @@ router.get('/by-name/:name', [
   validate,
 ], findByName);
 
-router.get('/:id', optionalAuth, [
-  param('id').isUUID(),
+router.get('/:idOrSlug', optionalAuth, [
+  param('idOrSlug').trim().notEmpty(),
   validate,
 ], getPeptideById);
 

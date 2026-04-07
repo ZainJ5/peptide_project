@@ -84,7 +84,7 @@ export default function MobileHomeSearch() {
           ) : searchResults.length > 0 ? (
             <div className="max-h-[60vh] overflow-y-auto overscroll-contain">
               {searchResults.map((p) => (
-                <Link key={p.id} href={`/library/${p.id}`}
+                <Link key={p.id} href={`/library/${p.slug || p.id}`}
                   onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
                   className="flex items-center gap-3.5 border-b border-slate-100/60 px-5 py-3.5 last:border-b-0 transition-colors hover:bg-slate-50 active:bg-slate-100"
                 >

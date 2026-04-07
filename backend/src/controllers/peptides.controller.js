@@ -115,10 +115,21 @@ async function findByName(req, res, next) {
   }
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 async function getPeptideById(req, res, next) {
   try {
+    const idOrSlug = req.params.idOrSlug || req.params.id;
+    const isUUID = UUID_RE.test(idOrSlug);
+
+    const where = { isActive: true };
+    if (isUUID) {
+      where.id = idOrSlug;
+    } else {
+      where.slug = idOrSlug;
+    }
     const peptide = await Peptide.findOne({
-      where: { id: req.params.id, isActive: true },
+      where,
       include: [{ model: DosingStep, as: 'dosingSteps', order: [['step_order', 'ASC']] }],
     });
 

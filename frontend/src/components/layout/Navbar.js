@@ -145,7 +145,7 @@ export default function Navbar() {
       ) : searchResults.length > 0 ? (
         <div className="max-h-[380px] overflow-y-auto overscroll-contain">
           {searchResults.map((p) => (
-            <Link key={p.id} href={`/library/${p.id}`}
+            <Link key={p.id} href={`/library/${p.slug || p.id}`}
               onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
               className="flex items-center gap-3.5 border-b border-slate-50 px-4 py-3 last:border-b-0 transition-colors hover:bg-slate-50"
             >

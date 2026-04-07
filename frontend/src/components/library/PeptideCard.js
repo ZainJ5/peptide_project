@@ -35,7 +35,7 @@ export default function PeptideCard({ peptide, view = "grid" }) {
           </div>
 
           <div className="md:col-span-12 pt-1 md:pt-0 md:flex md:justify-end">
-            <Link href={`/library/${peptide.id}`} className="flex w-full md:w-auto">
+            <Link href={`/library/${peptide.slug || peptide.id}`} className="flex w-full md:w-auto">
               <Button variant="secondary" className="w-full bg-slate-50 px-4 py-2 text-xs font-bold transition-colors hover:bg-slate-200 hover:text-slate-900 sm:text-sm md:w-auto">
                 View Protocol Details
               </Button>
@@ -77,7 +77,7 @@ export default function PeptideCard({ peptide, view = "grid" }) {
         </p>
 
         <div className="mt-2 pt-2 border-t border-slate-100 sm:mt-4 sm:pt-3">
-          <Link href={`/library/${peptide.id}`} className="w-full">
+          <Link href={`/library/${peptide.slug || peptide.id}`} className="w-full">
             <Button variant="secondary" className="w-full bg-slate-50 px-2 py-1.5 text-xs font-bold transition-colors hover:bg-slate-200 hover:text-slate-900 sm:text-sm sm:py-2">
               <span className="sm:hidden">View Details</span>
               <span className="hidden sm:inline">View Protocol Details</span>

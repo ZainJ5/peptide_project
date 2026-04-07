@@ -58,12 +58,14 @@ export default async function sitemap() {
   ];
 
   const peptides = await fetchAllPeptides();
-  const peptidePages = peptides.map((p) => ({
-    url: `${SITE_URL}/library/${p.id}`,
-    lastModified: new Date(p.updatedAt || p.createdAt || Date.now()),
-    changeFrequency: "monthly",
-    priority: 0.7,
-  }));
+  const peptidePages = peptides
+    .filter((p) => p.slug)
+    .map((p) => ({
+      url: `${SITE_URL}/library/${p.slug}`,
+      lastModified: new Date(p.updatedAt || p.createdAt || Date.now()),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    }));
 
   return [...staticPages, ...peptidePages];
 }

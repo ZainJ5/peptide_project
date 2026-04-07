@@ -42,6 +42,13 @@ module.exports = (sequelize) => {
         field:     'protocol_title',
       },
 
+      // URL-safe slug derived from name + mgAmount, e.g. "bpc-157-10mg"
+      slug: {
+        type:      DataTypes.STRING(300),
+        allowNull: false,
+        unique:    true,
+      },
+
       // "single" | "blend"
       type: {
         type:         DataTypes.ENUM('single', 'blend'),

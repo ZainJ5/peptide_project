@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import PeptideDetailClient from "./PeptideDetailClient";
 
 const SITE_URL = "https://mypeptidedosages.com";
@@ -10,9 +11,11 @@ const BACKEND_URL = (
 
 const API_BASE = BACKEND_URL.endsWith("/api") ? BACKEND_URL : `${BACKEND_URL}/api`;
 
-async function fetchPeptide(id) {
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+async function fetchPeptide(idOrSlug) {
   try {
-    const res = await fetch(`${API_BASE}/peptides/${id}`, {
+    const res = await fetch(`${API_BASE}/peptides/${encodeURIComponent(idOrSlug)}`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return null;
@@ -34,6 +37,12 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  // If accessed by UUID, don't generate metadata (redirect will happen in the page component)
+  const slug = peptide.slug || id;
+  if (UUID_RE.test(id) && peptide.slug) {
+    return {};
+  }
+
   const name = peptide.name;
   const mg = peptide.mgAmount || "";
   const fullName = mg ? `${name} ${mg}` : name;
@@ -44,11 +53,11 @@ export async function generateMetadata({ params }) {
   return {
     title,
     description,
-    alternates: { canonical: `/library/${id}` },
+    alternates: { canonical: `/library/${slug}` },
     openGraph: {
       title,
       description,
-      url: `${SITE_URL}/library/${id}`,
+      url: `${SITE_URL}/library/${slug}`,
       type: "article",
     },
     twitter: {
@@ -63,6 +72,13 @@ export default async function PeptideDetailPage({ params }) {
   const { id } = await params;
   const peptide = await fetchPeptide(id);
 
+  // 301 redirect from UUID URL to slug URL for SEO
+  if (peptide?.slug && UUID_RE.test(id)) {
+    redirect(`/library/${peptide.slug}`);
+  }
+
+  const slug = peptide?.slug || id;
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -75,7 +91,7 @@ export default async function PeptideDetailPage({ params }) {
               "@type": "ListItem",
               position: 3,
               name: peptide.mgAmount ? `${peptide.name} ${peptide.mgAmount}` : peptide.name,
-              item: `${SITE_URL}/library/${id}`,
+              item: `${SITE_URL}/library/${slug}`,
             },
           ]
         : []),
@@ -90,7 +106,7 @@ export default async function PeptideDetailPage({ params }) {
           ? `${peptide.name} ${peptide.mgAmount} Dosage Protocol`
           : `${peptide.name} Dosage Protocol`,
         description: peptide.protocolTitle || `Dosage protocol for ${peptide.name}`,
-        url: `${SITE_URL}/library/${id}`,
+        url: `${SITE_URL}/library/${slug}`,
         mainContentOfPage: {
           "@type": "WebPageElement",
           cssSelector: "#benefits, #reconstitution, #dosage",
