@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // regenerate at most every hour
+
 const SITE_URL = "https://mypeptidedosages.com";
 
 const BACKEND_URL = (
@@ -24,7 +27,7 @@ async function fetchAllPeptides() {
       // Paginate until we have all peptides
       while (true) {
         const res = await fetch(`${baseUrl}?limit=${limit}&offset=${offset}`, {
-          next: { revalidate: 86400 },
+          cache: 'no-store',
           signal: AbortSignal.timeout(10000),
         });
         if (!res.ok) break;
@@ -36,7 +39,8 @@ async function fetchAllPeptides() {
         if (allPeptides.length >= (json.total || Infinity)) break;
       }
       if (allPeptides.length > 0) return allPeptides;
-    } catch {
+    } catch (err) {
+      console.error(`[sitemap] fetch from ${baseUrl} failed:`, err.message);
       // Try next URL
       offset = 0;
       allPeptides.length = 0;

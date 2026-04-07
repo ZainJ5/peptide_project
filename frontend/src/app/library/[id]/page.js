@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 import PeptideDetailClient from "./PeptideDetailClient";
 
 const SITE_URL = "https://mypeptidedosages.com";
@@ -72,9 +72,9 @@ export default async function PeptideDetailPage({ params }) {
   const { id } = await params;
   const peptide = await fetchPeptide(id);
 
-  // 301 redirect from UUID URL to slug URL for SEO
+  // 308 permanent redirect from UUID URL to slug URL for SEO
   if (peptide?.slug && UUID_RE.test(id)) {
-    redirect(`/library/${peptide.slug}`);
+    permanentRedirect(`/library/${peptide.slug}`);
   }
 
   const slug = peptide?.slug || id;
