@@ -1,7 +1,7 @@
-"use client";
-
-import Navbar from "@/components/layout/Navbar";
+import dynamic from "next/dynamic";
 import Footer from "@/components/layout/Footer";
+
+const Navbar = dynamic(() => import("@/components/layout/Navbar"));
 
 export default function AppShell({ children }) {
   return (

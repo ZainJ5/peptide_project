@@ -20,11 +20,9 @@ const nextConfig = {
 	},
 
 	experimental: {
+		optimizeCss: true,
 		optimizePackageImports: [
-			"@mui/icons-material",
-			"@mui/material",
 			"lucide-react",
-			"recharts",
 			"date-fns",
 			"framer-motion",
 		],

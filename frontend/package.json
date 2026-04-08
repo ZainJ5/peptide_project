@@ -8,11 +8,23 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "browserslist": {
+    "production": [
+      "chrome >= 93",
+      "edge >= 93",
+      "firefox >= 92",
+      "safari >= 15",
+      "opera >= 79",
+      "samsung >= 16",
+      "not ie 11"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.4",
-    "@mui/material": "^7.3.4",
     "@tanstack/react-query": "^5.95.0",
     "@tanstack/react-table": "^8.21.3",
     "date-fns": "^4.1.0",
@@ -22,12 +34,11 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.72.0",
-    "react-is": "^19.2.4",
-    "recharts": "^3.8.0",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "critters": "^0.0.23",
     "tailwindcss": "^4"
   }
 }

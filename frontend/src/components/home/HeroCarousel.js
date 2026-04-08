@@ -4,10 +4,10 @@ import Image from "next/image";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 const slides = [
-  { src: "/header/header-1-v2.png", alt: "Precision Peptide Intelligence" },
-  { src: "/header/header-4.png", alt: "How-to peptide videos" },
-  { src: "/header/header-7.png", alt: "Search popular peptides" },
-  { src: "/header/header-6.png", alt: "Search popular peptides" },
+  { src: "/header/header-1-v2.png", alt: "Precision Peptide Intelligence", quality: 75 },
+  { src: "/header/header-4.png", alt: "How-to peptide videos", quality: 60 },
+  { src: "/header/header-7.png", alt: "Search popular peptides", quality: 60 },
+  { src: "/header/header-6.png", alt: "Search popular peptides", quality: 60 },
 ];
 
 export default function HeroCarousel() {
@@ -62,8 +62,8 @@ export default function HeroCarousel() {
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
               fetchPriority={index === 0 ? "high" : "auto"}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1280px"
-              quality={75}
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1280px"
+              quality={slide.quality}
             />
           </div>
         ))}

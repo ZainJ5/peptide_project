@@ -108,8 +108,6 @@ export default function RootLayout({ children }) {
     >
       <head>
         {/* Preconnect to critical third-party origins */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {GA_ID && <link rel="preconnect" href="https://www.googletagmanager.com" />}
         {PIXEL_ID && <link rel="preconnect" href="https://connect.facebook.net" />}
 
@@ -117,9 +115,9 @@ export default function RootLayout({ children }) {
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
-            <Script id="ga-init" strategy="afterInteractive">
+            <Script id="ga-init" strategy="lazyOnload">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){window.dataLayer.push(arguments);}
@@ -130,9 +128,9 @@ export default function RootLayout({ children }) {
           </>
         )}
 
-        {/* ── Meta Pixel (deferred to idle) ── */}
+        {/* ── Meta Pixel (deferred to after load event) ── */}
         {PIXEL_ID && (
-          <Script id="meta-pixel-init" strategy="afterInteractive">
+          <Script id="meta-pixel-init" strategy="lazyOnload">
             {`
               !function(f,b,e,v,n,t,s)
               {if(f.fbq)return;n=f.fbq=function(){n.callMethod?

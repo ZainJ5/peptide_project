@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 import HeroCarousel from "@/components/home/HeroCarousel";
-import MobileHomeSearch from "@/components/home/MobileHomeSearch";
 import AboutSection from "@/components/home/AboutSection";
 
+const MobileHomeSearch = dynamic(() => import("@/components/home/MobileHomeSearch"));
 const ServiceCategories = dynamic(() => import("@/components/home/ServiceCategories"));
 const ScheduleBanner = dynamic(() => import("@/components/home/ScheduleBanner"));
 const ReconstitutionCalculator = dynamic(() => import("@/components/home/ReconstitutionCalculator"));
@@ -42,6 +42,14 @@ export const metadata = {
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-10 sm:gap-28">
+      {/* Preload the LCP hero image to reduce resource load delay */}
+      <link
+        rel="preload"
+        as="image"
+        href="/_next/image?url=%2Fheader%2Fheader-1-v2.png&w=640&q=75"
+        imageSrcSet="/_next/image?url=%2Fheader%2Fheader-1-v2.png&w=640&q=75 640w, /_next/image?url=%2Fheader%2Fheader-1-v2.png&w=750&q=75 750w, /_next/image?url=%2Fheader%2Fheader-1-v2.png&w=828&q=75 828w, /_next/image?url=%2Fheader%2Fheader-1-v2.png&w=1080&q=75 1080w, /_next/image?url=%2Fheader%2Fheader-1-v2.png&w=1200&q=75 1200w, /_next/image?url=%2Fheader%2Fheader-1-v2.png&w=1920&q=75 1920w"
+        imageSizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1280px"
+      />
       <div className="flex flex-col">
         <HeroCarousel />
         <h1 className="sr-only">
