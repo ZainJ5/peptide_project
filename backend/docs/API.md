@@ -1,4 +1,4 @@
-# PeptideDosage API — Full Reference
+# PeptideDosages API — Full Reference
 
 **Base URL:** `https://api.peptidedosages.com/api`
 **Protocol:** HTTPS only

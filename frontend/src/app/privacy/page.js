@@ -117,7 +117,7 @@ export default function PrivacyPolicyPage() {
             Last updated: March 24, 2026
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            Welcome to Mypeptidedosages (the &quot;Website&quot;). We take your privacy seriously and strive to protect any personal information you provide to us. This Privacy Policy outlines how we collect, use, and safeguard your information.
+            Welcome to MyPeptideDosages (the &quot;Website&quot;). We take your privacy seriously and strive to protect any personal information you provide to us. This Privacy Policy outlines how we collect, use, and safeguard your information.
           </p>
         </div>
 
@@ -142,7 +142,7 @@ export default function PrivacyPolicyPage() {
         {/* Closing */}
         <div className="pt-10 text-center">
           <p className="text-base font-medium text-slate-700">
-            Thank you for visiting Mypeptidedosages! Your privacy is important to us.
+            Thank you for visiting MyPeptideDosages! Your privacy is important to us.
           </p>
           <div className="mt-5 flex items-center justify-center gap-4">
             <Link

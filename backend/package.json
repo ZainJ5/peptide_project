@@ -1,5 +1,5 @@
 {
-  "name": "peptidedosage-backend",
+  "name": "peptidedosages-backend",
   "version": "1.0.0",
   "description": "MyPeptideDosages.com — REST API backend powering the mobile app and website",
   "main": "src/server.js",

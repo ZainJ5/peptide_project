@@ -7,7 +7,7 @@ const sections = [
   {
     title: "INFORMATIONAL NATURE OF THE WEBSITE",
     content:
-      "Mypeptidedosages provides educational and informational content about peptide dosages, research protocols, and related topics. We do not sell products or services, and the information presented is not intended to replace professional medical advice or treatment.",
+      "MyPeptideDosages provides educational and informational content about peptide dosages, research protocols, and related topics. We do not sell products or services, and the information presented is not intended to replace professional medical advice or treatment.",
   },
   {
     title: "NO MEDICAL OR PROFESSIONAL ADVICE",
@@ -17,7 +17,7 @@ const sections = [
   {
     title: "INTELLECTUAL PROPERTY",
     content:
-      "All materials on the Website, including text, graphics, logos, and images, are the property of Mypeptidedosages or its content suppliers and are protected by applicable intellectual property laws. You may not reproduce, distribute, modify, or create derivative works of any materials from this Website without our express written permission.",
+      "All materials on the Website, including text, graphics, logos, and images, are the property of MyPeptideDosages or its content suppliers and are protected by applicable intellectual property laws. You may not reproduce, distribute, modify, or create derivative works of any materials from this Website without our express written permission.",
   },
   {
     title: "USER RESPONSIBILITIES",
@@ -53,7 +53,7 @@ const sections = [
   {
     title: "LIMITATION OF LIABILITY",
     content:
-      "Under no circumstances shall Mypeptidedosages, its affiliates, contributors, or employees be liable for any direct, indirect, incidental, special, or consequential damages arising from or in connection with your use of the Website or reliance on any information provided on the Website.",
+      "Under no circumstances shall MyPeptideDosages, its affiliates, contributors, or employees be liable for any direct, indirect, incidental, special, or consequential damages arising from or in connection with your use of the Website or reliance on any information provided on the Website.",
   },
   {
     title: "EXTERNAL LINKS",
@@ -68,7 +68,7 @@ const sections = [
   {
     title: "GOVERNING LAW",
     content:
-      "These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Mypeptidedosages operates, without regard to its conflict of law provisions.",
+      "These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which MyPeptideDosages operates, without regard to its conflict of law provisions.",
   },
   {
     title: "CONTACT US",
@@ -117,7 +117,7 @@ export default function TermsOfServicePage() {
             Last updated: March 24, 2026
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            Welcome to Mypeptidedosages (the &quot;Website&quot;). These Terms &amp; Conditions (the &quot;Terms&quot;) govern your access to and use of our Website. By using our Website, you agree to be bound by these Terms.
+            Welcome to MyPeptideDosages (the &quot;Website&quot;). These Terms &amp; Conditions (the &quot;Terms&quot;) govern your access to and use of our Website. By using our Website, you agree to be bound by these Terms.
           </p>
         </div>
 
@@ -142,7 +142,7 @@ export default function TermsOfServicePage() {
         {/* Closing */}
         <div className="pt-10 text-center">
           <p className="text-base font-medium text-slate-700">
-            Your continued use of Mypeptidedosages indicates that you accept and agree to abide by these Terms &amp; Conditions.
+            Your continued use of MyPeptideDosages indicates that you accept and agree to abide by these Terms &amp; Conditions.
           </p>
           <div className="mt-5 flex items-center justify-center gap-4">
             <Link

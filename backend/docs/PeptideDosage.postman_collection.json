@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "PeptideDosage Backend API",
+    "name": "PeptideDosages Backend API",
     "_postman_id": "6d509314-7b2b-4f80-a4b5-c34f5d5755c3",
-    "description": "Complete API test collection for PeptideDosage backend.",
+    "description": "Complete API test collection for PeptideDosages backend.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
