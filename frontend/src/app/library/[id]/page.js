@@ -101,20 +101,38 @@ export default async function PeptideDetailPage({ params }) {
   const medicalJsonLd = peptide
     ? {
         "@context": "https://schema.org",
-        "@type": "MedicalWebPage",
-        name: peptide.mgAmount
+        "@type": "Article",
+        mainEntityOfPage: {
+          "@type": "MedicalWebPage",
+          "@id": `${SITE_URL}/library/${slug}`,
+          mainContentOfPage: {
+            "@type": "WebPageElement",
+            cssSelector: "#benefits, #reconstitution, #dosage",
+          },
+        },
+        headline: peptide.mgAmount
           ? `${peptide.name} ${peptide.mgAmount} Dosage Protocol`
           : `${peptide.name} Dosage Protocol`,
         description: peptide.protocolTitle || `Dosage protocol for ${peptide.name}`,
         url: `${SITE_URL}/library/${slug}`,
-        mainContentOfPage: {
-          "@type": "WebPageElement",
-          cssSelector: "#benefits, #reconstitution, #dosage",
-        },
         about: {
-          "@type": "Drug",
+          "@type": "MedicalEntity",
           name: peptide.name,
-          description: peptide.howItWorks || undefined,
+          ...(peptide.howItWorks ? { description: peptide.howItWorks } : {}),
+        },
+        author: {
+          "@type": "Organization",
+          name: "MyPeptideDosages",
+          url: SITE_URL,
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "MyPeptideDosages",
+          url: SITE_URL,
+          logo: {
+            "@type": "ImageObject",
+            url: `${SITE_URL}/favicon.ico`,
+          },
         },
       }
     : null;
