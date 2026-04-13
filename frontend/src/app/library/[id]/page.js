@@ -107,7 +107,7 @@ export default async function PeptideDetailPage({ params }) {
           "@id": `${SITE_URL}/library/${slug}`,
           mainContentOfPage: {
             "@type": "WebPageElement",
-            cssSelector: "#benefits, #reconstitution, #dosage",
+            cssSelector: "#main-content",
           },
         },
         headline: peptide.mgAmount

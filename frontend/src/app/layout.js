@@ -165,7 +165,6 @@ export default function RootLayout({ children }) {
                   },
                   description:
                     "Research-backed peptide dosage calculator, reconstitution guides, and protocol scheduling platform.",
-                  medicalSpecialty: "https://schema.org/Pharmacology",
                   sameAs: [
                     // "https://twitter.com/mypeptidedosages",
                     // "https://www.facebook.com/mypeptidedosages",
