@@ -105,10 +105,6 @@ export default async function PeptideDetailPage({ params }) {
         mainEntityOfPage: {
           "@type": "MedicalWebPage",
           "@id": `${SITE_URL}/library/${slug}`,
-          mainContentOfPage: {
-            "@type": "WebPageElement",
-            cssSelector: "#main-content",
-          },
         },
         headline: peptide.mgAmount
           ? `${peptide.name} ${peptide.mgAmount} Dosage Protocol`
