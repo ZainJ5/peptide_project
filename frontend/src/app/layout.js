@@ -147,40 +147,50 @@ export default function RootLayout({ children }) {
       </head>
 
       <body className="min-h-full">
-        {/* JSON-LD: Organization Schema */}
+        {/* JSON-LD: MedicalOrganization + WebSite (unified @graph) */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "MyPeptideDosages",
-              url: "https://mypeptidedosages.com",
-              logo: "https://mypeptidedosages.com/favicon.ico",
-              sameAs: [],
-              description:
-                "Research-backed peptide dosage calculator, reconstitution guides, and protocol scheduling platform.",
-            }),
-          }}
-        />
-        {/* JSON-LD: WebSite Schema with SearchAction */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "MyPeptideDosages",
-              url: "https://mypeptidedosages.com",
-              potentialAction: {
-                "@type": "SearchAction",
-                target: {
-                  "@type": "EntryPoint",
-                  urlTemplate:
-                    "https://mypeptidedosages.com/library?search={search_term_string}",
+              "@graph": [
+                {
+                  "@type": "MedicalOrganization",
+                  "@id": "https://mypeptidedosages.com/#organization",
+                  name: "MyPeptideDosages",
+                  url: "https://mypeptidedosages.com",
+                  logo: {
+                    "@type": "ImageObject",
+                    url: "https://mypeptidedosages.com/favicon.ico",
+                  },
+                  description:
+                    "Research-backed peptide dosage calculator, reconstitution guides, and protocol scheduling platform.",
+                  medicalSpecialty: "https://schema.org/Pharmacology",
+                  sameAs: [
+                    // "https://twitter.com/mypeptidedosages",
+                    // "https://www.facebook.com/mypeptidedosages",
+                    // "https://www.youtube.com/@mypeptidedosages",
+                  ],
                 },
-                "query-input": "required name=search_term_string",
-              },
+                {
+                  "@type": "WebSite",
+                  "@id": "https://mypeptidedosages.com/#website",
+                  name: "MyPeptideDosages",
+                  url: "https://mypeptidedosages.com",
+                  publisher: {
+                    "@id": "https://mypeptidedosages.com/#organization",
+                  },
+                  potentialAction: {
+                    "@type": "SearchAction",
+                    target: {
+                      "@type": "EntryPoint",
+                      urlTemplate:
+                        "https://mypeptidedosages.com/library?search={search_term_string}",
+                    },
+                    "query-input": "required name=search_term_string",
+                  },
+                },
+              ],
             }),
           }}
         />
