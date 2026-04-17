@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Peptide Calendar Builder – Custom Dosing Schedules",
   description:
-    "Create personalized peptide dosing schedules with our interactive calendar builder. Plan injection frequency, cycle duration, and dose escalation for any protocol.",
+    "Create personalized peptide dosing schedules with the My Peptide Dosages interactive calendar builder. Plan injection frequency, cycle duration, and dose escalation for any protocol.",
   alternates: { canonical: "/schedule" },
   openGraph: {
     type: "website",
@@ -9,7 +9,7 @@ export const metadata = {
     siteName: "MyPeptideDosages",
     title: "Peptide Calendar Builder – Custom Dosing Schedules",
     description:
-      "Create personalized peptide dosing schedules with our interactive calendar builder.",
+      "Create personalized peptide dosing schedules with the My Peptide Dosages interactive calendar builder.",
     url: "https://mypeptidedosages.com/schedule",
     images: [
       {
@@ -24,7 +24,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Peptide Calendar Builder – Custom Dosing Schedules",
     description:
-      "Create personalized peptide dosing schedules with our interactive calendar builder.",
+      "Create personalized peptide dosing schedules with the My Peptide Dosages interactive calendar builder.",
     images: ["/opengraph-image"],
   },
 };

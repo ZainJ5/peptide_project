@@ -25,7 +25,7 @@ export const metadata = {
     template: "%s | MyPeptideDosages",
   },
   description:
-    "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules. Plan accurate BPC-157, Semaglutide, TB-500, and 100+ peptide dosing protocols.",
+    "My Peptide Dosages is a free peptide dosage calculator with reconstitution guides and research-backed protocol schedules. Plan accurate BPC-157, Semaglutide, TB-500, and 100+ peptide dosing protocols.",
   keywords: [
     "peptide dosage calculator",
     "peptide reconstitution calculator",
@@ -62,7 +62,7 @@ export const metadata = {
     siteName: "MyPeptideDosages",
     title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
-      "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 100+ peptides.",
+      "My Peptide Dosages – free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 100+ peptides.",
     url: "https://mypeptidedosages.com",
     images: [
       {
@@ -77,7 +77,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
-      "Free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 100+ peptides.",
+      "My Peptide Dosages – free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 100+ peptides.",
     images: ["/opengraph-image"],
   },
   robots: {
@@ -164,7 +164,8 @@ export default function RootLayout({ children }) {
                     url: "https://mypeptidedosages.com/favicon.ico",
                   },
                   description:
-                    "Research-backed peptide dosage calculator, reconstitution guides, and protocol scheduling platform.",
+                    "My Peptide Dosages – research-backed peptide dosage calculator, reconstitution guides, and protocol scheduling platform.",
+                  alternateName: "My Peptide Dosages",
                   sameAs: [
                     // "https://twitter.com/mypeptidedosages",
                     // "https://www.facebook.com/mypeptidedosages",
@@ -175,6 +176,7 @@ export default function RootLayout({ children }) {
                   "@type": "WebSite",
                   "@id": "https://mypeptidedosages.com/#website",
                   name: "MyPeptideDosages",
+                  alternateName: "My Peptide Dosages",
                   url: "https://mypeptidedosages.com",
                   publisher: {
                     "@id": "https://mypeptidedosages.com/#organization",

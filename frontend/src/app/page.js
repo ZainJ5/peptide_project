@@ -11,7 +11,7 @@ const FaqSection = dynamic(() => import("@/components/home/FaqSection"));
 export const metadata = {
   title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
   description:
-    "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for BPC-157, Semaglutide, TB-500, and 100+ peptides. Free calculator and schedule tools for researchers.",
+    "My Peptide Dosages – calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for BPC-157, Semaglutide, TB-500, and 100+ peptides. Free calculator and schedule tools for researchers.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -19,7 +19,7 @@ export const metadata = {
     siteName: "MyPeptideDosages",
     title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
-      "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 100+ peptides.",
+      "My Peptide Dosages – calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 100+ peptides.",
     url: "https://mypeptidedosages.com",
     images: [
       {
@@ -34,7 +34,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
-      "Calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 100+ peptides.",
+      "My Peptide Dosages – calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 100+ peptides.",
     images: ["/opengraph-image"],
   },
 };
@@ -53,7 +53,7 @@ export default function HomePage() {
       <div className="flex flex-col">
         <HeroCarousel />
         <h1 className="sr-only">
-          Free Peptide Dosage Calculator – Reconstitution Guides &amp; Protocol Schedules for 100+ Peptides
+          My Peptide Dosages – Free Peptide Dosage Calculator, Reconstitution Guides &amp; Protocol Schedules for 100+ Peptides
         </h1>
         <MobileHomeSearch />
       </div>

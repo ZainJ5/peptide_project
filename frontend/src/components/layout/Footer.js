@@ -78,7 +78,7 @@ export default function Footer() {
               </Link>
 
               <p className="mt-5 max-w-xs text-sm leading-relaxed text-slate-400">
-                Your trusted platform for accurate peptide dosage research and protocol planning. Simplifying complex data with confidence and clarity.
+                My Peptide Dosages is your trusted platform for accurate peptide dosage research and protocol planning. Simplifying complex data with confidence and clarity.
               </p>
 
               {/* Social Icons */}
@@ -227,7 +227,7 @@ export default function Footer() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
               </svg>
               <p className="text-xs leading-relaxed text-amber-200/80">
-                <span className="font-bold text-amber-300">Disclaimer:</span> Content on MyPeptideDosages is provided for educational and research-awareness purposes only and does not constitute medical advice, diagnosis, or treatment. Always consult a licensed healthcare professional before starting, stopping, or modifying any peptide-related protocol.
+                <span className="font-bold text-amber-300">Disclaimer:</span> Content on My Peptide Dosages (mypeptidedosages.com) is provided for educational and research-awareness purposes only and does not constitute medical advice, diagnosis, or treatment. Always consult a licensed healthcare professional before starting, stopping, or modifying any peptide-related protocol.
               </p>
             </div>
           </div>

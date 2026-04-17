@@ -2,12 +2,14 @@ import Link from "next/link";
 import Accordion from "@/components/ui/Accordion";
 
 const faqItems = [
-  { title: "Can I use this app as medical advice?", content: "No. This application is purely educational and modeling software. It does not replace licensed, individualized medical supervision. Always consult a qualified healthcare professional for medical decisions." },
+  { title: "What is My Peptide Dosages?", content: "My Peptide Dosages (MyPeptideDosages) is a free, research-driven peptide dosage calculator and protocol planning platform. We compile data from thousands of articles, medical studies, and published research to provide accurate dosing schedules, reconstitution guides, and injection frequency charts for 100+ peptides." },
+  { title: "Can I use this app as medical advice?", content: "No. My Peptide Dosages is purely educational and modeling software. It does not replace licensed, individualized medical supervision. Always consult a qualified healthcare professional for medical decisions." },
   { title: "How are dosage schedules generated?", content: "Schedules are statically modeled from known literature escalation tables. They utilize frequency parsing and rest-period rule engines to build timelines automatically based on published research protocols." },
   { title: "What happens when I override dosage calculation?", content: "Applying a manual override immediately forces the algorithm to suspend phase escalation, applying your fixed scalar settings universally across the entire schedule timeline." },
-  { title: "Can I export these plans to share with my physician?", content: "Yes. All generated protocols and treatment calendars can be exported natively to PDF format or copied directly to your clipboard for easy sharing with healthcare providers." },
-  { title: "How accurate is the reconstitution calculator?", content: "The calculator uses standard pharmaceutical math (concentration = amount / volume). Results are precise to three decimal places. Always verify calculations independently before use." },
-  { title: "Is my data stored securely?", content: "All user data is encrypted in transit and at rest. We use industry-standard JWT authentication with automatic token refresh. Your schedules and protocols are private by default." },
+  { title: "Can I export these plans to share with my physician?", content: "Yes. All generated protocols and treatment calendars on My Peptide Dosages can be exported natively to PDF format or copied directly to your clipboard for easy sharing with healthcare providers." },
+  { title: "How accurate is the reconstitution calculator?", content: "The My Peptide Dosages reconstitution calculator uses standard pharmaceutical math (concentration = amount / volume). Results are precise to three decimal places. Always verify calculations independently before use." },
+  { title: "Is my data stored securely?", content: "All user data on My Peptide Dosages is encrypted in transit and at rest. We use industry-standard JWT authentication with automatic token refresh. Your schedules and protocols are private by default." },
+  { title: "How do I find My Peptide Dosages online?", content: "You can visit us directly at mypeptidedosages.com or search for \"My Peptide Dosages\" in any search engine. Our platform offers completely free peptide dosage calculators, schedule builders, and a video library to support your peptide research." },
 ];
 
 export { faqItems };

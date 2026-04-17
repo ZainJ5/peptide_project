@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Peptide Community – Discuss Protocols & Share Experiences",
   description:
-    "Join the MyPeptideDosages community to discuss peptide protocols, share dosing experiences, and learn from fellow researchers.",
+    "Join the My Peptide Dosages community to discuss peptide protocols, share dosing experiences, and learn from fellow researchers.",
   alternates: { canonical: "/community" },
   openGraph: {
     type: "website",
@@ -9,7 +9,7 @@ export const metadata = {
     siteName: "MyPeptideDosages",
     title: "Peptide Community – Discuss Protocols & Share Experiences",
     description:
-      "Join the MyPeptideDosages community to discuss peptide protocols and share dosing experiences.",
+      "Join the My Peptide Dosages community to discuss peptide protocols and share dosing experiences.",
     url: "https://mypeptidedosages.com/community",
     images: [
       {
@@ -24,7 +24,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Peptide Community – Discuss Protocols & Share Experiences",
     description:
-      "Join the MyPeptideDosages community to discuss peptide protocols and share dosing experiences.",
+      "Join the My Peptide Dosages community to discuss peptide protocols and share dosing experiences.",
     images: ["/opengraph-image"],
   },
 };
