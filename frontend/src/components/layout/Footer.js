@@ -92,12 +92,12 @@ export default function Footer() {
                 <SocialIcon href="#" label="LinkedIn" gradient="hover:border-blue-500/30 hover:bg-blue-600/10 hover:text-blue-400">
                   <LinkedInIcon />
                 </SocialIcon>
-                <SocialIcon href="#" label="YouTube" gradient="hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-400">
+                <SocialIcon href="https://www.youtube.com/@mypeptidedosages" label="YouTube" gradient="hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-400">
                   <YouTubeIcon />
                 </SocialIcon>
-                <SocialIcon href="#" label="Instagram" gradient="hover:border-pink-400/30 hover:bg-pink-500/10 hover:text-pink-400">
+                {/* <SocialIcon href="#" label="Instagram" gradient="hover:border-pink-400/30 hover:bg-pink-500/10 hover:text-pink-400">
                   <InstagramIcon />
-                </SocialIcon>
+                </SocialIcon> */}
               </div>
             </div>
 
