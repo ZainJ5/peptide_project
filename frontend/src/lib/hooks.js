@@ -42,12 +42,14 @@ export function usePeptideCategories() {
   });
 }
 
-export function usePeptideDetail(id) {
+export function usePeptideDetail(id, { initialData } = {}) {
   const request = useAuthedRequest();
   return useQuery({
     queryKey: ["peptide", id],
     queryFn: () => request(`/peptides/${id}`),
     enabled: Boolean(id),
+    initialData: initialData ? { data: initialData } : undefined,
+    staleTime: initialData ? 60 * 1000 : 0,
   });
 }
 

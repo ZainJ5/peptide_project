@@ -1,6 +1,8 @@
 import { permanentRedirect } from "next/navigation";
 import PeptideDetailClient from "./PeptideDetailClient";
 
+export const revalidate = 3600; // ISR: regenerate at most every hour
+
 const SITE_URL = "https://mypeptidedosages.com";
 
 const BACKEND_URL = (
@@ -23,6 +25,30 @@ async function fetchPeptide(idOrSlug) {
     return json.data || null;
   } catch {
     return null;
+  }
+}
+
+export async function generateStaticParams() {
+  try {
+    const allSlugs = [];
+    let offset = 0;
+    const limit = 100;
+    while (true) {
+      const res = await fetch(`${API_BASE}/peptides?limit=${limit}&offset=${offset}`, {
+        cache: "no-store",
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!res.ok) break;
+      const json = await res.json();
+      const peptides = json.data || json.peptides || [];
+      if (peptides.length === 0) break;
+      allSlugs.push(...peptides.filter((p) => p.slug).map((p) => ({ id: p.slug })));
+      offset += peptides.length;
+      if (allSlugs.length >= (json.total || Infinity)) break;
+    }
+    return allSlugs;
+  } catch {
+    return [];
   }
 }
 
@@ -145,7 +171,7 @@ export default async function PeptideDetailPage({ params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(medicalJsonLd) }}
         />
       )}
-      <PeptideDetailClient />
+      <PeptideDetailClient initialPeptide={peptide} />
     </>
   );
 }

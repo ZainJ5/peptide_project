@@ -46,10 +46,10 @@ function formatCategoryLabel(value) {
   return asCleanText(value).split(/[\s_-]+/).filter(Boolean).map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
 }
 
-export default function PeptideDetailClient() {
+export default function PeptideDetailClient({ initialPeptide } = {}) {
   const params = useParams();
   const router = useRouter();
-  const peptideQuery = usePeptideDetail(params.id || params.slug);
+  const peptideQuery = usePeptideDetail(params.id || params.slug, { initialData: initialPeptide || null });
 
   const peptide = peptideQuery.data?.data;
   const primaryVariant = peptide?.scheduleVariants?.[0];

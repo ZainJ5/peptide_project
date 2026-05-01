@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
 export const revalidate = 3600; // regenerate at most every hour
 
 const SITE_URL = "https://mypeptidedosages.com";
@@ -52,13 +52,13 @@ async function fetchAllPeptides() {
 
 export default async function sitemap() {
   const staticPages = [
-    { url: SITE_URL, lastModified: new Date(), changeFrequency: "weekly", priority: 1.0 },
-    { url: `${SITE_URL}/library`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${SITE_URL}/schedule`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${SITE_URL}/videos`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
-    { url: `${SITE_URL}/community`, lastModified: new Date(), changeFrequency: "daily", priority: 0.7 },
-    { url: `${SITE_URL}/privacy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
-    { url: `${SITE_URL}/terms`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: SITE_URL, lastModified: new Date("2025-01-01"), changeFrequency: "weekly", priority: 1.0 },
+    { url: `${SITE_URL}/library`, lastModified: new Date("2025-01-01"), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${SITE_URL}/schedule`, lastModified: new Date("2025-01-01"), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${SITE_URL}/videos`, lastModified: new Date("2025-01-01"), changeFrequency: "weekly", priority: 0.8 },
+    { url: `${SITE_URL}/community`, lastModified: new Date("2025-01-01"), changeFrequency: "daily", priority: 0.7 },
+    { url: `${SITE_URL}/privacy`, lastModified: new Date("2025-01-01"), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/terms`, lastModified: new Date("2025-01-01"), changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const peptides = await fetchAllPeptides();
