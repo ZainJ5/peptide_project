@@ -25,13 +25,13 @@ export default function CommunityClient({ initialPosts = [] }) {
     };
   }, [filters, activeTab, authUser]);
 
-  const postsQuery = useCommunityPosts(currentFilters);
+  const postsQuery = useCommunityPosts(currentFilters, { initialData: initialPosts });
   const upvoteMutation = useUpvoteCommunityPost();
   const deleteMutation = useDeleteCommunityPost();
 
-  // Use server-fetched initial posts to avoid loading spinner on first render
-  const posts = postsQuery.data?.data ?? initialPosts;
-  const isLoading = postsQuery.isLoading && initialPosts.length === 0;
+  // React Query starts with initialData already set — no loading flash on SSR
+  const posts = postsQuery.data?.data ?? [];
+  const isLoading = postsQuery.isLoading;
 
   const handleUpvote = (postId) => {
     if (!authUser) return;

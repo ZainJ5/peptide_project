@@ -62,12 +62,14 @@ export function useVideos(filters) {
   });
 }
 
-export function useCommunityPosts(filters) {
+export function useCommunityPosts(filters, { initialData } = {}) {
   const request = useAuthedRequest();
   const query = useMemo(() => toQueryString(filters), [filters]);
   return useQuery({
     queryKey: ["community", query],
     queryFn: () => request(`/community${query}`),
+    initialData: initialData ? { data: initialData } : undefined,
+    staleTime: initialData ? 30 * 1000 : 0,
   });
 }
 
