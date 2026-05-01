@@ -4,16 +4,15 @@ export default function AboutSection() {
   return (
     <section id="about" className="mx-auto max-w-7xl px-0 sm:px-6 w-full">
       <div className="mb-5 px-4 sm:px-0">
-        <h2 className="text-xs font-bold tracking-widest uppercase text-emerald-600 sm:text-sm">About Us</h2>
+        <h2 className="text-xs font-bold tracking-widest uppercase text-emerald-600 sm:text-sm">About My Peptide Dosages</h2>
       </div>
 
       <div className="grid lg:grid-cols-5 gap-10 lg:gap-16 items-start">
         {/* Left — Heading */}
         <div className="px-4 sm:px-0 lg:col-span-2">
           <h3 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl leading-[1.15]">
-            Your {" "}
-            <span className="text-emerald-600">Peptide Protocol</span>{" "}
-            Platform
+            <span className="text-emerald-600">My Peptide Dosages</span>
+            {" — Your Peptide Protocol Platform"}
           </h3>
         </div>
 

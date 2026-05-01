@@ -21,8 +21,8 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata = {
   metadataBase: new URL("https://mypeptidedosages.com"),
   title: {
-    default: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
-    template: "%s | MyPeptideDosages",
+    default: "My Peptide Dosages – Free Peptide Dosage Calculator & Protocol Guide",
+    template: "%s | My Peptide Dosages",
   },
   description:
     "My Peptide Dosages is a free peptide dosage calculator with reconstitution guides and research-backed protocol schedules. Plan accurate BPC-157, Semaglutide, TB-500, and 100+ peptide dosing protocols.",
@@ -59,8 +59,8 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "MyPeptideDosages",
-    title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
+    siteName: "My Peptide Dosages",
+    title: "My Peptide Dosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
       "My Peptide Dosages – free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 100+ peptides.",
     url: "https://mypeptidedosages.com",
@@ -69,13 +69,13 @@ export const metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
+        alt: "My Peptide Dosages – Free Peptide Dosage Calculator & Protocol Guide",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
+    title: "My Peptide Dosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
       "My Peptide Dosages – free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 100+ peptides.",
     images: ["/opengraph-image"],
@@ -157,26 +157,35 @@ export default function RootLayout({ children }) {
                 {
                   "@type": "MedicalOrganization",
                   "@id": "https://mypeptidedosages.com/#organization",
-                  name: "MyPeptideDosages",
+                  name: "My Peptide Dosages",
+                  alternateName: ["MyPeptideDosages", "mypeptidedosages.com"],
                   url: "https://mypeptidedosages.com",
                   logo: {
                     "@type": "ImageObject",
-                    url: "https://mypeptidedosages.com/favicon.ico",
+                    "@id": "https://mypeptidedosages.com/#logo",
+                    url: "https://mypeptidedosages.com/logo.png",
+                    width: 512,
+                    height: 512,
+                    caption: "MyPeptideDosages",
                   },
+                  image: { "@id": "https://mypeptidedosages.com/#logo" },
                   description:
                     "My Peptide Dosages – research-backed peptide dosage calculator, reconstitution guides, and protocol scheduling platform.",
-                  alternateName: "My Peptide Dosages",
                   sameAs: [
-                    // "https://twitter.com/mypeptidedosages",
-                    // "https://www.facebook.com/mypeptidedosages",
-                    // "https://www.youtube.com/@mypeptidedosages",
+                    "https://www.youtube.com/@mypeptidedosages",
                   ],
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    email: "info@mypeptidedosages.com",
+                    contactType: "customer support",
+                    availableLanguage: "English",
+                  },
                 },
                 {
                   "@type": "WebSite",
                   "@id": "https://mypeptidedosages.com/#website",
-                  name: "MyPeptideDosages",
-                  alternateName: "My Peptide Dosages",
+                  name: "My Peptide Dosages",
+                  alternateName: "MyPeptideDosages",
                   url: "https://mypeptidedosages.com",
                   publisher: {
                     "@id": "https://mypeptidedosages.com/#organization",
