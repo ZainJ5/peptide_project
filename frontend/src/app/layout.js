@@ -21,8 +21,8 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata = {
   metadataBase: new URL("https://mypeptidedosages.com"),
   title: {
-    default: "My Peptide Dosages – Free Peptide Dosage Calculator & Protocol Guide",
-    template: "%s | My Peptide Dosages",
+    default: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
+    template: "%s | MyPeptideDosages",
   },
   description:
     "My Peptide Dosages is a free peptide dosage calculator with reconstitution guides and research-backed protocol schedules. Plan accurate BPC-157, Semaglutide, TB-500, and 100+ peptide dosing protocols.",
@@ -59,8 +59,8 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "My Peptide Dosages",
-    title: "My Peptide Dosages – Free Peptide Dosage Calculator & Protocol Guide",
+    siteName: "MyPeptideDosages",
+    title: "MyPeptideDosages – Free Peptide Dosage Calculator & Protocol Guide",
     description:
       "My Peptide Dosages – free peptide dosage calculator, reconstitution guides, and research-backed protocol schedules for 100+ peptides.",
     url: "https://mypeptidedosages.com",

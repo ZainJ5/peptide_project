@@ -73,8 +73,8 @@ export async function generateMetadata({ params }) {
   const mg = peptide.mgAmount || "";
   const fullName = mg ? `${name} ${mg}` : name;
 
-  const title = `${fullName} Dosage Protocol - Reconstitution & Dosing Guide`;
-  const description = `Complete ${fullName} dosage protocol: reconstitution instructions, injection frequency, cycle schedule, benefits, and side effects. Research-backed dosing guide.`;
+  const title = `${fullName} Dosage Protocol – Reconstitution & Dosing Guide`;
+  const description = `Complete ${fullName} dosage protocol on My Peptide Dosages: reconstitution instructions, injection frequency, cycle schedule, benefits, and side effects. Research-backed dosing guide.`;
 
   return {
     title,
@@ -144,18 +144,23 @@ export default async function PeptideDetailPage({ params }) {
         },
         author: {
           "@type": "Organization",
-          name: "MyPeptideDosages",
+          "@id": "https://mypeptidedosages.com/#organization",
+          name: "My Peptide Dosages",
           url: SITE_URL,
         },
         publisher: {
           "@type": "Organization",
-          name: "MyPeptideDosages",
+          "@id": "https://mypeptidedosages.com/#organization",
+          name: "My Peptide Dosages",
           url: SITE_URL,
           logo: {
             "@type": "ImageObject",
-            url: `${SITE_URL}/favicon.ico`,
+            url: `${SITE_URL}/logo.png`,
+            width: 512,
+            height: 512,
           },
         },
+        isPartOf: { "@id": "https://mypeptidedosages.com/#website" },
       }
     : null;
 

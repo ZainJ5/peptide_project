@@ -186,11 +186,11 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-5 py-3.5">
             {/* Logo */}
             <Link href="/" className="flex shrink-0 items-center gap-3 transition-opacity hover:opacity-80">
-              <Image src="/logo.png" alt="MyPeptideDosages" width={44} height={44}
+              <Image src="/logo.png" alt="My Peptide Dosages" width={44} height={44}
                 className="h-[42px] w-[42px] rounded-xl border border-slate-200 bg-white object-contain p-1 shadow-sm" priority />
               <div className="leading-tight">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Research Portal</p>
-                <p className="text-base font-extrabold tracking-tight text-slate-900">MyPeptideDosages</p>
+                <p className="text-base font-extrabold tracking-tight text-slate-900">My Peptide Dosages</p>
               </div>
             </Link>
 
