@@ -9,17 +9,17 @@ const ReconstitutionCalculator = dynamic(() => import("@/components/home/Reconst
 const FaqSection = dynamic(() => import("@/components/home/FaqSection"));
 
 export const metadata = {
-  title: "My Peptide Dosages – Free Peptide Dosage Calculator & Protocol Guide",
+  title: "My Peptide Dosages – Peptide Dosage Calculator & Guide",
   description:
-    "My Peptide Dosages – calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for BPC-157, Semaglutide, TB-500, and 100+ peptides. Free calculator and schedule tools for researchers.",
+    "My Peptide Dosages – free peptide dosage calculator with reconstitution guides and research-backed protocols for BPC-157, Semaglutide, TB-500 & 100+ peptides.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "My Peptide Dosages",
-    title: "My Peptide Dosages – Free Peptide Dosage Calculator & Protocol Guide",
+    title: "My Peptide Dosages – Peptide Dosage Calculator & Guide",
     description:
-      "My Peptide Dosages – calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 100+ peptides.",
+      "My Peptide Dosages – free peptide dosage calculator, reconstitution guides, and protocol schedules for 100+ peptides.",
     url: "https://mypeptidedosages.com",
     images: [
       {
@@ -32,9 +32,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "My Peptide Dosages – Free Peptide Dosage Calculator & Protocol Guide",
+    title: "My Peptide Dosages – Peptide Dosage Calculator & Guide",
     description:
-      "My Peptide Dosages – calculate accurate peptide dosages, reconstitution volumes, and build research-backed dosing schedules for 100+ peptides.",
+      "My Peptide Dosages – free peptide dosage calculator, reconstitution guides, and protocol schedules for 100+ peptides.",
     images: ["/opengraph-image"],
   },
 };
@@ -82,9 +82,14 @@ export default function HomePage() {
       />
       <div className="flex flex-col">
         <HeroCarousel />
-        <h1 className="sr-only">
-          My Peptide Dosages – Free Peptide Dosage Calculator, Reconstitution Guides &amp; Protocol Schedules for 100+ Peptides
-        </h1>
+        <section className="mx-auto w-full max-w-7xl px-4 sm:px-6 mt-6 sm:mt-10">
+          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-[1.1]">
+            <span className="text-emerald-600">My Peptide Dosages</span> — Free Peptide Dosage Calculator &amp; Reconstitution Guide
+          </h1>
+          <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed">
+            Welcome to <strong>My Peptide Dosages</strong> (mypeptidedosages.com) — the free peptide dosage calculator and protocol library used by researchers worldwide. Calculate accurate reconstitution volumes, injection frequencies, and full cycle schedules for BPC-157, Semaglutide, TB-500, CJC-1295, Ipamorelin, Tirzepatide, and 100+ research peptides. Every protocol on My Peptide Dosages is backed by published research and built for clarity, safety, and reproducibility.
+          </p>
+        </section>
         <MobileHomeSearch />
       </div>
       <AboutSection />

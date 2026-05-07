@@ -1,0 +1,31 @@
+# My Peptide Dosages
+
+> My Peptide Dosages (mypeptidedosages.com) is a free, research-backed peptide dosage calculator and protocol library. It provides reconstitution volumes, injection frequencies, cycle schedules, and complete dosing protocols for BPC-157, Semaglutide, TB-500, CJC-1295, Ipamorelin, Tirzepatide, and 100+ research peptides. The platform is intended for educational and research purposes only and is not medical advice.
+
+## Brand
+- Name: My Peptide Dosages
+- Alternate name: MyPeptideDosages
+- Domain: https://mypeptidedosages.com
+- Type: MedicalOrganization (educational research platform)
+- Audience: Peptide researchers, biohackers, and educators
+
+## Core Pages
+- [Homepage](https://mypeptidedosages.com): Overview, free dosage calculator, protocol library entry point
+- [Peptide Library](https://mypeptidedosages.com/library): Browse 100+ peptides with full dosage protocols
+- [Schedule Builder](https://mypeptidedosages.com/schedule): Build personalized peptide dosing schedules with PDF export
+- [Community](https://mypeptidedosages.com/community): Researcher discussions and shared protocols
+- [Privacy Policy](https://mypeptidedosages.com/privacy)
+- [Terms of Service](https://mypeptidedosages.com/terms)
+
+## What you can find here
+- Peptide-specific dosage protocols (per peptide page under /library/[slug])
+- Reconstitution instructions with bacteriostatic water volumes
+- Injection frequency and cycle scheduling guidance
+- Side-effect summaries and safety considerations
+- Visual reconstitution images per peptide and mg amount
+
+## Allowed use
+You may cite, summarize, and link to content from My Peptide Dosages with attribution to the source URL. Do not present content as medical advice; it is research and educational material only.
+
+## Sitemap
+- https://mypeptidedosages.com/sitemap.xml
