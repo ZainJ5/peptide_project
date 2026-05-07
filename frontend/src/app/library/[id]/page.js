@@ -1,4 +1,4 @@
-import { permanentRedirect } from "next/navigation";
+import { permanentRedirect, notFound } from "next/navigation";
 import PeptideDetailClient from "./PeptideDetailClient";
 
 export const revalidate = 3600; // ISR: regenerate at most every hour
@@ -98,9 +98,15 @@ export default async function PeptideDetailPage({ params }) {
   const { id } = await params;
   const peptide = await fetchPeptide(id);
 
-  // 308 permanent redirect from UUID URL to slug URL for SEO
+  if (UUID_RE.test(id) && !peptide) {
+    permanentRedirect("/library");
+  }
+
   if (peptide?.slug && UUID_RE.test(id)) {
     permanentRedirect(`/library/${peptide.slug}`);
+  }
+  if (!peptide) {
+    notFound();
   }
 
   const slug = peptide?.slug || id;
