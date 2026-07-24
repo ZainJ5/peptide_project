@@ -109,18 +109,37 @@ async function getScheduleById(req, res, next) {
   }
 }
 
+function toDateKey(value) {
+  if (!value) return null;
+  const d = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(d.getTime()) ? String(value) : d.toISOString().slice(0, 10);
+}
+
 async function updateSchedule(req, res, next) {
   try {
     const schedule = await requireScheduleShallow(req.params.id, req.user.id);
     const { name, startDate, durationWeeks, notes } = req.body;
 
-    await schedule.update({
+    const updates = {
       ...(name !== undefined && { name }),
       ...(startDate !== undefined && { startDate }),
       ...(durationWeeks !== undefined && { durationWeeks }),
       ...(notes !== undefined && { notes }),
-      isGenerated: false,
-    });
+    };
+
+    // Only changes that affect the generated calendar (start date / duration)
+    // invalidate the existing generation. Renames and note edits keep the
+    // schedule "Active" so the calendar stays viewable without re-generating.
+    const startChanged =
+      startDate !== undefined && toDateKey(startDate) !== toDateKey(schedule.startDate);
+    const durationChanged =
+      durationWeeks !== undefined && Number(durationWeeks) !== Number(schedule.durationWeeks);
+
+    if (startChanged || durationChanged) {
+      updates.isGenerated = false;
+    }
+
+    await schedule.update(updates);
 
     return res.json({ success: true, data: schedule });
   } catch (err) {

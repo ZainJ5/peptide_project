@@ -125,13 +125,19 @@ export default function VideosPage() {
                 </button>
               </div>
               <div className="aspect-video w-full bg-black">
-                <iframe 
-                  className="h-full w-full border-none" 
-                  src={`${playingVideo.embedUrl}?autoplay=1`} 
-                  title={playingVideo.title} 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                  allowFullScreen 
-                />
+                <video
+                  className="h-full w-full bg-black"
+                  src={playingVideo.videoSrc}
+                  poster={playingVideo.customThumbnail}
+                  title={playingVideo.title}
+                  controls
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  controlsList="nodownload"
+                >
+                  Your browser does not support the video tag.
+                </video>
               </div>
             </div>
           </div>

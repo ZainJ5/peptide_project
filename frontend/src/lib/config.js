@@ -4,10 +4,13 @@ export const DAY_OPTIONS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
 export const VIDEO_CATEGORIES = [
   { label: "All", value: "" },
+  { label: "Getting Started", value: "getting_started" },
   { label: "Reconstitution", value: "reconstitution" },
   { label: "Injection", value: "injection" },
-  { label: "Peptide Specific", value: "peptide_specific" },
-  { label: "General", value: "general" },
+  { label: "Peptide Guides", value: "peptide_guide" },
+  { label: "Weight Loss", value: "weight_loss" },
+  { label: "Recovery", value: "recovery" },
+  { label: "Performance", value: "performance" },
 ];
 
 export const MOBILE_NAV_ITEMS = [

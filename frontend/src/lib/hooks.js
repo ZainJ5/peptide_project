@@ -83,6 +83,32 @@ export function useSchedules() {
   });
 }
 
+export function useUpdateSchedule() {
+  const request = useAuthedRequest();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ scheduleId, body }) =>
+      request(`/schedules/${scheduleId}`, { method: "PATCH", body }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["schedules"] });
+      queryClient.invalidateQueries({ queryKey: ["schedule-calendar", variables.scheduleId] });
+    },
+  });
+}
+
+export function useDeleteSchedule() {
+  const request = useAuthedRequest();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (scheduleId) =>
+      request(`/schedules/${scheduleId}`, { method: "DELETE" }),
+    onSuccess: (_, scheduleId) => {
+      queryClient.invalidateQueries({ queryKey: ["schedules"] });
+      queryClient.removeQueries({ queryKey: ["schedule-calendar", scheduleId] });
+    },
+  });
+}
+
 export function useProfile() {
   const request = useAuthedRequest();
   const token = useAuthStore((s) => s.token);

@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import Footer from "@/components/layout/Footer";
+import AppDownloadPopup from "@/components/layout/AppDownloadPopup";
 
 const Navbar = dynamic(() => import("@/components/layout/Navbar"));
 
@@ -15,6 +16,7 @@ export default function AppShell({ children }) {
       <Navbar />
       <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-2 pt-2 md:px-6 md:pb-2">{children}</main>
       <Footer />
+      <AppDownloadPopup />
     </div>
   );
 }
