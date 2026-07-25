@@ -30,18 +30,35 @@ async function fetchPeptide(idOrSlug) {
 }
 
 async function fetchRelated(peptide) {
-  const category = peptide?.healthCategories?.[0];
-  if (!category) return [];
   try {
-    const res = await fetch(
-      `${API_BASE}/peptides?category=${encodeURIComponent(category)}&limit=13`,
-      { next: { revalidate: 3600 }, signal: AbortSignal.timeout(8000) }
-    );
+    const res = await fetch(`${API_BASE}/peptides?limit=100`, {
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(8000),
+    });
     if (!res.ok) return [];
     const json = await res.json();
-    return (json.data || [])
-      .filter((p) => p.slug && p.slug !== peptide.slug)
-      .slice(0, 8);
+    const all = (json.data || []).filter((p) => p.slug && p.slug !== peptide.slug);
+    if (all.length <= 8) return all;
+
+    // Prefer peptides in the same health category, then fill with alphabetical
+    // neighbours so every page gets a varied, non-boilerplate set of links.
+    const cat = peptide?.healthCategories?.[0]?.toLowerCase();
+    const sameCat = cat
+      ? all.filter((p) => (p.healthCategories || []).some((c) => String(c).toLowerCase() === cat))
+      : [];
+
+    const cur = String(peptide?.name || "").toLowerCase();
+    let start = all.findIndex((p) => String(p.name).toLowerCase() > cur);
+    if (start < 0) start = 0;
+
+    const picked = [];
+    const seen = new Set();
+    const add = (p) => {
+      if (p && !seen.has(p.slug)) { seen.add(p.slug); picked.push(p); }
+    };
+    sameCat.forEach(add);
+    for (let i = 0; picked.length < 8 && i < all.length; i++) add(all[(start + i) % all.length]);
+    return picked.slice(0, 8);
   } catch {
     return [];
   }
