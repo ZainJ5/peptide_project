@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { permanentRedirect, notFound } from "next/navigation";
 import PeptideDetailClient from "./PeptideDetailClient";
 
@@ -25,6 +26,24 @@ async function fetchPeptide(idOrSlug) {
     return json.data || null;
   } catch {
     return null;
+  }
+}
+
+async function fetchRelated(peptide) {
+  const category = peptide?.healthCategories?.[0];
+  if (!category) return [];
+  try {
+    const res = await fetch(
+      `${API_BASE}/peptides?category=${encodeURIComponent(category)}&limit=13`,
+      { next: { revalidate: 3600 }, signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) return [];
+    const json = await res.json();
+    return (json.data || [])
+      .filter((p) => p.slug && p.slug !== peptide.slug)
+      .slice(0, 8);
+  } catch {
+    return [];
   }
 }
 
@@ -110,6 +129,7 @@ export default async function PeptideDetailPage({ params }) {
   }
 
   const slug = peptide?.slug || id;
+  const related = await fetchRelated(peptide);
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -183,6 +203,30 @@ export default async function PeptideDetailPage({ params }) {
         />
       )}
       <PeptideDetailClient initialPeptide={peptide} />
+
+      {related.length > 0 && (
+        <section aria-labelledby="related-heading" className="mt-6 pb-8">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+            <h2 id="related-heading" className="text-lg font-bold text-slate-900">
+              Related peptide protocols
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">More research-backed dosing guides in this category.</p>
+            <ul className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
+              {related.map((r) => (
+                <li key={r.slug}>
+                  <Link
+                    href={`/library/${r.slug}`}
+                    className="group flex flex-col rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-3 transition-colors hover:border-emerald-300 hover:bg-emerald-50/40"
+                  >
+                    <span className="text-sm font-semibold text-slate-800 group-hover:text-emerald-700">{r.name}</span>
+                    {r.mgAmount && <span className="mt-0.5 text-xs font-medium text-slate-400">{r.mgAmount}</span>}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
     </>
   );
 }
