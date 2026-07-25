@@ -105,11 +105,13 @@ function generateEventsForItem({ scheduleItem, scheduleId, startDate, durationWe
     : 'AM';
 
   // ─── Generate events day by day ─────────────────────────────────────────
-  // The calendar spans exactly the duration the user chose. "Duration (weeks)"
-  // is the TOTAL length of the schedule — what you set is what you get. Any
-  // rest weeks (active phase shorter than the duration) appear within that
-  // window rather than extending it into extra repeated cycles.
-  const effectiveDurationWeeks = durationWeeks;
+  // Extend the generated window so at least one full restart is visible
+  // after the rest period.  Without this, a 12-week schedule with an 8+4
+  // cycle shows rest but never shows the cycle restarting because the loop
+  // ends exactly when the rest period finishes.
+  const effectiveDurationWeeks = restWeeks > 0 && totalCycleWeeks > 0
+    ? Math.max(durationWeeks, totalCycleWeeks * 2)
+    : durationWeeks;
 
   const events    = [];
   const start     = dayjs(startDate);
