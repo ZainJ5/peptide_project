@@ -117,8 +117,12 @@ function toDateKey(value) {
 
 async function updateSchedule(req, res, next) {
   try {
+    req.extendTimeout?.(120_000);
+
     const schedule = await requireScheduleShallow(req.params.id, req.user.id);
     const { name, startDate, durationWeeks, notes } = req.body;
+
+    const wasGenerated = schedule.isGenerated;
 
     const updates = {
       ...(name !== undefined && { name }),
@@ -127,21 +131,32 @@ async function updateSchedule(req, res, next) {
       ...(notes !== undefined && { notes }),
     };
 
-    // Only changes that affect the generated calendar (start date / duration)
-    // invalidate the existing generation. Renames and note edits keep the
-    // schedule "Active" so the calendar stays viewable without re-generating.
     const startChanged =
       startDate !== undefined && toDateKey(startDate) !== toDateKey(schedule.startDate);
     const durationChanged =
       durationWeeks !== undefined && Number(durationWeeks) !== Number(schedule.durationWeeks);
-
-    if (startChanged || durationChanged) {
-      updates.isGenerated = false;
-    }
+    const calendarAffected = startChanged || durationChanged;
 
     await schedule.update(updates);
 
-    return res.json({ success: true, data: schedule });
+    // A rename or note edit never touches the calendar. When the start date or
+    // duration of an already-generated ("Active") schedule changes, transparently
+    // rebuild its calendar so it stays Active — the user shouldn't have to
+    // re-generate manually just because they edited the schedule.
+    let regenerated = false;
+    if (calendarAffected && wasGenerated) {
+      const full = await requireSchedule(schedule.id, req.user.id);
+      if (full.items && full.items.length > 0) {
+        await scheduleEngine.buildAndSave(full, sequelize);
+        regenerated = true;
+      } else {
+        // Nothing to generate from — fall back to draft.
+        await schedule.update({ isGenerated: false });
+      }
+    }
+
+    await schedule.reload();
+    return res.json({ success: true, data: schedule, regenerated });
   } catch (err) {
     next(err);
   }
