@@ -27,4 +27,5 @@ build/
 *.xlsx
 .npm-cache
 .env.example
-data/
+# Only the root-level seed data folder — NOT src/data (app manifests live there)
+/data/
