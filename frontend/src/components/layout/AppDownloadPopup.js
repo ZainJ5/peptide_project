@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const STORAGE_KEY = "mpd_app_popup_dismissed_v2";
-const APK_URL = "/app/app.apk";
+const APP_URL = "https://appdistribution.firebase.dev/i/937a9972dbfb3a2e";
 
 /**
  * Minimal one-time app-download prompt.
@@ -105,8 +105,9 @@ export default function AppDownloadPopup() {
 
         {/* CTA */}
         <a
-          href={APK_URL}
-          download="app.apk"
+          href={APP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
           onClick={dismiss}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
         >
