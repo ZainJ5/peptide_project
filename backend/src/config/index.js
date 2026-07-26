@@ -61,6 +61,10 @@ const config = {
   // Public base URL for constructing absolute asset URLs (images, etc.)
   baseUrl: optional('BASE_URL', 'http://139.59.34.214'),
 
+  // Canonical public site origin (non-www) used to build absolute media URLs
+  // (video files, thumbnails) returned by the API for the website and app.
+  publicSiteUrl: (optional('PUBLIC_SITE_URL', 'https://mypeptidedosages.com') || '').replace(/\/$/, ''),
+
   // Allowed domains for avatar URLs (prevents SSRF / stored XSS)
   avatarAllowedDomains: (optional('AVATAR_ALLOWED_DOMAINS', 'cdn.mypeptidedosages.com') || '')
     .split(',').map((d) => d.trim()).filter(Boolean),

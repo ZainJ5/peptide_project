@@ -1,43 +1,59 @@
 'use strict';
 
-const { Video, Peptide } = require('../models');
+const path = require('path');
+const fs = require('fs');
+
+const config = require('../config');
 const { createError } = require('../middleware/errorHandler');
 
-function buildEmbedUrl(platform, videoId) {
-  if (platform === 'youtube') return `https://www.youtube.com/embed/${videoId}`;
-  if (platform === 'vimeo') return `https://player.vimeo.com/video/${videoId}`;
-  return null;
+/**
+ * Videos API
+ *
+ * The video library is a small, curated set served from a single source of
+ * truth: src/data/videos.json. The actual media (MP4 files and thumbnails) is
+ * served as static files by the web server; this API returns the metadata with
+ * absolute HTTPS URLs so both the website and the mobile app can consume it.
+ */
+const MANIFEST_PATH = path.join(__dirname, '..', 'data', 'videos.json');
+
+let manifestCache = null;
+function loadManifest() {
+  if (!manifestCache) {
+    manifestCache = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
+  }
+  return manifestCache;
 }
 
-function buildThumbnailUrl(platform, videoId) {
-  if (platform === 'youtube') return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-  return null;
+function toAbsoluteUrl(pathOrUrl) {
+  if (!pathOrUrl) return null;
+  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
+  return `${config.publicSiteUrl}${pathOrUrl.startsWith('/') ? '' : '/'}${pathOrUrl}`;
 }
 
 function serializeVideo(video) {
-  const json = typeof video.toJSON === 'function' ? video.toJSON() : { ...video };
   return {
-    ...json,
-    embedUrl: buildEmbedUrl(video.platform, video.videoId),
-    thumbnailUrl: video.thumbnailUrl || buildThumbnailUrl(video.platform, video.videoId),
+    id: video.id,
+    title: video.title,
+    description: video.description,
+    category: video.category,
+    videoUrl: toAbsoluteUrl(video.videoPath),
+    thumbnailUrl: toAbsoluteUrl(video.thumbnailPath),
+    durationSeconds: video.durationSeconds ?? 0,
+    sortOrder: video.sortOrder ?? 100,
   };
 }
 
-const PEPTIDE_ATTRS = { model: Peptide, as: 'peptide', attributes: ['id', 'name'], required: false };
-
 async function listVideos(req, res, next) {
   try {
-    const where = { isActive: true };
-    if (req.query.category) where.category = req.query.category;
-    if (req.query.peptideId) where.peptideId = req.query.peptideId;
+    const { category } = req.query;
 
-    const videos = await Video.findAll({
-      where,
-      include: [PEPTIDE_ATTRS],
-      order: [['sort_order', 'ASC'], ['created_at', 'DESC']],
-    });
+    const videos = loadManifest()
+      .filter((v) => v.isActive !== false)
+      .filter((v) => !category || v.category === category)
+      .sort((a, b) => (a.sortOrder ?? 100) - (b.sortOrder ?? 100))
+      .map(serializeVideo);
 
-    return res.json({ success: true, data: videos.map(serializeVideo) });
+    return res.json({ success: true, total: videos.length, data: videos });
   } catch (err) {
     next(err);
   }
@@ -45,7 +61,7 @@ async function listVideos(req, res, next) {
 
 async function getVideoById(req, res, next) {
   try {
-    const video = await Video.findOne({ where: { id: req.params.id, isActive: true }, include: [PEPTIDE_ATTRS] });
+    const video = loadManifest().find((v) => v.id === req.params.id && v.isActive !== false);
     if (!video) throw createError('Video not found.', 404);
 
     return res.json({ success: true, data: serializeVideo(video) });
@@ -54,29 +70,4 @@ async function getVideoById(req, res, next) {
   }
 }
 
-async function createVideo(req, res, next) {
-  try {
-    const { title, videoId, platform, category, peptideId, description, durationSeconds, sortOrder } = req.body;
-
-    const video = await Video.create({
-      title,
-      videoId,
-      ...(platform !== undefined && { platform }),
-      ...(category !== undefined && { category }),
-      ...(peptideId !== undefined && { peptideId }),
-      ...(description !== undefined && { description }),
-      ...(durationSeconds !== undefined && { durationSeconds }),
-      ...(sortOrder !== undefined && { sortOrder }),
-    });
-
-    return res.status(201).json({ success: true, data: serializeVideo(video) });
-  } catch (err) {
-    next(err);
-  }
-}
-
-module.exports = {
-  listVideos,
-  getVideoById,
-  createVideo,
-};
+module.exports = { listVideos, getVideoById };
