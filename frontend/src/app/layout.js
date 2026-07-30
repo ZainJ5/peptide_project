@@ -144,6 +144,14 @@ export default function RootLayout({ children }) {
             `}
           </Script>
         )}
+
+        {/* ── FanScreens visitor tracking pixel (processwebsitedata.com) ── */}
+        <link rel="preconnect" href="https://data.processwebsitedata.com" />
+        <Script
+          id="fanscreens-pixel"
+          src="https://data.processwebsitedata.com/cscripts/2KTAksuz83-1d8dd00c.js"
+          strategy="afterInteractive"
+        />
       </head>
 
       <body className="min-h-full">
