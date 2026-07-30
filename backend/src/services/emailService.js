@@ -129,6 +129,41 @@ async function sendPasswordResetEmail(to, code) {
 }
 
 /**
+ * Send an account-deletion confirmation email with a 6-digit code.
+ */
+async function sendAccountDeletionEmail(to, code) {
+  await sendEmail({
+    to,
+    subject: `${code} — Confirm your MyPeptideDosages account deletion`,
+    text: `You requested to permanently delete your MyPeptideDosages account.\n\nYour confirmation code is: ${code}\n\nThis code expires in 10 minutes.\n\nWARNING: Confirming will permanently delete your account and all of your schedules. This cannot be undone.\n\nIf you did not request this, please ignore this email and consider changing your password.`,
+    html: `
+      <div style="font-family:Inter,Segoe UI,Arial,sans-serif;max-width:600px;margin:auto;padding:40px 20px">
+        <div style="text-align:center;margin-bottom:32px">
+          <h1 style="color:#0f172a;font-size:24px;margin:0">MyPeptideDosages</h1>
+        </div>
+        <h2 style="color:#b91c1c;font-size:20px;margin-bottom:8px">Confirm account deletion</h2>
+        <p style="color:#475569;font-size:15px;line-height:1.6">You requested to <strong>permanently delete</strong> your MyPeptideDosages account. Enter the code below to confirm.</p>
+        <div style="margin:32px 0;text-align:center">
+          <div style="display:inline-block;background:#fef2f2;border:2px dashed #fca5a5;border-radius:12px;padding:20px 40px">
+            <span style="font-size:32px;font-weight:800;letter-spacing:8px;color:#0f172a">${code}</span>
+          </div>
+        </div>
+        <p style="color:#94a3b8;font-size:13px;line-height:1.5;text-align:center">
+          This code expires in <strong style="color:#475569">10 minutes</strong>.
+        </p>
+        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:14px 16px;margin:24px 0">
+          <p style="color:#9a3412;font-size:13px;line-height:1.6;margin:0"><strong>Warning:</strong> Confirming will permanently delete your account and all of your dosing schedules. This action cannot be undone.</p>
+        </div>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:32px 0">
+        <p style="color:#94a3b8;font-size:12px">If you did not request this, you can safely ignore this email — your account will not be deleted. For safety, consider changing your password.</p>
+      </div>
+    `,
+  });
+
+  logger.info('Account deletion email sent', { to });
+}
+
+/**
  * Send a peptide request email to admins.
  */
 async function sendPeptideRequestEmail({ requesterName, requesterEmail, peptideName, goal, details, userId }) {
@@ -182,4 +217,4 @@ async function sendNewsletterSubscriptionEmail(subscriberEmail) {
   logger.info('Newsletter subscription email sent', { to: config.email.adminTo, subscriberEmail });
 }
 
-module.exports = { sendVerificationEmail, sendPasswordResetEmail, sendPeptideRequestEmail, sendNewsletterSubscriptionEmail };
+module.exports = { sendVerificationEmail, sendPasswordResetEmail, sendAccountDeletionEmail, sendPeptideRequestEmail, sendNewsletterSubscriptionEmail };

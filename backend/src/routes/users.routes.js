@@ -11,6 +11,8 @@ const {
   updateMe,
   updatePassword,
   deactivateMe,
+  requestAccountDeletion,
+  confirmAccountDeletion,
 } = require('../controllers/users.controller');
 
 const router = express.Router();
@@ -43,5 +45,14 @@ router.patch('/me/password', [
 ], updatePassword);
 
 router.delete('/me', deactivateMe);
+
+// ── Permanent account deletion (email-verified, 2 steps) ──
+// Step 1: email a 6-digit confirmation code to the logged-in user.
+router.post('/me/deletion/request', requestAccountDeletion);
+// Step 2: confirm with the code → account is permanently deleted.
+router.post('/me/deletion/confirm', [
+  body('code').trim().isLength({ min: 6, max: 6 }).withMessage('A 6-digit code is required'),
+  validate,
+], confirmAccountDeletion);
 
 module.exports = router;

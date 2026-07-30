@@ -86,6 +86,18 @@ module.exports = (sequelize) => {
         field:     'reset_token_expires',
       },
 
+      deletionToken: {
+        type:      DataTypes.STRING(255),
+        allowNull: true,
+        field:     'deletion_token',
+      },
+
+      deletionTokenExpires: {
+        type:      DataTypes.DATE,
+        allowNull: true,
+        field:     'deletion_token_expires',
+      },
+
       role: {
         type:         DataTypes.ENUM('user', 'admin'),
         allowNull:    false,
@@ -105,7 +117,7 @@ module.exports = (sequelize) => {
       defaultScope: {
         // Never return sensitive fields by default
         attributes: {
-          exclude: ['passwordHash', 'verificationToken', 'verificationTokenExpires', 'resetToken', 'resetTokenExpires'],
+          exclude: ['passwordHash', 'verificationToken', 'verificationTokenExpires', 'resetToken', 'resetTokenExpires', 'deletionToken', 'deletionTokenExpires'],
         },
       },
       scopes: {
