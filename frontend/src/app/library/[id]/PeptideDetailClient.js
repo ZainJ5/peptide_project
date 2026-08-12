@@ -71,7 +71,8 @@ export default function PeptideDetailClient({ initialPeptide } = {}) {
 
   useEffect(() => {
     if (reconstitutionSlug) {
-      setReconstitutionImageSrc(`/images/reconstitution/${reconstitutionSlug}.webp`);
+      // ?v busts the long-lived immutable cache when a reconstitution image is updated.
+      setReconstitutionImageSrc(`/images/reconstitution/${reconstitutionSlug}.webp?v=2`);
     }
   }, [reconstitutionSlug]);
 
