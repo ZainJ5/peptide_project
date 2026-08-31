@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const STORAGE_KEY = "mpd_app_popup_dismissed_v2";
-const APP_URL = "https://appdistribution.firebase.dev/i/937a9972dbfb3a2e";
+const APP_URL = "https://apps.apple.com/us/app/my-peptide-dosages/id6798623177";
 
 /**
  * Minimal one-time app-download prompt.
@@ -94,7 +94,7 @@ export default function AppDownloadPopup() {
           />
           <div className="min-w-0">
             <h3 className="text-[15px] font-semibold tracking-tight text-slate-900">Get the app</h3>
-            <p className="text-[13px] text-slate-500">Free · for Android</p>
+            <p className="text-[13px] text-slate-500">Free · on the App Store</p>
           </div>
         </div>
 
@@ -111,8 +111,8 @@ export default function AppDownloadPopup() {
           onClick={dismiss}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
-          Download
+          <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-2.8 2.29-4.14 2.39-4.21-1.3-1.9-3.33-2.16-4.05-2.19-1.72-.17-3.36 1.01-4.23 1.01-.87 0-2.21-.99-3.64-.96-1.87.03-3.6 1.09-4.56 2.76-1.95 3.38-.5 8.38 1.39 11.12.92 1.34 2.02 2.85 3.46 2.8 1.39-.06 1.91-.9 3.59-.9 1.68 0 2.15.9 3.62.87 1.5-.03 2.45-1.37 3.37-2.72 1.06-1.56 1.5-3.07 1.52-3.15-.03-.01-2.92-1.12-2.95-4.44M14.28 3.87c.77-.93 1.29-2.22 1.15-3.51-1.11.05-2.46.74-3.25 1.67-.71.82-1.33 2.14-1.16 3.4 1.24.1 2.5-.63 3.26-1.56" /></svg>
+          Download on the App Store
         </a>
 
         {/* Dismiss */}

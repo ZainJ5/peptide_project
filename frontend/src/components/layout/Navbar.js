@@ -221,7 +221,7 @@ export default function Navbar() {
 
             {/* Actions */}
             <div className="ml-auto flex items-center gap-3">
-              <a href="https://appdistribution.firebase.dev/i/937a9972dbfb3a2e" target="_blank" rel="noopener noreferrer" className="hidden lg:block">
+              <a href="https://apps.apple.com/us/app/my-peptide-dosages/id6798623177" target="_blank" rel="noopener noreferrer" className="hidden lg:block">
                 <Button variant="secondary" className="h-9 rounded-xl border-slate-200 bg-white px-4 text-sm font-bold text-slate-600 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900">
                   Download App
                 </Button>
@@ -486,7 +486,7 @@ export default function Navbar() {
             </>
           )}
 
-          <a href="https://appdistribution.firebase.dev/i/937a9972dbfb3a2e" target="_blank" rel="noopener noreferrer"
+          <a href="https://apps.apple.com/us/app/my-peptide-dosages/id6798623177" target="_blank" rel="noopener noreferrer"
             className="group mb-0.5 flex items-center gap-3 rounded-xl px-3 py-3 text-slate-600 transition-all duration-150 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
           >
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors">
