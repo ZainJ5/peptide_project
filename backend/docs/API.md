@@ -18,6 +18,7 @@
 8. [Error Format](#error-format)
 9. [Schedule Engine Logic](#schedule-engine-logic)
 10. [Data Models](#data-models)
+11. [Admin API](#admin-api)
 
 ---
 
@@ -584,3 +585,59 @@ All error responses follow this consistent shape:
 | `escalationStep`| int     | Which escalation step applies (null if override)   |
 | `isRestDay`     | boolean | True during rest periods                           |
 | `isCompleted`   | boolean | User has logged this injection                     |
+
+---
+
+## Admin API
+
+Powers the admin panel at **`/admin`** on the website. Separate from site-user auth:
+username login, its own JWT secret (`ADMIN_JWT_SECRET`, or derived from `JWT_SECRET`),
+8-hour tokens, and lockout after 5 failed attempts (15 minutes). Every response is
+`Cache-Control: no-store`. All routes except login need `Authorization: Bearer <adminToken>`.
+
+### Setup
+
+```bash
+npm run migrate                       # creates the `admins` table
+npm run admin:create -- --username=mypeptidedosages --password='<strong password>'
+```
+
+`admin:create` creates the account or, if it exists, resets the password, clears any
+lockout and signs out every session. Without `--password` it reads `ADMIN_PASSWORD`
+from `.env`, or generates one and prints it once. Passwords need 12+ characters with
+upper/lowercase letters, a number and a symbol.
+
+### Endpoints
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| POST   | `/api/admin/auth/login` | `{ username, password }` → `{ token, expiresAt, admin }`. 401 bad credentials, 423 locked, 429 IP rate limit (10 failed / 15 min) |
+| GET    | `/api/admin/auth/me` | Current admin |
+| POST   | `/api/admin/auth/logout` | Revokes **all** tokens for this admin |
+| PATCH  | `/api/admin/auth/password` | `{ currentPassword, newPassword }` → new session; other sessions revoked |
+| GET    | `/api/admin/stats` | Dashboard counts + recently updated peptides |
+| GET    | `/api/admin/peptides` | `search, type, status (all\|active\|inactive), category, issue (missingOverview\|missingDosing\|missingCategories\|missingImage), sort (name\|updated\|created), limit ≤200, offset`. Includes hidden peptides |
+| POST   | `/api/admin/peptides` | Create. `name` + `protocolTitle` required; slug auto-generated if omitted; optional `dosingSteps` |
+| GET    | `/api/admin/peptides/:id` | Full peptide + ordered `dosingSteps` + `usage` counts |
+| PATCH  | `/api/admin/peptides/:id` | Partial update. Send `dosingSteps` only to replace the dosing table. Send `expectedUpdatedAt` to get a 409 instead of overwriting someone else's edit |
+| PATCH  | `/api/admin/peptides/:id/status` | `{ isActive }` — publish / hide |
+| POST   | `/api/admin/peptides/:id/duplicate` | Copy (with dosing table) as a hidden draft |
+| DELETE | `/api/admin/peptides/:id` | Permanent. 409 if any user schedule uses the peptide (hide it instead) |
+| GET    | `/api/admin/categories` | Every category with total / live counts |
+| POST   | `/api/admin/categories/rename` | `{ from, to }` — renames, merging without duplicates if `to` exists |
+| POST   | `/api/admin/categories/delete` | `{ name }` — removes the category from all peptides |
+| GET    | `/api/admin/users` | `search, status, limit, offset` |
+| PATCH  | `/api/admin/users/:id/status` | `{ isActive }` — deactivate / reactivate a site account |
+
+**Dosing steps** are sent as a flat list: `{ scheduleName, weekRangeLabel, weekStart, weekEnd,
+dailyDoseLabel, dailyDoseMcg, unitsPerInjection, volumeMl }`. Step order is the position within
+its variant, and variants keep the order they first appear — the first variant is the table the
+public page shows. `rowData`/`tableHeaders` are regenerated from these fields. Pass
+`variantRenames: [{ from, to }]` when renaming a variant so users' saved schedules follow it.
+
+Validation failures return 422 with `details: [{ field, message }]`; uniqueness clashes
+(slug, protocol title) return 409.
+
+After a save, the admin panel calls the website's `POST /api/admin/revalidate` (Next.js route,
+verifies the admin token against `/api/admin/auth/me`) to refresh the cached library pages
+immediately instead of waiting for the hourly ISR refresh.
