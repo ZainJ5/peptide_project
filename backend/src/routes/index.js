@@ -12,6 +12,7 @@ const communityRoutes = require('./community.routes');
 const videosRoutes = require('./videos.routes');
 const pdfRoutes = require('./pdf.routes');
 const newsletterRoutes = require('./newsletter.routes');
+const adminRoutes = require('./admin.routes');
 
 const router = express.Router();
 
@@ -23,6 +24,7 @@ router.use('/community', communityRoutes);
 router.use('/videos', videosRoutes);
 router.use('/pdf', pdfRoutes);
 router.use('/newsletter', newsletterRoutes);
+router.use('/admin', adminRoutes);
 
 router.get('/health', getHealth);
 router.get('/health/ready', getReadiness);

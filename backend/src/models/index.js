@@ -12,6 +12,7 @@ const CalendarEventFactory = require('./CalendarEvent');
 const CommunityPostFactory = require('./CommunityPost');
 const PostUpvoteFactory    = require('./PostUpvote');
 const VideoFactory         = require('./Video');
+const AdminFactory         = require('./Admin');
 
 // Instantiate every model against the shared sequelize instance
 const Peptide       = PeptideFactory(sequelize);
@@ -24,6 +25,7 @@ const CalendarEvent = CalendarEventFactory(sequelize);
 const CommunityPost = CommunityPostFactory(sequelize);
 const PostUpvote    = PostUpvoteFactory(sequelize);
 const Video         = VideoFactory(sequelize);
+const Admin         = AdminFactory(sequelize);
 
 const models = {
   Peptide,
@@ -36,6 +38,7 @@ const models = {
   CommunityPost,
   PostUpvote,
   Video,
+  Admin,
   sequelize,
 };
 

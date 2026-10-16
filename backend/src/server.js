@@ -43,6 +43,8 @@ app.use(rateLimit({
   max: config.rateLimit.max,
   standardHeaders: true,
   legacyHeaders: false,
+  // The admin API has its own limiters (see routes/admin.routes.js).
+  skip: (req) => req.path.startsWith('/api/admin/'),
   message: { success: false, error: 'Too many requests. Please try again later.' },
 }));
 

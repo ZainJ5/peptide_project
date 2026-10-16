@@ -8,6 +8,7 @@
     "dev": "node --watch src/server.js",
     "seed": "node src/scripts/seedDatabase.js",
     "assign-images": "node src/scripts/assignImages.js",
+    "admin:create": "node src/scripts/createAdmin.js",
     "migrate": "npx sequelize-cli db:migrate",
     "migrate:undo": "npx sequelize-cli db:migrate:undo:all",
     "migrate:status": "npx sequelize-cli db:migrate:status",

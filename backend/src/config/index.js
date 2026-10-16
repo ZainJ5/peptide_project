@@ -2,6 +2,8 @@
 
 require('dotenv').config();
 
+const crypto = require('crypto');
+
 function required(key) {
   const value = process.env[key];
   if (!value) throw new Error(`Missing required environment variable: ${key}`);
@@ -38,6 +40,18 @@ const config = {
     refreshSecret:    required('JWT_REFRESH_SECRET'),
     expiresIn:        optional('JWT_EXPIRES_IN',         '15m'),
     refreshExpiresIn: optional('JWT_REFRESH_EXPIRES_IN', '30d'),
+  },
+
+  // Admin panel auth. Uses its own signing secret so a site-user token can
+  // never be accepted as an admin token. ADMIN_JWT_SECRET is recommended; when
+  // unset, a distinct key is derived from JWT_SECRET.
+  admin: {
+    jwtSecret: optional('ADMIN_JWT_SECRET')
+      || crypto.createHmac('sha256', required('JWT_SECRET')).update('mypeptidedosages-admin-panel').digest('hex'),
+    jwtExpiresIn:     optional('ADMIN_JWT_EXPIRES_IN', '8h'),
+    maxFailedLogins:  parseInt(optional('ADMIN_MAX_FAILED_LOGINS', '5'), 10),
+    lockoutMinutes:   parseInt(optional('ADMIN_LOCKOUT_MINUTES', '15'), 10),
+    loginRateLimit:   parseInt(optional('ADMIN_LOGIN_RATE_LIMIT', '10'), 10),
   },
 
   bcrypt: {

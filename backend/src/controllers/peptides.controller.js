@@ -7,6 +7,7 @@ const config = require('../config');
 const { sequelize } = require('../config/database');
 const scheduleEngine = require('../services/scheduleEngine');
 const { createError } = require('../middleware/errorHandler');
+const { sortSteps } = require('../utils/dosingSteps');
 
 function normalizeLooseSearch(value) {
   return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
@@ -42,6 +43,12 @@ function attachImageUrl(peptideJson) {
 let categoriesCache = null;
 let categoriesCachedAt = 0;
 const CATEGORIES_TTL_MS = 5 * 60 * 1000;
+
+/** Called by the admin API after any peptide change. */
+function invalidateCategoriesCache() {
+  categoriesCache = null;
+  categoriesCachedAt = 0;
+}
 
 async function listPeptides(req, res, next) {
   try {
@@ -130,13 +137,13 @@ async function getPeptideById(req, res, next) {
     }
     const peptide = await Peptide.findOne({
       where,
-      include: [{ model: DosingStep, as: 'dosingSteps', order: [['step_order', 'ASC']] }],
+      include: [{ model: DosingStep, as: 'dosingSteps' }],
     });
 
     if (!peptide) throw createError('Peptide not found.', 404);
 
     const scheduleVariants = {};
-    for (const step of peptide.dosingSteps || []) {
+    for (const step of sortSteps(peptide.dosingSteps || [])) {
       if (!scheduleVariants[step.scheduleName]) {
         scheduleVariants[step.scheduleName] = {
           name: step.scheduleName,
@@ -165,4 +172,5 @@ module.exports = {
   listCategories,
   findByName,
   getPeptideById,
+  invalidateCategoriesCache,
 };
