@@ -1,0 +1,75 @@
+name: Deploy to production
+
+# Every push to master deploys to the server. Can also be run by hand from the
+# Actions tab ("Run workflow"), optionally forcing a full rebuild.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      full:
+        description: Rebuild backend and frontend even if unchanged
+        type: boolean
+        default: false
+
+# Never run two deploys at once; a newer push waits for the current one.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy ${{ github.sha }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: production
+      url: https://mypeptidedosages.com
+
+    steps:
+      - name: Set up SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          test -n "$SSH_PRIVATE_KEY" || { echo "::error::SSH_PRIVATE_KEY secret is missing"; exit 1; }
+          test -n "$SSH_KNOWN_HOSTS" || { echo "::error::SSH_KNOWN_HOSTS secret is missing"; exit 1; }
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Deploy on server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER || 'root' }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+          SHA: ${{ github.sha }}
+          FULL: ${{ inputs.full && '--full' || '' }}
+        run: |
+          # Runs the deploy script from the commit being deployed, so script
+          # changes take effect on the same push.
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" \
+              -o StrictHostKeyChecking=yes -o ConnectTimeout=30 -o ServerAliveInterval=30 \
+              "$SSH_USER@$SSH_HOST" \
+              "set -e; cd /root/peptide_project && git fetch --quiet origin master && bash <(git show '$SHA:scripts/deploy.sh') '$SHA' $FULL"
+
+      - name: Check public site
+        run: |
+          for i in $(seq 1 10); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 https://mypeptidedosages.com/ || true)
+            api=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 https://mypeptidedosages.com/backend-api/health || true)
+            echo "site: $code  api: $api"
+            if [ "$code" = "200" ] && [ "$api" = "200" ]; then exit 0; fi
+            sleep 6
+          done
+          echo "::error::Public site or API not healthy after deploy"
+          exit 1
+
+      - name: Clean up key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

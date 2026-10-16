@@ -8,6 +8,10 @@ const rawBackend =
 const backendOrigin = rawBackend.replace(/\/$/, "").replace(/\/api$/, "");
 
 const nextConfig = {
+	// Deploys build into a separate folder and swap it in only on success
+	// (see scripts/deploy.sh), so a failed build never breaks the live site.
+	distDir: process.env.NEXT_DIST_DIR || ".next",
+
 	images: {
 		formats: ["image/avif", "image/webp"],
 		qualities: [60, 75],
