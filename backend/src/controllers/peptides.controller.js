@@ -30,12 +30,19 @@ function buildLooseSearchClause(search) {
  * Converts the stored relative path (e.g. "/images/singles/file.webp")
  * into a full URL (e.g. "http://139.59.34.214/images/singles/file.webp").
  */
+function toAbsoluteImageUrl(value) {
+  if (!value || /^https?:\/\//i.test(value)) return value;
+  // Admin uploads live on the public site's /media path (served by Apache).
+  const origin = value.startsWith(`${config.uploads.urlPrefix}/`) ? config.publicSiteUrl : config.baseUrl;
+  return `${origin}${value}`;
+}
+
 function attachImageUrl(peptideJson) {
   if (peptideJson && peptideJson.imageUrl) {
-    peptideJson.imageUrl = `${config.baseUrl}${peptideJson.imageUrl}`;
+    peptideJson.imageUrl = toAbsoluteImageUrl(peptideJson.imageUrl);
   }
   if (peptideJson && peptideJson.reconstitutionImageUrl) {
-    peptideJson.reconstitutionImageUrl = `${config.baseUrl}${peptideJson.reconstitutionImageUrl}`;
+    peptideJson.reconstitutionImageUrl = toAbsoluteImageUrl(peptideJson.reconstitutionImageUrl);
   }
   return peptideJson;
 }

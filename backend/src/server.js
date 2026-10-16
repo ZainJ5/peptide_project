@@ -48,6 +48,9 @@ app.use(rateLimit({
   message: { success: false, error: 'Too many requests. Please try again later.' },
 }));
 
+// In production Apache serves uploaded images; locally the API does.
+if (!config.isProd) app.use(config.uploads.urlPrefix, express.static(config.uploads.dir));
+
 app.use('/api', routes);
 app.use(notFound);
 app.use(errorHandler);

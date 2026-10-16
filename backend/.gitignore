@@ -29,3 +29,5 @@ build/
 .env.example
 # Only the root-level seed data folder — NOT src/data (app manifests live there)
 /data/
+# Local admin uploads (production stores them in /var/www/media)
+/uploads/

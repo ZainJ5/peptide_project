@@ -13,6 +13,7 @@ const {
 const auth = require('../controllers/admin/auth.controller');
 const peptides = require('../controllers/admin/peptides.controller');
 const site = require('../controllers/admin/site.controller');
+const uploads = require('../controllers/admin/uploads.controller');
 
 const router = express.Router();
 
@@ -175,6 +176,20 @@ router.patch('/peptides/:id/status', [
 ], peptides.setStatus);
 router.post('/peptides/:id/duplicate', [idParam, validate], peptides.duplicatePeptide);
 router.delete('/peptides/:id', [idParam, validate], peptides.deletePeptide);
+
+/* ── Image uploads ──────────────────────────────────────────────────── */
+
+const rawImage = express.raw({ type: ['image/*', 'application/octet-stream'], limit: config.uploads.maxBytes });
+router.post('/uploads', [
+  query('kind').optional().isIn(['protocol', 'reconstitution']).withMessage('kind must be protocol or reconstitution'),
+  query('slug').optional().isString().isLength({ max: 300 }),
+  validate,
+], (req, res, next) => rawImage(req, res, (err) => {
+  if (err?.type === 'entity.too.large') {
+    return res.status(413).json({ success: false, error: `Image is too large. The limit is ${Math.round(config.uploads.maxBytes / 1048576)} MB.` });
+  }
+  return next(err);
+}), uploads.uploadImage);
 
 /* ── Categories ─────────────────────────────────────────────────────── */
 

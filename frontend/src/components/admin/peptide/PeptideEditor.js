@@ -9,13 +9,13 @@ import {
   Trash2, TriangleAlert,
 } from "lucide-react";
 import { adminRequest, revalidateSite } from "@/lib/admin/api";
-import { toDisplayImageUrl } from "@/lib/imageUrl";
 import { useToast } from "@/components/ui/ToastProvider";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {
   AdminButton, Badge, Card, CharCount, Field, SectionCard, SelectInput, StatusBadge, Switch, TextArea, TextInput, cx, formatDate,
 } from "../ui";
 import { CategoryInput, DosingEditor, ListEditor, emptyStep, newKey, parseVialMg } from "./fields";
+import ImageUploadField from "./ImageUploadField";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SECTIONS = [
@@ -177,22 +177,6 @@ function buildPayload(form, variants, { includeDosing }) {
       .map((v) => ({ from: v.originalName, to: v.name.trim() }));
   }
   return payload;
-}
-
-function ImagePreview({ src, label }) {
-  const [failed, setFailed] = useState(false);
-  useEffect(() => setFailed(false), [src]);
-  const display = src ? toDisplayImageUrl(src) : "";
-  return (
-    <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-[repeating-conic-gradient(#f8fafc_0%_25%,#f1f5f9_0%_50%)] bg-[length:16px_16px]">
-      {display && !failed ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={display} alt={label} onError={() => setFailed(true)} className="h-full w-full object-contain" />
-      ) : (
-        <span className="px-4 text-center text-xs font-medium text-slate-400">{src ? "Image not reachable from here" : "No image set"}</span>
-      )}
-    </div>
-  );
 }
 
 export default function PeptideEditor({ peptide, usage }) {
@@ -393,7 +377,7 @@ export default function PeptideEditor({ peptide, usage }) {
                 htmlFor="f-slug"
                 hint={!isNew && form.slug !== base.form.slug ? "Changing the slug changes the public URL — existing links and search results will break." : "Lowercase letters, numbers and hyphens. Leave blank to generate."}
               >
-                <div className={cx("flex items-center overflow-hidden rounded-xl border bg-white focus-within:ring-4", errors.slug ? "border-red-300 focus-within:ring-red-100" : "border-slate-200 focus-within:border-(--color-primary) focus-within:ring-blue-100")}>
+                <div className={cx("flex items-center overflow-hidden rounded-xl border bg-white focus-within:ring-4", errors.slug ? "border-red-300 focus-within:ring-red-100" : "border-slate-200 focus-within:border-emerald-500 focus-within:ring-emerald-100")}>
                   <span className="select-none border-r border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-medium text-slate-400">/library/</span>
                   <input
                     id="f-slug"
@@ -477,20 +461,28 @@ export default function PeptideEditor({ peptide, usage }) {
             <CategoryInput value={form.healthCategories} onChange={(healthCategories) => set({ healthCategories })} suggestions={suggestions} />
           </SectionCard>
 
-          <SectionCard id="media" title="Images & source" description="Image paths are relative to the backend image host (e.g. /images/singles/…)." icon={ImageIcon}>
+          <SectionCard id="media" title="Images & source" description="Upload images directly — they're stored on the server and served from the website. Remember to save the peptide afterwards." icon={ImageIcon}>
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-3">
-                <Field label="Dosage protocol image" error={errors.imageUrl} htmlFor="f-img" hint="Used by the mobile app.">
-                  <TextInput id="f-img" value={form.imageUrl} maxLength={500} error={errors.imageUrl} placeholder="/images/singles/BPC-157_10_mg_Vial_Dosage_Protocol.webp" onChange={(e) => set({ imageUrl: e.target.value.trim() })} />
-                </Field>
-                <ImagePreview src={form.imageUrl} label="Dosage protocol image" />
-              </div>
-              <div className="space-y-3">
-                <Field label="Reconstitution image" error={errors.reconstitutionImageUrl} htmlFor="f-rimg" hint="Used by the mobile app. The website shows /images/reconstitution/<slug>.webp.">
-                  <TextInput id="f-rimg" value={form.reconstitutionImageUrl} maxLength={500} error={errors.reconstitutionImageUrl} placeholder="/reconstitution-images/bpc-157-10mg.webp" onChange={(e) => set({ reconstitutionImageUrl: e.target.value.trim() })} />
-                </Field>
-                <ImagePreview src={form.reconstitutionImageUrl} label="Reconstitution image" />
-              </div>
+              <ImageUploadField
+                id="f-img"
+                label="Dosage protocol image"
+                hint="Shown in the mobile app."
+                kind="protocol"
+                slug={form.slug}
+                value={form.imageUrl}
+                error={errors.imageUrl}
+                onChange={(imageUrl) => set({ imageUrl })}
+              />
+              <ImageUploadField
+                id="f-rimg"
+                label="Reconstitution image"
+                hint="Shown in the Reconstitution section of the public page and in the app."
+                kind="reconstitution"
+                slug={form.slug}
+                value={form.reconstitutionImageUrl}
+                error={errors.reconstitutionImageUrl}
+                onChange={(reconstitutionImageUrl) => set({ reconstitutionImageUrl })}
+              />
               <Field label="Source URL" error={errors.sourceUrl} htmlFor="f-src" className="md:col-span-2">
                 <TextInput id="f-src" type="url" value={form.sourceUrl} maxLength={500} error={errors.sourceUrl} placeholder="https://…" onChange={(e) => set({ sourceUrl: e.target.value.trim() })} />
               </Field>

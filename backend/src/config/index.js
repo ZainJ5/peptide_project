@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const crypto = require('crypto');
+const path = require('path');
 
 function required(key) {
   const value = process.env[key];
@@ -52,6 +53,17 @@ const config = {
     maxFailedLogins:  parseInt(optional('ADMIN_MAX_FAILED_LOGINS', '5'), 10),
     lockoutMinutes:   parseInt(optional('ADMIN_LOCKOUT_MINUTES', '15'), 10),
     loginRateLimit:   parseInt(optional('ADMIN_LOGIN_RATE_LIMIT', '10'), 10),
+  },
+
+  // Images uploaded from the admin panel. In production they go to a folder
+  // Apache already serves at /media (see the peptidedosage vhost), so files are
+  // delivered by the web server directly with long-lived cache headers.
+  uploads: {
+    dir: optional('UPLOADS_DIR', isProd
+      ? '/var/www/media/peptides'
+      : path.resolve(__dirname, '../../uploads/peptides')),
+    urlPrefix: (optional('UPLOADS_URL_PREFIX', '/media/peptides') || '').replace(/\/$/, ''),
+    maxBytes: parseInt(optional('UPLOAD_MAX_MB', '8'), 10) * 1024 * 1024,
   },
 
   bcrypt: {

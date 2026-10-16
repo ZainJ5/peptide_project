@@ -46,6 +46,34 @@ export async function adminRequest(path, { method = "GET", body, auth = true } =
   return payload;
 }
 
+export const UPLOAD_TYPES = ["image/png", "image/jpeg", "image/webp", "image/avif"];
+export const UPLOAD_MAX_MB = 8;
+
+/** Upload one image file; resolves to its site URL (e.g. /media/peptides/x.webp). */
+export async function adminUploadImage(file, { kind = "protocol", slug = "" } = {}) {
+  if (!UPLOAD_TYPES.includes(file.type)) throw new Error("Choose a PNG, JPG, WebP or AVIF image.");
+  if (file.size > UPLOAD_MAX_MB * 1024 * 1024) throw new Error(`Image is too large. The limit is ${UPLOAD_MAX_MB} MB.`);
+
+  const { token, clearSession } = useAdminStore.getState();
+  const qs = new URLSearchParams({ kind, ...(slug ? { slug } : {}) });
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}/admin/uploads?${qs}`, {
+      method: "POST",
+      headers: { "Content-Type": file.type, Authorization: `Bearer ${token}` },
+      body: file,
+    });
+  } catch {
+    throw new Error("Upload failed — check your connection and try again.");
+  }
+  const payload = await response.json().catch(() => null);
+  if (!response.ok) {
+    if (response.status === 401) clearSession();
+    throw new Error(payload?.error || "Upload failed.");
+  }
+  return payload.data.url;
+}
+
 /**
  * Ask the website to rebuild cached library pages so edits show up right
  * away instead of after the hourly ISR refresh. Never throws: a failure here

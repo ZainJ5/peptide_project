@@ -62,7 +62,13 @@ export default function PeptideDetailClient({ initialPeptide } = {}) {
     () => toBulletList(peptide?.reconstitutionRaw || peptide?.reconstitutionMl),
     [peptide?.reconstitutionRaw, peptide?.reconstitutionMl]
   );
-  const hasReconstitutionImage = Boolean(peptide?.reconstitutionRaw || peptide?.preparationNotes);
+  // An image uploaded from the admin panel (served from /media/peptides/) takes
+  // priority over the bundled per-slug reconstitution image.
+  const uploadedReconstitutionImage = useMemo(() => {
+    const match = String(peptide?.reconstitutionImageUrl || "").match(/\/media\/peptides\/[^?#\s]+$/);
+    return match ? match[0] : null;
+  }, [peptide?.reconstitutionImageUrl]);
+  const hasReconstitutionImage = Boolean(uploadedReconstitutionImage || peptide?.reconstitutionRaw || peptide?.preparationNotes);
   const reconstitutionSlug = useMemo(
     () => peptide ? toReconstitutionSlug(peptide.name, peptide.mgAmount || "") : null,
     [peptide?.name, peptide?.mgAmount]
@@ -70,11 +76,13 @@ export default function PeptideDetailClient({ initialPeptide } = {}) {
   const [reconstitutionImageSrc, setReconstitutionImageSrc] = useState(null);
 
   useEffect(() => {
-    if (reconstitutionSlug) {
+    if (uploadedReconstitutionImage) {
+      setReconstitutionImageSrc(uploadedReconstitutionImage);
+    } else if (reconstitutionSlug) {
       // ?v busts the long-lived immutable cache when a reconstitution image is updated.
       setReconstitutionImageSrc(`/images/reconstitution/${reconstitutionSlug}.webp?v=2`);
     }
-  }, [reconstitutionSlug]);
+  }, [reconstitutionSlug, uploadedReconstitutionImage]);
 
   const columns = useMemo(
     () => [
