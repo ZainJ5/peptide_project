@@ -6,5 +6,9 @@ export const metadata = {
 };
 
 export default function AdminLayout({ children }) {
-  return <AdminShell>{children}</AdminShell>;
+  return (
+    <div className="admin-root">
+      <AdminShell>{children}</AdminShell>
+    </div>
+  );
 }

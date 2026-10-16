@@ -13,7 +13,7 @@ import {
 
 function StatCard({ label, value, icon: Icon, tone = "blue", sub, href }) {
   const tones = {
-    blue: "bg-blue-50 text-(--color-primary)",
+    blue: "bg-sky-50 text-sky-600",
     green: "bg-emerald-50 text-emerald-600",
     violet: "bg-violet-50 text-violet-600",
     amber: "bg-amber-50 text-amber-600",
@@ -102,7 +102,7 @@ export default function AdminDashboardPage() {
                   <h2 className="text-[15px] font-bold text-slate-900">Recently updated</h2>
                   <p className="text-[13px] text-slate-500">Latest changes to peptide protocols</p>
                 </div>
-                <Link href="/admin/peptides?sort=updated" className="text-sm font-semibold text-(--color-primary) hover:underline">View all</Link>
+                <Link href="/admin/peptides?sort=updated" className="text-sm font-semibold text-emerald-700 hover:underline">View all</Link>
               </div>
               <div className="divide-y divide-slate-100">
                 {stats.isLoading

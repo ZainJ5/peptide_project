@@ -25,68 +25,60 @@ function isActive(pathname, item) {
 
 function Sidebar({ pathname, admin, onNavigate, onLogout }) {
   const initial = (admin?.displayName || admin?.username || "A").charAt(0).toUpperCase();
+  const itemCls = (active) =>
+    cx(
+      "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
+      active ? "bg-emerald-50 text-emerald-700" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+    );
+  const iconCls = (active) =>
+    cx("h-[18px] w-[18px] shrink-0", active ? "text-emerald-600" : "text-slate-400 group-hover:text-slate-600");
+
   return (
-    <div className="flex h-full flex-col bg-gradient-to-b from-[#13265e] via-[#0f1f4d] to-[#0b1636] text-white">
-      <Link href="/admin" onClick={onNavigate} className="flex items-center gap-3 px-5 pb-6 pt-6">
-        <Image src="/logo.png" alt="" width={40} height={40} className="h-10 w-10 rounded-xl bg-white object-contain p-1 shadow-lg shadow-black/20" />
+    <div className="flex h-full flex-col border-r border-slate-200 bg-white">
+      <Link href="/admin" onClick={onNavigate} className="flex items-center gap-3 border-b border-slate-100 px-5 py-5">
+        <Image src="/logo.png" alt="" width={40} height={40} className="h-10 w-10 rounded-xl border border-slate-200 bg-white object-contain p-1 shadow-sm" />
         <div className="leading-tight">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-200/70">Admin Console</p>
-          <p className="text-[15px] font-extrabold tracking-tight">My Peptide Dosages</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Admin Console</p>
+          <p className="text-[15px] font-extrabold tracking-tight text-slate-900">My Peptide Dosages</p>
         </div>
       </Link>
 
-      <nav aria-label="Admin" className="flex-1 space-y-1 px-3">
-        <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-blue-200/50">Manage</p>
+      <nav aria-label="Admin" className="flex-1 space-y-1 overflow-y-auto px-3 py-5">
+        <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">Manage</p>
         {NAV.map((item) => {
           const active = isActive(pathname, item);
           const Icon = item.icon;
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onNavigate}
-              aria-current={active ? "page" : undefined}
-              className={cx(
-                "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all",
-                active ? "bg-white/[.12] text-white shadow-inner shadow-white/5" : "text-blue-100/75 hover:bg-white/[.06] hover:text-white"
-              )}
-            >
-              {active && <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-emerald-400" />}
-              <Icon className={cx("h-[18px] w-[18px]", active ? "text-emerald-300" : "text-blue-200/60 group-hover:text-blue-100")} strokeWidth={1.9} />
+            <Link key={item.href} href={item.href} onClick={onNavigate} aria-current={active ? "page" : undefined} className={itemCls(active)}>
+              <Icon className={iconCls(active)} strokeWidth={1.9} />
               {item.label}
+              {active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-emerald-500" />}
             </Link>
           );
         })}
 
-        <div className="pt-4">
-          <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-blue-200/50">Website</p>
-          <a
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-blue-100/75 transition-all hover:bg-white/[.06] hover:text-white"
-          >
-            <ExternalLink className="h-[18px] w-[18px] text-blue-200/60" strokeWidth={1.9} />
-            View live site
-          </a>
-        </div>
+        <p className="px-3 pb-2 pt-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Website</p>
+        <a href="/" target="_blank" rel="noopener noreferrer" className={itemCls(false)}>
+          <ExternalLink className={iconCls(false)} strokeWidth={1.9} />
+          View live site
+        </a>
       </nav>
 
-      <div className="m-3 rounded-2xl border border-white/10 bg-white/[.05] p-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-sm font-bold shadow-md">
+      <div className="border-t border-slate-100 p-3">
+        <div className="flex items-center gap-3 rounded-xl px-2 py-2">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-800 to-slate-950 text-sm font-bold text-white ring-2 ring-white shadow-sm">
             {initial}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-bold">{admin?.displayName || "Administrator"}</p>
-            <p className="truncate text-xs text-blue-200/70">@{admin?.username}</p>
+            <p className="truncate text-sm font-bold text-slate-900">{admin?.displayName || "Administrator"}</p>
+            <p className="truncate text-xs text-slate-500">@{admin?.username}</p>
           </div>
           <button
             type="button"
             onClick={onLogout}
             aria-label="Sign out"
             title="Sign out"
-            className="rounded-lg p-2 text-blue-200/70 transition-colors hover:bg-white/10 hover:text-white"
+            className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
           >
             <LogOut className="h-4 w-4" />
           </button>
@@ -163,7 +155,7 @@ export default function AdminShell({ children }) {
   const current = NAV.find((item) => isActive(pathname, item));
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb]">
+    <div className="min-h-screen bg-slate-50">
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[264px] lg:block">
         <Sidebar pathname={pathname} admin={admin} onLogout={logout} />
@@ -178,7 +170,7 @@ export default function AdminShell({ children }) {
               type="button"
               onClick={() => setDrawerOpen(false)}
               aria-label="Close navigation"
-              className="absolute right-3 top-3 z-10 rounded-lg p-2 text-blue-100/80 hover:bg-white/10"
+              className="absolute right-3 top-5 z-10 rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
             >
               <X className="h-5 w-5" />
             </button>

@@ -4,7 +4,7 @@ import { useEffect, useId } from "react";
 import { Loader2, X } from "lucide-react";
 
 /* Small design-system kit for the admin panel. Mirrors the public site:
-   slate neutrals, navy primary (--color-primary), emerald accent, rounded-2xl. */
+   slate neutrals, emerald accent, slate-900 for strong actions, rounded-2xl. */
 
 export function cx(...parts) {
   return parts.filter(Boolean).join(" ");
@@ -12,7 +12,7 @@ export function cx(...parts) {
 
 const BUTTON_VARIANTS = {
   primary: "bg-emerald-500 text-white shadow-sm shadow-emerald-500/25 hover:bg-emerald-600",
-  navy: "bg-(--color-primary) text-white shadow-sm shadow-blue-900/20 hover:bg-[#1a3278]",
+  navy: "bg-slate-900 text-white shadow-sm shadow-slate-900/20 hover:bg-slate-800",
   secondary: "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50",
   ghost: "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
   danger: "bg-red-600 text-white shadow-sm shadow-red-600/20 hover:bg-red-700",
@@ -61,7 +61,7 @@ export function SectionCard({ id, title, description, icon: Icon, actions, child
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 px-5 py-4 sm:px-6">
         <div className="flex min-w-0 items-start gap-3">
           {Icon && (
-            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-(--color-primary)">
+            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
               <Icon className="h-[18px] w-[18px]" strokeWidth={1.9} />
             </div>
           )}
@@ -104,7 +104,7 @@ const inputBase =
 const inputTone = (error) =>
   error
     ? "border-red-300 focus:border-red-400 focus:ring-red-100"
-    : "border-slate-200 hover:border-slate-300 focus:border-(--color-primary) focus:ring-blue-100";
+    : "border-slate-200 hover:border-slate-300 focus:border-emerald-500 focus:ring-emerald-100";
 
 export function TextInput({ error, className, ...props }) {
   return <input className={cx(inputBase, "h-10", inputTone(error), className)} aria-invalid={Boolean(error)} {...props} />;
@@ -141,7 +141,7 @@ export function CharCount({ value, max }) {
 const BADGE_TONES = {
   green: "bg-emerald-50 text-emerald-700 ring-emerald-600/15",
   slate: "bg-slate-100 text-slate-600 ring-slate-500/15",
-  blue: "bg-blue-50 text-blue-700 ring-blue-600/15",
+  blue: "bg-sky-50 text-sky-700 ring-sky-600/15",
   violet: "bg-violet-50 text-violet-700 ring-violet-600/15",
   amber: "bg-amber-50 text-amber-700 ring-amber-600/20",
   red: "bg-red-50 text-red-700 ring-red-600/15",

@@ -80,7 +80,7 @@ export default function AdminCategoriesPage() {
           <ul className="divide-y divide-slate-100">
             {rows.map((c) => (
               <li key={c.category} className="group flex flex-wrap items-center gap-3 px-5 py-3.5 transition-colors hover:bg-slate-50/70">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-(--color-primary)"><Tags className="h-4 w-4" /></div>
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"><Tags className="h-4 w-4" /></div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold capitalize text-slate-900">{c.category}</p>
                   <p className="text-xs text-slate-400">{c.active} live · {c.total - c.active} hidden</p>

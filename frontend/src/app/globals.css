@@ -41,6 +41,17 @@ h6 {
   outline-offset: 2px;
 }
 
+/* Admin panel: fields show their own emerald focus ring; everything else
+   gets an emerald (not navy) keyboard outline. */
+.admin-root *:focus-visible {
+  outline-color: #10b981;
+}
+.admin-root input:focus-visible,
+.admin-root textarea:focus-visible,
+.admin-root select:focus-visible {
+  outline: none;
+}
+
 /* Respect reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
   *,

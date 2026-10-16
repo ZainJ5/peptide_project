@@ -221,7 +221,7 @@ export default function AdminPeptidesPage() {
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search by name, title, slug or vial size…"
               aria-label="Search peptides"
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-9 text-sm placeholder:text-slate-400 hover:border-slate-300 focus:border-(--color-primary) focus:outline-none focus:ring-4 focus:ring-blue-100"
+              className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-9 text-sm placeholder:text-slate-400 hover:border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
             />
             {searchInput && (
               <button type="button" onClick={() => setSearchInput("")} aria-label="Clear search" className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:bg-slate-100">
@@ -258,7 +258,7 @@ export default function AdminPeptidesPage() {
                 {ISSUE_LABELS[filters.issue]} <X className="h-3 w-3" />
               </button>
             )}
-            <button type="button" onClick={() => { setSearchInput(""); setFilters({ ...DEFAULTS, sort: filters.sort }); }} className="ml-auto text-xs font-semibold text-(--color-primary) hover:underline">
+            <button type="button" onClick={() => { setSearchInput(""); setFilters({ ...DEFAULTS, sort: filters.sort }); }} className="ml-auto text-xs font-semibold text-emerald-700 hover:underline">
               Clear filters
             </button>
           </div>
@@ -300,11 +300,11 @@ export default function AdminPeptidesPage() {
                     <tr key={p.id} className="group transition-colors hover:bg-slate-50/70">
                       <td className="max-w-0 px-5 py-3.5">
                         <Link href={`/admin/peptides/${p.id}`} className="flex items-center gap-3">
-                          <div className={cx("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold", p.type === "blend" ? "bg-violet-50 text-violet-700" : "bg-blue-50 text-(--color-primary)")}>
+                          <div className={cx("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold", p.type === "blend" ? "bg-violet-50 text-violet-700" : "bg-emerald-50 text-emerald-600")}>
                             {p.name.replace(/[^A-Za-z0-9]/g, "").slice(0, 2).toUpperCase()}
                           </div>
                           <div className="min-w-0">
-                            <p className="truncate font-semibold text-slate-900 group-hover:text-(--color-primary)">
+                            <p className="truncate font-semibold text-slate-900 group-hover:text-emerald-600">
                               {p.name} {p.mgAmount && <span className="font-medium text-slate-400">· {p.mgAmount}</span>}
                             </p>
                             <p className="truncate text-xs text-slate-400">/library/{p.slug}</p>
@@ -332,7 +332,7 @@ export default function AdminPeptidesPage() {
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex items-center justify-end gap-1">
-                          <Link href={`/admin/peptides/${p.id}`} aria-label={`Edit ${p.name}`} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-(--color-primary)">
+                          <Link href={`/admin/peptides/${p.id}`} aria-label={`Edit ${p.name}`} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-emerald-600">
                             <Pencil className="h-4 w-4" />
                           </Link>
                           <RowMenu peptide={p} onDuplicate={(x) => duplicate.mutate(x)} onDelete={setDeleting} />

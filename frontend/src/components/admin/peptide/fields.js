@@ -81,7 +81,7 @@ export function ListEditor({ items, onChange, placeholder, addLabel = "Add item"
             value={bulkText}
             onChange={(e) => setBulkText(e.target.value)}
             placeholder={"Paste one item per line.\nBullets and numbering are removed automatically."}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
           />
           <div className="mt-2 flex justify-end gap-2">
             <AdminButton size="sm" variant="ghost" onClick={() => { setBulk(false); setBulkText(""); }}>Cancel</AdminButton>
@@ -119,11 +119,11 @@ export function CategoryInput({ value, onChange, suggestions = [] }) {
 
   return (
     <div className="relative">
-      <div className="flex min-h-10 flex-wrap items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2 py-1.5 transition-colors focus-within:border-(--color-primary) focus-within:ring-4 focus-within:ring-blue-100 hover:border-slate-300">
+      <div className="flex min-h-10 flex-wrap items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2 py-1.5 transition-colors focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-100 hover:border-slate-300">
         {value.map((c) => (
-          <span key={c} className="inline-flex items-center gap-1 rounded-lg bg-blue-50 py-1 pl-2.5 pr-1 text-xs font-semibold capitalize text-(--color-primary) ring-1 ring-inset ring-blue-600/10">
+          <span key={c} className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 py-1 pl-2.5 pr-1 text-xs font-semibold capitalize text-emerald-700 ring-1 ring-inset ring-emerald-600/15">
             {c}
-            <button type="button" aria-label={`Remove ${c}`} onClick={() => onChange(value.filter((v) => v !== c))} className="rounded p-0.5 hover:bg-blue-100">
+            <button type="button" aria-label={`Remove ${c}`} onClick={() => onChange(value.filter((v) => v !== c))} className="rounded p-0.5 hover:bg-emerald-100">
               <X className="h-3 w-3" />
             </button>
           </span>
@@ -220,8 +220,8 @@ export function DosingEditor({ variants, onChange, vialMg, bacMl, errors = {} })
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-3 text-[13px] text-slate-600">
-        <Info className="h-4 w-4 shrink-0 text-(--color-primary)" />
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-emerald-100 bg-emerald-50/50 px-4 py-3 text-[13px] text-slate-600">
+        <Info className="h-4 w-4 shrink-0 text-emerald-700" />
         <span>
           The <strong className="text-slate-800">first variant</strong> is the dosing table shown on the public page. Units assume a 100-unit (1 mL) insulin syringe.
         </span>
@@ -295,7 +295,7 @@ export function DosingEditor({ variants, onChange, vialMg, bacMl, errors = {} })
                             className={cx(
                               "h-9 rounded-lg border bg-white px-2 text-sm tabular-nums placeholder:text-slate-300 focus:outline-none focus:ring-4",
                               c.width,
-                              rowError ? "border-red-300 focus:ring-red-100" : "border-slate-200 focus:border-(--color-primary) focus:ring-blue-100"
+                              rowError ? "border-red-300 focus:ring-red-100" : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-100"
                             )}
                           />
                         </td>
